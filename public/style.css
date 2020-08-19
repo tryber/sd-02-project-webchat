@@ -1,0 +1,47 @@
+body {
+  margin: 0 auto;
+  margin-top: 2rem;
+  width: 500px;
+}
+
+.send {
+  margin: 0;
+  margin-top: 1rem;
+  padding: 0;
+  width: 100%;
+}
+
+input.text {
+  margin: 0;
+  padding: 0;
+  padding: 5px;
+  width: 80%;
+}
+
+.btn {
+  background-color: #eee;
+  border: 0;
+  border: solid #eee;
+  margin: 0;
+  padding: 5px 0;
+  width: 82px;
+}
+
+.btn:hover {
+  background-color: #00e4bc;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+li {
+  padding: 5px 10px;
+}
+
+li:nth-child(odd) {
+  background-color: #eee;
+}
