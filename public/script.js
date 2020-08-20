@@ -12,6 +12,8 @@ nameButton.addEventListener('click', () => {
   socket.emit('new user', nameInput.value);
   nameInput.disabled = true;
   nameButton.disabled = true;
+  sendButton.disabled = false;
+  document.getElementById('mensagemInput').disabled = false;
 });
 
 sendButton.addEventListener('click', () => {
@@ -20,11 +22,11 @@ sendButton.addEventListener('click', () => {
   document.getElementById('mensagemInput').value = '';
 })
 
-socket.on('new message', ({ msg, user }) => {
+socket.on('new message', ({ message, user }) => {
   console.log('entrou')
   const messageBox = document.getElementById('messages');
   const printedMessage = document.createElement('li');
-  printedMessage.innerHTML = `${user} diz: ${msg}`;
+  printedMessage.innerHTML = `${user} diz: ${message}`;
   printedMessage.className = 'messagePrinted';
   messageBox.appendChild(printedMessage);
 });

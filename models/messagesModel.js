@@ -19,7 +19,20 @@ const createNewUser = async (name) => {
   );
 };
 
+const messageToDb = async (message, user) => {
+  const db = await connection();
+  const result = await db.collection('chatMessages').updateOne(
+    { name: user },
+    {
+      $push: {
+        messages: { content: message, timestamp: Date.now() }
+      }
+    }
+  );
+}
+
 module.exports = {
   getAllMessages,
   createNewUser,
+  messageToDb,
 };

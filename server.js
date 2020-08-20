@@ -23,12 +23,13 @@ io.on('connection', (socket) => {
 
   socket.on('new user', async (name) => {
     socket.name = name;
-    const a = await axios.post('http://localhost:3000/name', { name: socket.name });
-    console.log(a);
+    await axios.post('http://localhost:3000/name', { name: socket.name });
   });
 
-  socket.on('new message user', (msg) => {
-    io.emit('new message', { msg, user: socket.name });
+  socket.on('new message user', async (msg) => {
+    console.log(msg);
+    const message = await axios.post('http://localhost:3000/message', { user: socket.name, message: msg });
+    io.emit('new message', { ...message.data, user: socket.name });
   });
 });
 

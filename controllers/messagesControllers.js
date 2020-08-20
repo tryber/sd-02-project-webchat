@@ -1,19 +1,16 @@
 const model = require('../models/messagesModel');
 
 const sendMessage = async (req, res) => {
-  const { message } = req.body;
+  const { message, user } = req.body;
 
-  if (!message) {
+  if (!message || !user) {
     return res.status(422).json({ message: 'Missing message or title' });
   }
-
-  io.emit('new message', { message });
-
-  res.status(200).json({ message: `Notification emitted: ${message}` });
+  await model.messageToDb(message, user);
+  res.status(200).json({ message });
 }
 
 const sendName = async (req, res) => {
-  console.log(req.body);
   const { name } = req.body;
   const response = await model.createNewUser(name);
   res.status(201).json({ message: 'Sucess' });
