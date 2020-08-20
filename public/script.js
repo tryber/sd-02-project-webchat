@@ -8,15 +8,14 @@ const sendButton = document.getElementById('sendButton');
 const nameButton = document.getElementById('nameButton');
 
 nameButton.addEventListener('click', () => {
-  const nameInput = document.getElementById('nameInput').value;
-  console.log(nameInput);
-  socket.emit('new user', nameInput);
-  document.getElementById('nameInput').disabled = true;
+  const nameInput = document.getElementById('nameInput');
+  socket.emit('new user', nameInput.value);
+  nameInput.disabled = true;
+  nameButton.disabled = true;
 });
 
 sendButton.addEventListener('click', () => {
   const mensagemInput = document.getElementById('mensagemInput').value;
-  console.log(mensagemInput);
   socket.emit('new message user', mensagemInput);
   document.getElementById('mensagemInput').value = '';
 })

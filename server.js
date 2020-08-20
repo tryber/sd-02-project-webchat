@@ -8,6 +8,7 @@ const { join } = require('path');
 
 dotenv.config();
 const app = express();
+const axios = require('axios')
 
 const messagesControllers = require('./controllers/messagesControllers')
 
@@ -16,9 +17,14 @@ app.use(bodyParser.json());
 app.use('/', express.static(join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
-  console.log(`Client ${socket.name} conectado!`);
   socket.on('disconnect', () => {
     console.log(`Client ${socket.name} desconectado`);
+  });
+
+  socket.on('new user', async (name) => {
+    socket.name = name;
+    const a = await axios.post('http://localhost:3000/name', { name: socket.name });
+    console.log(a);
   });
 
   socket.on('new message user', (msg) => {

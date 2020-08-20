@@ -13,7 +13,10 @@ const sendMessage = async (req, res) => {
 }
 
 const sendName = async (req, res) => {
-  res.status(200).json({ message: 'Aqui' });
+  console.log(req.body);
+  const { name } = req.body;
+  const response = await model.createNewUser(name);
+  res.status(201).json({ message: 'Sucess' });
 }
 
 const getMessages = async (req, res) => {
