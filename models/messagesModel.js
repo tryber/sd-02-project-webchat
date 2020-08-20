@@ -2,7 +2,10 @@ const connection = require('./connection');
 
 const getAllMessages = async () => {
   const db = await connection();
-  return db.collection('chatMessages').find().toArray();
+  return db.collection('chatMessages').aggregate([
+    { $unwind: "$messages" },
+    { $sort: { "messages.time": -1 } },
+  ]).toArray();
 };
 
 const createNewUser = async (name) => {

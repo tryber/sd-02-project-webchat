@@ -29,3 +29,17 @@ socket.on('new message', ({ message, user }) => {
     alert('Nova mensagem!')
   }
 });
+
+window.onload = async () => {
+  const results = await fetch('http://localhost:3000/message').then(resp => resp.json())
+  const messages = results.message.map(message => {
+    return `${message.name} diz: ${message.messages.content}`
+  });
+  messages.forEach(message => {
+    const messageBox = document.getElementById('messages');
+    const printedMessage = document.createElement('li');
+    printedMessage.innerHTML = message;
+    printedMessage.className = 'messagePrinted';
+    messageBox.appendChild(printedMessage);
+  });
+};
