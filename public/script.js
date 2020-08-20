@@ -7,24 +7,38 @@ if (nomeUsuario === null || nomeUsuario === '') {
   nomeUsuario = `Usuário #${[Math.floor(Math.random() * 50)]}`;
 }
 
-socket.emit('chat message', `Bem vindo! ${nomeUsuario}`);
+socket.emit('historico', { nomeUsuario });
 
-function enviarMensagem() {
-  const msg = caixaDeTexto.value;
-  console.log('cxTexto', caixaDeTexto);
-  if (msg.length > 0) {
-    console.log(nomeUsuario);
-    console.log(msg);
-    socket.emit('chat message', `${nomeUsuario}: ${msg}`);
+const enviarMensagem = () => {
+  const mensagemEnviada = caixaDeTexto.value;
+  if (mensagemEnviada.length > 0) {
+    socket.emit('mensagemChat', { nomeUsuario, mensagemEnviada });
     caixaDeTexto.value = '';
   }
-}
+};
 
-socket.on('chat message', (msg) => {
+socket.on('historico', (msg) => {
+  const ul = document.getElementById('mensagens');
+  const li = document.createElement('li');
+  li.classList.add('historico');
+  li.appendChild(document.createTextNode(msg));
+  ul.appendChild(li);
+});
+
+socket.on('novoUsuario', (msg) => {
+  const ul = document.getElementById('mensagens');
+  const li = document.createElement('li');
+  li.classList.add('novo_usuario');
+  li.appendChild(document.createTextNode(msg));
+  ul.appendChild(li);
+});
+
+socket.on('mensagemChat', (msg) => {
   const ul = document.getElementById('mensagens');
   const li = document.createElement('li');
   li.appendChild(document.createTextNode(msg));
   ul.appendChild(li);
+  ul.scrollTop = ul.scrollHeight;
 });
 
 caixaDeTexto.addEventListener('keypress', (e) => {
