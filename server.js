@@ -1,20 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const dotenv = require('dotenv');
 const socketIoServer = require('http').createServer();
 const io = require('socket.io')(socketIoServer);
 const { join } = require('path');
 
-var random = require('random-name')
-
+dotenv.config();
 const app = express();
+
+const messagesControllers = require('./controllers/messagesControllers')
 
 app.use(bodyParser.json());
 
 app.use('/', express.static(join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
-  socket.name = random.first();
   console.log(`Client ${socket.name} conectado!`);
   socket.on('disconnect', () => {
     console.log(`Client ${socket.name} desconectado`);
@@ -25,17 +26,9 @@ io.on('connection', (socket) => {
   });
 });
 
-app.post('/message', (req, res) => {
-  const { message } = req.body;
-
-  if (!message) {
-    return res.status(422).json({ message: 'Missing message or title' });
-  }
-
-  io.emit('new message', { message });
-
-  res.status(200).json({ message: `Notification emitted: ${message}` });
-});
+app.get('/message', messagesControllers.getMessages);
+app.post('/message', messagesControllers.sendMessage);
+app.post('/name', messagesControllers.sendName);
 
 app.listen(3000);
 console.log('Express ouvindo na porta 3000');
