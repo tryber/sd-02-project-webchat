@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-var cors = require('cors');
+const cors = require('cors');
 const socketIoServer = require('http').createServer();
 const io = require('socket.io')(socketIoServer);
 const { join } = require('path');
@@ -10,6 +10,7 @@ app.use(cors());
 app.use('/', express.static(join(__dirname, 'public')));
 
 const { saveUser, saveMessage, getAllMessages } = require('./controller');
+
 app.use(bodyParser.json());
 
 io.on('connection', (socket) => {

@@ -1,6 +1,6 @@
 const model = require('../models');
 
-const saveUser = async (user) => await model.saveUser(user);
+const saveUser = async (user) => model.saveUser(user);
 
 const saveMessage = async (user, message) => {
   const success = await model.saveMessage(user, message);
