@@ -1,10 +1,10 @@
 const connection = require('./connection');
 
-getAll = async () =>
+const getAll = async () =>
   connection()
     .then((db) => db.collection('users').find().toArray());
 
-add = async (nickname) =>
+const add = async (nickname) =>
   connection()
     .then((db) => db.collection('users').insertOne({ nickname }));
 

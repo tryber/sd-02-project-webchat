@@ -9,7 +9,7 @@ const connection = async () =>
     useUnifiedTopology: true,
   })
     .then((conn) => conn.db(DB_NAME))
-    .catch((err) => {
+    .catch(() => {
       process.exit(1);
     });
 

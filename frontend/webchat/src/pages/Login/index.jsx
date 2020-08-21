@@ -3,6 +3,23 @@ import { useHistory } from 'react-router-dom';
 
 import "./style.css";
 
+const formRender = (name, onChangeHandleName, onClickHandle) => (
+  <form>
+    <div className="field">
+      <strong>Nickname:</strong>
+      <input
+        type="text"
+        placeholder="Seu nome"
+        required
+        onChange={(e) => onChangeHandleName(e)}
+      />
+    </div>
+    {(name) ?
+      <button type="button" onClick={onClickHandle}>Entrar</button> :
+      <button type="button" disabled>Entrar</button>}
+  </form>
+);
+
 const Login = () => {
   const [name, setName] = useState();
   const hist = useHistory();
@@ -19,20 +36,7 @@ const Login = () => {
   return (
     <div className="login_page">
       <h1>Login</h1>
-      <form>
-        <div className="field">
-          <strong>Nickname:</strong>
-          <input
-            type="text"
-            placeholder="Seu nome"
-            required
-            onChange={(e) => onChangeHandleName(e)}
-          />
-        </div>
-        {(name) ?
-          <button type="button" onClick={onClickHandle}>Entrar</button> :
-          <button type="button" disabled>Entrar</button>}
-      </form>
+      {formRender(name, onChangeHandleName, onClickHandle)}
     </div>
   );
 };

@@ -26,8 +26,7 @@ io.on('connection', (socket) => {
   socket.on('send-message', async ({ yourUser: nickname, message }) => {
     const date = new Date();
     const newMessage = { nickname, message, date };
-    const newChat = new Chat(newMessage);
-    await newChat.add();
+    await Chat.add(newMessage);
     io.emit('receive-message', newMessage);
   });
 

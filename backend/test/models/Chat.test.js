@@ -19,7 +19,7 @@ const nickname = 'Nick';
 const date = '2020-08-20T20:56:15.365Z';
 const result = { _id: 'qdwqdqw', message, nickname, date };
 
-describe('Model User', () => {
+describe('Model Chat', () => {
   test('findAll', async () => {
     // Arange
     const bdMock = getDbMock(result);
