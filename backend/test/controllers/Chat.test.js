@@ -24,7 +24,7 @@ describe('Chat Controller', () => {
     findAllSpy.mockRestore();
   });
 
-  test('Add user', async () => {
+  test('Add chat', async () => {
     const mockMessage = { message: 'Oiee.', nickname: 'Nik', date: '2020-08-20T20:56:15.365Z' };
     const mockResponse = { ops: [mockMessage] };
 

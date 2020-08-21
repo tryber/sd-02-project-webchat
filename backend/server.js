@@ -15,6 +15,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
+const sendMessage = async ({ nickname, message }, io) => {
+  const date = new Date();
+  const newMessage = { nickname, message, date };
+  await Chat.add(newMessage);
+  io.emit('receive-message', newMessage);
+};
 
 io.on('connection', (socket) => {
   console.log(`Client ${socket.id} conectado!`);
@@ -23,12 +29,9 @@ io.on('connection', (socket) => {
     io.emit('users');
   });
 
-  socket.on('send-message', async ({ yourUser: nickname, message }) => {
-    const date = new Date();
-    const newMessage = { nickname, message, date };
-    await Chat.add(newMessage);
-    io.emit('receive-message', newMessage);
-  });
+  socket.on('send-message', async ({ yourUser, message }) =>
+    sendMessage({ nickname: yourUser, message }, io),
+  );
 
   socket.on('disconnect', () => {
     console.log(`Client ${socket.id} desconectado`);
