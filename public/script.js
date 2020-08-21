@@ -21,7 +21,7 @@ sendButton.addEventListener('click', () => {
 socket.on('new message', ({ message, user }) => {
   const messageBox = document.getElementById('messages');
   const printedMessage = document.createElement('li');
-  printedMessage.innerHTML = `${user} diz: ${message}`;
+  printedMessage.innerHTML = `${user} disse: ${message} - ${new Date().toISOString()}`;
   printedMessage.className = 'messagePrinted';
   messageBox.appendChild(printedMessage);
 
@@ -33,7 +33,7 @@ socket.on('new message', ({ message, user }) => {
 window.onload = async () => {
   const results = await fetch('http://localhost:3000/message').then(resp => resp.json())
   const messages = results.message.map(message => {
-    return `${message.name} diz: ${message.messages.content}`
+    return `${message.name} disse: ${message.messages.content} - ${new Date(message.messages.timestamp).toISOString()}`;
   });
   messages.forEach(message => {
     const messageBox = document.getElementById('messages');
