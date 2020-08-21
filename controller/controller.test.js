@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
 const { saveUser, saveMessage, getAllMessages } = require('./index.js');
+const { getSchema } = require('../models');
 
 jest.spyOn(MongoClient, 'connect');
 
@@ -72,11 +73,9 @@ describe('test controller', () => {
     expect(mongo.mock.calls[0][1]).toEqual({ useNewUrlParser: true, useUnifiedTopology: true });
   });
   it('error teste', async () => {
-    const mockProcess = jest.spyOn(process, 'exit').mockResolvedValue({});
-    MongoClient.connect.mockImplementation(() => Promise.reject("error"));
-    await saveUser('fakeName');
-    expect(mongo.mock.calls[0][0]).toBe('mongodb://127.0.0.1:27017');
-    expect(mongo.mock.calls[0][1]).toEqual({ useNewUrlParser: true, useUnifiedTopology: true });
-    expect(mockProcess).toBeCalledTimes(1);
+    MongoClient.connect.mockImplementation(() => Promise.reject('error'));
+    const exitMock = jest.spyOn(process, 'exit').mockImplementation(() => {});
+    await getSchema();
+    expect(exitMock).toHaveBeenCalledWith(1);
   });
 });

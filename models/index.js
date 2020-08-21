@@ -36,4 +36,4 @@ const saveMessage = async (name, message) => {
 const getAllMessages = async () =>
   getSchema().then((db) => db.collection('chatUsers').find().toArray());
 
-module.exports = { saveUser, saveMessage, getAllMessages };
+module.exports = { saveUser, saveMessage, getAllMessages,getSchema };
