@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1598033789450" clover="3.2.0">
-  <project timestamp="1598033789450" name="All files">
-    <metrics statements="46" coveredstatements="35" conditionals="3" coveredconditionals="0" methods="15" coveredmethods="4" elements="64" coveredelements="39" complexity="0" loc="46" ncloc="46" packages="2" files="6" classes="6"/>
+<coverage generated="1598039589279" clover="3.2.0">
+  <project timestamp="1598039589280" name="All files">
+    <metrics statements="46" coveredstatements="44" conditionals="3" coveredconditionals="0" methods="15" coveredmethods="14" elements="64" coveredelements="58" complexity="0" loc="46" ncloc="46" packages="2" files="6" classes="6"/>
     <package name="controllers">
       <metrics statements="22" coveredstatements="22" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4"/>
       <file name="chats.js" path="/home/andrey/Documentos/Kake/Projetos/sd-02-project-webchat/backend/controllers/chats.js">
@@ -37,39 +37,39 @@
       </file>
     </package>
     <package name="models">
-      <metrics statements="24" coveredstatements="13" conditionals="3" coveredconditionals="0" methods="11" coveredmethods="0"/>
+      <metrics statements="24" coveredstatements="22" conditionals="3" coveredconditionals="0" methods="11" coveredmethods="10"/>
       <file name="Chat.js" path="/home/andrey/Documentos/Kake/Projetos/sd-02-project-webchat/backend/models/Chat.js">
-        <metrics statements="7" coveredstatements="4" conditionals="3" coveredconditionals="0" methods="4" coveredmethods="0"/>
-        <line num="1" count="2" type="stmt"/>
-        <line num="3" count="2" type="stmt"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="6" count="2" type="cond" truecount="0" falsecount="3"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="11" count="2" type="stmt"/>
-      </file>
-      <file name="User.js" path="/home/andrey/Documentos/Kake/Projetos/sd-02-project-webchat/backend/models/User.js">
-        <metrics statements="8" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <metrics statements="7" coveredstatements="7" conditionals="3" coveredconditionals="0" methods="4" coveredmethods="4"/>
         <line num="1" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="5" count="0" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="6" count="3" type="cond" truecount="0" falsecount="3"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+      </file>
+      <file name="User.js" path="/home/andrey/Documentos/Kake/Projetos/sd-02-project-webchat/backend/models/User.js">
+        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
         <line num="7" count="3" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="9" count="0" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
         <line num="11" count="3" type="stmt"/>
       </file>
       <file name="connection.js" path="/home/andrey/Documentos/Kake/Projetos/sd-02-project-webchat/backend/models/connection.js">
-        <metrics statements="9" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="0"/>
-        <line num="1" count="3" type="stmt"/>
-        <line num="3" count="3" type="stmt"/>
-        <line num="4" count="3" type="stmt"/>
-        <line num="6" count="3" type="stmt"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
+        <metrics statements="9" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="2"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="3" count="4" type="stmt"/>
+        <line num="4" count="4" type="stmt"/>
+        <line num="6" count="4" type="stmt"/>
+        <line num="7" count="4" type="stmt"/>
+        <line num="11" count="4" type="stmt"/>
         <line num="13" count="0" type="stmt"/>
         <line num="14" count="0" type="stmt"/>
-        <line num="17" count="3" type="stmt"/>
+        <line num="17" count="4" type="stmt"/>
       </file>
     </package>
   </project>

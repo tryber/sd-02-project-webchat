@@ -4,9 +4,9 @@ getAll = async () =>
   connection()
     .then((db) => db.collection('users').find().toArray());
 
-add = async () =>
+add = async (nickname) =>
   connection()
-    .then((db) => db.collection('users').insertOne());
+    .then((db) => db.collection('users').insertOne({ nickname }));
 
 module.exports = {
   getAll,

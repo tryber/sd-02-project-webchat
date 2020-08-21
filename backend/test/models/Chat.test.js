@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const User = require('../../models/User');
+const Chat = require('../../models/Chat');
 
 jest.spyOn(MongoClient, 'connect');
 
@@ -14,17 +14,10 @@ const getDbMock = (result) => ({
   }),
 });
 
+const message = 'Oie';
 const nickname = 'Nick';
-const result = { _id: 'qdwqdqw', nickname };
-
-// connectionMock.db = () => connectionMock;
-// connectionMock.collection = () => connectionMock;
-// connectionMock.find = () => connectionMock;
-// connectionMock.insertOne = jest.fn().mockResolvedValue({ ops: [result] });
-// connectionMock.toArray = jest.fn().mockResolvedValue(result);
-
-// mockResolvedValue  // retorna promise
-// mockReturnValue  // retorna o valor em si
+const date = '2020-08-20T20:56:15.365Z';
+const result = { _id: 'qdwqdqw', message, nickname, date };
 
 describe('Model User', () => {
   test('findAll', async () => {
@@ -32,11 +25,8 @@ describe('Model User', () => {
     const bdMock = getDbMock(result);
     MongoClient.connect.mockResolvedValueOnce(bdMock);
 
-    // console.log(bdMock.db().collection().insertOne());
-    // console.log(bdMock.db().collection().find().toArray());
-
     // Act
-    const expectResult = await User.getAll();
+    const expectResult = await Chat.getAll();
 
     // Assert
     expect(expectResult).toStrictEqual([result]);
@@ -48,7 +38,7 @@ describe('Model User', () => {
     MongoClient.connect.mockResolvedValueOnce(bdMock);
 
     // Act
-    const expectResult = await User.add({ nickname });
+    const expectResult = await Chat.add({ nickname, message, date });
 
     // Assert
     expect(expectResult).toStrictEqual({ ops: [result] });
