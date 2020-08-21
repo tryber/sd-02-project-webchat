@@ -9,7 +9,6 @@ const getSchema = async () =>
   })
     .then((conn) => conn.db(DB_NAME))
     .catch((err) => {
-      console.error(err);
       process.exit(1);
     });
 
@@ -34,6 +33,7 @@ const saveMessage = async (name, message) => {
   };
 };
 
-const getAllMessages = async () => getSchema().then((db) => db.collection('chatUsers').find().toArray());
+const getAllMessages = async () =>
+  getSchema().then((db) => db.collection('chatUsers').find().toArray());
 
 module.exports = { saveUser, saveMessage, getAllMessages };
