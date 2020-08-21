@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-const sendMessage = async ({ nickname, message }, io) => {
+const sendMessage = async ({ nickname, message }) => {
   const date = new Date();
   const newMessage = { nickname, message, date };
   await Chat.add(newMessage);
@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('send-message', async ({ yourUser, message }) =>
-    sendMessage({ nickname: yourUser, message }, io),
+    sendMessage({ nickname: yourUser, message }),
   );
 
   socket.on('disconnect', () => {
