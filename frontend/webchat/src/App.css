@@ -1,0 +1,8 @@
+body , .App {
+  background-color: #141518;
+  font-family: 'Roboto', sans-serif;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+}

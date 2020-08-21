@@ -1,0 +1,22 @@
+.board_comp {
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  width: 80%;
+}
+
+.board_comp > .send_field {
+  border-radius: 2px;
+  display: grid;
+  grid-template-columns: 80% 20%;
+  height: 10%;
+}
+
+.board_comp > .send_field > button {
+  background: #2979FF;
+  cursor: pointer;
+  border: none;
+  border-radius: 2px;
+  color: white;
+  font-size: 1.2em;
+}

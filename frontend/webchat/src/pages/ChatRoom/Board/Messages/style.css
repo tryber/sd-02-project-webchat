@@ -1,0 +1,8 @@
+.messages_comp {
+  background: white;
+  border-radius: 2px;
+  height: 100%;
+  margin-bottom: 2%;
+  overflow-y: auto;
+
+}

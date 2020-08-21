@@ -1,0 +1,39 @@
+.message_comp {
+  background-color: #e6e5ea;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  margin: 2% 5%;
+  padding: 2%;
+}
+
+.message_comp p {
+  margin: 0;
+}
+
+.message_comp > .name {
+  display: flex;
+  font-size: 0.7em;
+  margin: 0 1%;
+}
+
+.message_comp > .name > strong {
+  margin-right:1%;
+}
+
+.message_comp > .message {
+  display: flex;
+  justify-content: flex-start;
+  padding: 1%;
+}
+
+.message_comp > .date {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 2%
+}
+
+.message_comp > .date > p {
+  color: gray;
+  font-size: 0.8em;
+}

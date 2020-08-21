@@ -1,0 +1,14 @@
+.chat_room_page {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  height: 100%;
+  width: 100%;
+}
+
+.chat_room_page > .board_container {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}

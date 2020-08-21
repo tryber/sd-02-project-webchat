@@ -1,0 +1,15 @@
+.users_comp {
+  background-color: white;
+  height: 100%;
+  width: 100%;
+}
+
+.users_comp > .title {
+  font-size: 1.5em;
+  margin: 3% 0;
+  padding: 5%;
+}
+
+.users_comp > p {
+  padding: 0 5%;
+}
