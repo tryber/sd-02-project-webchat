@@ -7,7 +7,7 @@ const createSpy = (func, method, value) => jest
 
 describe('controller test', () => {
   describe('send message', () => {
-    test('Missing message', async () => {
+    test('Missing user', async () => {
 
       const jestFnJason = jest.fn();
       const mockRes = { status: jest.fn().mockReturnValueOnce({ json: jestFnJason }) };
@@ -18,7 +18,7 @@ describe('controller test', () => {
     })
 
 
-    test('Missing user', async () => {
+    test('Missing message', async () => {
 
       const jestFnJason = jest.fn();
       const mockRes = { status: jest.fn().mockReturnValueOnce({ json: jestFnJason }) };
