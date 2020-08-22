@@ -13,8 +13,8 @@ const createName = rescue(async (req, res) => {
 });
 
 const createMessage = rescue(async (req, res) => {
-  const { nomeUsuario, mensagemEnviada, data } = req.body;
-  const serviceAnswer = await messagesService.createMessage({ nomeUsuario, mensagemEnviada, data });
+  const { name, message, messageDate } = req.body;
+  const serviceAnswer = await messagesService.createMessage({ name, message, messageDate });
   res.status(201).json(serviceAnswer);
 });
 

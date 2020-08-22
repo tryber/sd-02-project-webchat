@@ -1,9 +1,9 @@
-const { ObjectId } = require('mongodb');
 const connection = require('./connection');
 
 const getAllMessages = async () => {
   const db = await connection();
-  const allMessages = await db.collection('messages').aggregate([{ $unwind: '$messages' }]).toArray();
+  const allMessages = await db.collection('messages')
+    .aggregate([{ $unwind: '$messages' }]).toArray();
   return allMessages;
 };
 
@@ -18,15 +18,13 @@ const createName = async (name) => {
 };
 
 const createMessage = async (messageInfo) => {
-  const { nomeUsuario, mensagemEnviada, data } = messageInfo;
+  const { name: nome, message, messageDate } = messageInfo;
   const db = await connection();
-  const newMessage = await db.collection('messages').findOneAndUpdate(
-    { name: nomeUsuario },
-    { $push: { messages: { postedAt: data, content: mensagemEnviada } } },
-    { upsert: true },
-    { returnOriginal: false },
+  const newMessage = await db.collection('messages').updateOne(
+    { name: nome },
+    { $push: { messages: { postedAt: messageDate, content: message } } },
   );
-  return newMessage.value;
+  return newMessage;
 };
 
 module.exports = {

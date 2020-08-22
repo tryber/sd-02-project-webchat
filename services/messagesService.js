@@ -7,6 +7,7 @@ const getAllMessages = async () => {
 };
 
 const createName = async (name) => messagesModel.createName(name);
+
 const createMessage = async (messageInfo) => messagesModel.createMessage(messageInfo);
 
 module.exports = {

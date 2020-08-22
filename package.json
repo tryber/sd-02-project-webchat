@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --watchAll",
+    "test-coverage": "jest --coverage",
     "start": "node server.js",
     "debug": "nodemon server.js"
   },
@@ -20,8 +21,9 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "eslint": "^7.6.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.21.2",
-    "eslint": "^7.6.0"
+    "jest": "^26.4.1"
   }
 }

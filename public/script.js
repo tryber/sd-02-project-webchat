@@ -21,7 +21,7 @@ const salvaMensagem = async (messageInfo) => axios
 const enviarMensagem = () => {
   const mensagemEnviada = caixaDeTexto.value;
   if (mensagemEnviada.length > 0) {
-    salvaMensagem({ nomeUsuario, mensagemEnviada, data: new Date() });
+    salvaMensagem({ name: nomeUsuario, message: mensagemEnviada, messageDate: new Date() });
     socket.emit('mensagemChat', { nomeUsuario, mensagemEnviada });
     caixaDeTexto.value = '';
   }
