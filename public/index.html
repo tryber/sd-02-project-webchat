@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <script defer src="script.js"></script>
+  <title>Webchat - Project</title>
+</head>
+
+<body>
+  <div class="firstContainer">
+    <div class="chatContainer">
+      <div class="messagesBox">
+        <ul id="message">
+        </ul>
+      </div>
+      <div class="inputMessageContainer">
+        <form action="">
+          <div class="containerInput">
+            <input id="messageInput" autocomplete="off">
+          </div>
+          <div class="buttonContainer">
+            <button onclick="submitForm(event)">Send</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="usersContainers">
+      <aside class="asideContainer">
+        <div class=asideUserContainer>
+          Usuários:
+          <ul id="userOnline">
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</body>
+
+</html>
