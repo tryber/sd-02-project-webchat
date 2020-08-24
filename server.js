@@ -23,7 +23,7 @@ io.on('connection', (socket) => {
       message,
       date: date.toLocaleString(),
     });
-  }); 
+  });
 
   socket.on('disconnect', () => {
     console.log(`Client ${socket.id} desconectado`);

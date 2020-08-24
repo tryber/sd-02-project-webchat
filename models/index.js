@@ -8,7 +8,7 @@ const getSchema = async () =>
     useUnifiedTopology: true,
   })
     .then((conn) => conn.db(DB_NAME))
-    .catch((err) => {
+    .catch(() => {
       process.exit(1);
     });
 
@@ -36,4 +36,4 @@ const saveMessage = async (name, message) => {
 const getAllMessages = async () =>
   getSchema().then((db) => db.collection('chatUsers').find().toArray());
 
-module.exports = { saveUser, saveMessage, getAllMessages,getSchema };
+module.exports = { saveUser, saveMessage, getAllMessages, getSchema };
