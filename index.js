@@ -12,15 +12,18 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  socket.broadcast.emit('message', `User conectado ${socket.id}`);
-
-  socket.on('disconnect', () => {
-    socket.broadcast.emit('message', `User conectado ${socket.id}`);
+  socket.on('connection', ({ user }) => {
+    socket.id = user;
+    io.emit('message', `${user.charAt(0).toUpperCase() + user.slice(1)} acabou de se conectar`);
+    io.emit('userConnected', user);
   });
 
-  socket.on('message', (msg) => {
-    console.log(msg);
-    io.emit('message', msg);
+  socket.on('disconnect', () => {
+    socket.broadcast.emit('message', `Usuário ${socket.id} desconectou-se`);
+  });
+
+  socket.on('message', ({ user, message }) => {
+    io.emit('message', `${user}: ${message}`);
   });
 });
 

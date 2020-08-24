@@ -11,9 +11,9 @@ function createLi(msg) {
   return li;
 }
 
-function createLiUser() {
+function createLiUser(user) {
   const li = document.createElement('li');
-  li.innerHTML = userName;
+  li.innerHTML = user;
   return li;
 }
 
@@ -31,11 +31,12 @@ function receiveMessage() {
 
 function setUserName() {
   userName = prompt('Qual seu nome?');
+  socket.emit('connection', { user: userName });
 }
 
 function setUserNameLi() {
-  socket.on('userConnected', () => {
-    ulUsers.append(createLiUser());
+  socket.on('userConnected', (user) => {
+    ulUsers.append(createLiUser(user));
   });
 }
 
