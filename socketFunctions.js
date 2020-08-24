@@ -10,7 +10,6 @@ const historicoCallback = (socket, io) => (info) => {
 };
 
 const mensagemChatCallback = (io) => ({ nomeUsuario, mensagemEnviada }) => {
-  console.log('msg', nomeUsuario, mensagemEnviada);
   const horarioLocale = new Date().toLocaleString();
   const resposta = `${horarioLocale} - ${nomeUsuario}: ${mensagemEnviada}`;
   io.emit('mensagemChat', resposta);
