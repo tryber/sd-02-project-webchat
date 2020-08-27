@@ -6,10 +6,15 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', (socket) => {
-  console.log(
-    'Usuário conectado, igual ao que fizemos na aula anterior, porém dessa vez em um servidor escalável'
-  );
+io.on("connection", (socket) => {
+  console.log('Conectado');
+  socket.on('disconnect', () => {
+    io.emit('adeus', { mensagem: 'Poxa, fica mais, vai ter bolo :)' });
+  });
+
+  socket.on('mensagem', (msg) => {
+    io.emit('mensagemServer', msg);
+  });
 });
 
 http.listen(3000, () => {
