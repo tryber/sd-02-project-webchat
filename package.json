@@ -1,32 +1,18 @@
 {
-  "name": "projeto-sockeio",
+  "name": "socket-io-doc",
   "version": "1.0.0",
-  "main": "server.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
     "debug": "nodemon index.js"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
     "nodemon": "^2.0.4",
     "socket.io": "^2.3.0"
-  },
-  "devDependencies": {
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.21.2",
-    "eslint": "^7.6.0"
-  },
-  "description": "Você já usa o GitHub diariamente para desenvolver os exercícios, certo? Agora, para desenvolver os projetos, você deverá seguir as instruções a seguir. Fique atento a cada passo, e se tiver qualquer dúvida, nos envie por _Slack_! #vqv 🚀",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tryber/sd-02-project-webchat.git"
-  },
-  "keywords": [],
-  "bugs": {
-    "url": "https://github.com/tryber/sd-02-project-webchat/issues"
-  },
-  "homepage": "https://github.com/tryber/sd-02-project-webchat#readme"
+  }
 }

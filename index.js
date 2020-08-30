@@ -1,22 +1,24 @@
-const app = require('express')();
+const express = require("express")
+const app = express();
 const http = require('http').createServer(app);
+
 const io = require('socket.io')(http);
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+app.use(express.static("public"));
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
 });
 
-io.on("connection", (socket) => {
-  console.log('Conectado');
-  socket.on('disconnect', () => {
-    io.emit('adeus', { mensagem: 'Poxa, fica mais, vai ter bolo :)' });
-  });
-
-  socket.on('mensagem', (msg) => {
-    io.emit('mensagemServer', msg);
+io.on('connection', (socket) => {
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg);
   });
 });
 
 http.listen(3000, () => {
-  console.log('Servidor ouvindo na porta 3000');
+  console.log('listening on *:3000');
 });
