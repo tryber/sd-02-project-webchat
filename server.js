@@ -25,8 +25,8 @@ io.on('connection', async (socket) => {
   });
 });
 
-app.get('/messages', async (req, res) => {
-  const messages = await dbConnection()
+app.get('/messages', async (_req, res) => {
+  const allMessages = await dbConnection()
     .then((db) => db.collection('messages').find().toArray())
     .then((messages) => messages.map(({ nickname, content, sentAt }) => ({
       nickname,
@@ -34,7 +34,7 @@ app.get('/messages', async (req, res) => {
       sentAt,
     })));
 
-  res.status(200).json(messages);
+  res.status(200).json(allMessages);
 });
 
 app.post('/messages', async (req, res) => {
