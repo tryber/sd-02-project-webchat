@@ -53,7 +53,7 @@ app.post('/messages', async (req, res) => {
 
   res.status(200).json({ message: 'Notification emitted' });
 
-  io.emit('notification', { nickname, message });
+  io.emit('notification', {});
 });
 
 app.listen(3000);

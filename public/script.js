@@ -1,28 +1,27 @@
 const socket = io('http://localhost:4555');
 
 const getMessages = async () => {
-  const messages = document.getElementById('messages');
+  const messagesElement = document.getElementById('messages');
 
-  const data = await fetch('http://localhost:3000/messages')
-    .then((response) => response.json());
+  const messages = await fetch('http://localhost:3000/messages')
+    .then((response) => response.json())
+    .then((data) => data.map((msg) => ({
+      ...msg,
+      sentAt: new Date(msg.sentAt),
+    })))
+    .then((messages) => messages.sort((a, b) => a.sentAt - b.sentAt));
 
-  messages.innerHTML = '';
+  messagesElement.innerHTML = '';
 
-  data.forEach(({ nickname, content, sentAt }) => {
-    const child = document.createElement('div');
-    child.innerHTML = `${nickname} disse: ${content} - ${(new Date(sentAt)).toLocaleString()}`;
-    messages.appendChild(child);
+  messages.forEach(({ nickname, content, sentAt }) => {
+    const msgChild = document.createElement('div');
+    msgChild.innerHTML = `${sentAt.toLocaleString()} - ${nickname} disse: ${content}`;
+    messagesElement.appendChild(msgChild);
   });
 };
 
 socket.on('notification', async () => {
   await getMessages();
-
-  // alert('Nova mensagem!');
-
-  const notification = document.getElementById('notification');
-  notification.innerHTML = 'Nova mensagem!';
-  setTimeout(() => notification.innerHTML = '', 5000);
 });
 
 const enableMessageSending = () => {
