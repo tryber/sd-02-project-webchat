@@ -15,8 +15,11 @@ const getMessages = async () => {
   });
 };
 
-socket.on('notification', async ({ nickname, message }) => {
+socket.on('notification', async () => {
   await getMessages();
+
+  // alert('Nova mensagem!');
+
   const notification = document.getElementById('notification');
   notification.innerHTML = 'Nova mensagem!';
   setTimeout(() => notification.innerHTML = '', 5000);
@@ -31,6 +34,9 @@ const enableMessageSending = () => {
     const nickname = nicknameInput.value;
     const message = messageInput.value;
 
+    if (!nickname || !message) return;
+
+    nicknameInput.disabled = true;
     messageInput.value = '';
 
     await fetch('http://localhost:3000/messages', {

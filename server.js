@@ -1,8 +1,9 @@
 // código baseado na aula ao vivo
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const { join } = require('path');
 
 const dbConnection = require('./dbConnection');
 
@@ -12,8 +13,9 @@ const io = require('socket.io')(socketIoServer);
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/', express.static(join(__dirname, 'public')));
 
 io.on('connection', async (socket) => {
   console.log(`Client ${socket.id} conectado!`);
