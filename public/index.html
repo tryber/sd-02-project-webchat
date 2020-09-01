@@ -4,12 +4,16 @@
     <title>Socket.IO chat</title>
   </head>
   <body>
+    <form id="top-form" action="">
+      <input id="nick-field" autocomplete="off" /><button id="send-nick-button">Type your nick here</button>
+    </form>
     <ul id="messages-area"></ul>
-    <form action="">
-      <input id="message-field" autocomplete="off" /><button id="send-message-button">Send</button>
+    <form action="" id="bottom-form">
+      <input id="message-field" autocomplete="off" /><button id="send-message-button" disabled=true>Send</button>
     </form>
   </body>
   <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
   <script defer src="script.js"></script>
 </html>
