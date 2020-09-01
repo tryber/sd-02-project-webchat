@@ -1,21 +1,10 @@
 const socket = io('http://localhost:4555');
 
-const formatDate = (date) => {
-  const addingZero = (UTFdate) => (UTFdate < 10 ? `0${UTFdate}` : UTFdate);
-  const day = addingZero(date.getDate());
-  const month = addingZero(date.getMonth() + 1);
-  const year = addingZero(date.getFullYear());
-  const hour = addingZero(date.getHours());
-  const minutes = addingZero(date.getMinutes());
-  const seconds = addingZero(date.getSeconds());
-  return `${hour}:${minutes}:${seconds} - ${day}/${month}/${year}`;
-};
-
 window.onload = async () => {
   const { messages } = await fetch('http://localhost:3000/messages').then((data) => data.json());
   messages.forEach((el) => {
     const message = document.createElement('li');
-    message.innerHTML = `${el.user}: ${el.message} (${formatDate(new Date(el.timestamp))})`;
+    message.innerHTML = `${el.user}: ${el.message} (${new Date(el.timestamp).toLocaleString('pt-br')})`;
     document.getElementById('messages-list').appendChild(message);
   });
 };
@@ -47,7 +36,7 @@ messageSubmit.addEventListener('click', () => {
 
 socket.on('newMessage', ({ user, message, timestamp }) => {
   const newMessage = document.createElement('li');
-  newMessage.innerHTML = `${user}: ${message} (${formatDate(new Date(timestamp))})`;
+  newMessage.innerHTML = `${user}: ${message} (${new Date(timestamp).toLocaleString('pt-br')})`;
   document.getElementById('messages-list').appendChild(newMessage);
   document.getElementById('message-input').value = '';
 });
