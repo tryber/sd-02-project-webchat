@@ -28,7 +28,7 @@ io.on('connection', (socket) => {
   socket.on('newMessage', async ({ user, message }) =>
     axios
       .post('http://localhost:3000/message', { user, message })
-      .then(({ data }) => io.emit('newMessage', { user: data.user, message: data.message }))
+      .then(({ data }) => io.emit('newMessage', { user: data.user, message: data.message, timestamp: data.timestamp }))
       .catch((error) => io.emit('error', { error })));
 
   socket.on('user', async ({ user }) =>

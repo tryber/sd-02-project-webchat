@@ -45,9 +45,9 @@ messageSubmit.addEventListener('click', () => {
   }
 });
 
-socket.on('newMessage', ({ user, message }) => {
+socket.on('newMessage', ({ user, message, timestamp }) => {
   const newMessage = document.createElement('li');
-  newMessage.innerHTML = `${user}: ${message} (${formatDate(new Date())})`;
+  newMessage.innerHTML = `${user}: ${message} (${formatDate(new Date(timestamp))})`;
   document.getElementById('messages-list').appendChild(newMessage);
   document.getElementById('message-input').value = '';
 });

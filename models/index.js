@@ -20,9 +20,10 @@ const recordUser = async ({ user }) => {
 
 const recordMessage = async ({ user, message }) => {
   const db = await connection();
-  return db
+  const newMessage = await db
     .collection('messages')
     .insertOne({ user, message, timestamp: Date.now() });
+  return newMessage.ops[0];
 };
 
 module.exports = {
