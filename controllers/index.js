@@ -18,7 +18,6 @@ const recordMessage = async (req, res) => {
       message: messageRecorded,
       timestamp,
     } = await models.recordMessage({ user, message });
-    console.log(userRecorded, messageRecorded, timestamp)
     res.status(200).json({ user: userRecorded, message: messageRecorded, timestamp });
   } catch (error) {
     res.status(500).json({ error });
