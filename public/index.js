@@ -1,8 +1,7 @@
 const socket = io('http://localhost:4555');
 
-const formatDate = () => {
-  const addingZero = (date) => (date < 10 ? `0${date}` : date);
-  const date = new Date();
+const formatDate = (date) => {
+  const addingZero = (UTFdate) => (UTFdate < 10 ? `0${UTFdate}` : UTFdate);
   const day = addingZero(date.getDate());
   const month = addingZero(date.getMonth() + 1);
   const year = addingZero(date.getFullYear());
@@ -48,7 +47,7 @@ messageSubmit.addEventListener('click', () => {
 
 socket.on('newMessage', ({ user, message }) => {
   const newMessage = document.createElement('li');
-  newMessage.innerHTML = `${user}: ${message} (${formatDate()})`;
+  newMessage.innerHTML = `${user}: ${message} (${formatDate(new Date())})`;
   document.getElementById('messages-list').appendChild(newMessage);
   document.getElementById('message-input').value = '';
 });
