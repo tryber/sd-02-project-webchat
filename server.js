@@ -19,8 +19,9 @@ io.on('connection', (socket) => {
     await axios.post('http://localhost:3000/name', { userName: name });
   });
 
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
+  socket.on('chat message', async (msg, nick) => {
+    await axios.post('http://localhost:3000/message', { userName: nick, message: msg });
+    io.emit('chat message', msg, nick);
   });
 
   socket.on('disconnect', () => {
@@ -28,13 +29,11 @@ io.on('connection', (socket) => {
   });
 });
 
-// app.get('/message', messagesControllers.getMessages);
-// app.post('/message', messagesControllers.sendMessage);
-app.use('/name', messagesController.sendName);
+app.get('/message', messagesController.getLog);
+
+app.post('/name', messagesController.sendName);
+app.post('/message', messagesController.newMessage);
 
 http.listen(3000, () => {
   console.log('listening on *:3000');
 });
-
-// socketIoServer.listen(4555);
-// console.log('Socket.io ouvindo na porta 4555');
