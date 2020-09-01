@@ -29,7 +29,7 @@ sendMessagebutton.addEventListener('click', (e) => {
   return false;
 });
 
-socket.on('chat message', (msg, nick) => appendMessage(msg, nick));
+socket.on('chat message', ({msg, nick, date}) => appendMessage((`(${date}) ${nick}: ${msg}`)));
 
 window.onload = async () => {
   const logFetch = await fetch('http://localhost:3000/message').then((log) => log.json());

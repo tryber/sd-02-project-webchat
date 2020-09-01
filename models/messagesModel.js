@@ -11,14 +11,15 @@ const createUser = async ({ userName }) =>
     .then(({ insertedId }) => ({ id: insertedId, userName }));
 
 const newMessage = async ({ userName, message }) => {
-  connection()
+  const date = new Date();
+  return connection()
     .then((db) => db.collection('messages').updateOne(
       { userName },
       {
-        $push: { log: { text: message, date: Date.now() } },
+        $push: { log: { text: message, date } },
       },
     ))
-    .then(({ insertedId }) => ({ id: insertedId, userName, message }));
+    .then(({ insertedId }) => ({ id: insertedId, userName, message, date }));
 };
 
 const getLog = async () =>

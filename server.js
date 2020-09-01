@@ -20,8 +20,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('chat message', async (msg, nick) => {
-    await axios.post('http://localhost:3000/message', { userName: nick, message: msg });
-    io.emit('chat message', msg, nick);
+    const { data } = await axios.post('http://localhost:3000/message', { userName: nick, message: msg });
+    io.emit('chat message', { msg, nick, date: data.date });
   });
 
   socket.on('disconnect', () => {

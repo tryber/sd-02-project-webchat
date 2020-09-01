@@ -4,13 +4,13 @@ const messagesService = require('../services/messagesService');
 
 const sendName = rescue(async (req, res) => {
   const { userName } = req.body;
-  const newUserName = messagesService.createUser({ userName });
+  const newUserName = await messagesService.createUser({ userName });
   return res.status(200).json(newUserName);
 });
 
 const newMessage = rescue(async (req, res) => {
   const { userName, message } = req.body;
-  const newMessageService = messagesService.newMessage({ userName, message });
+  const newMessageService = await messagesService.newMessage({ userName, message });
   return res.status(201).json(newMessageService);
 });
 
