@@ -21,6 +21,7 @@ body {
   justify-content: start;
   height: 66vh;
   margin: 0 1vh 1vh 0;
+  overflow: auto;
   width: 50vw;
 }
 
@@ -64,4 +65,30 @@ button {
 
 li {
   list-style-type: none;
+}
+
+.msgContainer {
+  background-color: gray;
+  border: 1px red solid;
+  border-radius: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  margin: 2px;
+  padding: 0.5em;
+  width: 30vw;
+}
+
+.userName {
+  color: white;
+  font-weight: bold;
+}
+
+.msgSpan {
+  font-size: 1.2em;
+}
+
+.date {
+  color: azure;
+  display: flex;
+  justify-content: flex-end;
 }
