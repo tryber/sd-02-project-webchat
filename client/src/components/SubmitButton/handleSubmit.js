@@ -19,7 +19,7 @@ async function handleSubmit({ body, event, history, setMessage, setUser, type })
 
   setUser(user);
 
-  history.push('/bolichat');
+  history.push('/home');
 }
 
 export default handleSubmit;

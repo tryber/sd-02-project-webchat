@@ -26,7 +26,7 @@ function Login() {
   const body = { nickname: nickname.value, password: password.value };
 
   return (
-    <section className="boxHome">
+    <section className="boxLogin">
       <header>
         <h1>Welcome to Bolichat!</h1>
       </header>

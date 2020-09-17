@@ -1,41 +1,42 @@
-.boxLogin {
+.boxChat {
   align-content: center;
+
   align-items: center;
   display: flex;
   flex-flow: column wrap;
-  height: 80%;
+  justify-content: space-between;
+  height: 85%;
   margin: 1% 0%;
-  padding: 0.5%;
-  width: 60%;
+  padding: 1%;
+  width: 90%;
 }
 
-.boxLogin h1 {
-  font-size: 70%;
-  text-align: start;
-  margin: 0% 0% 0% 5%;
+.boxChat div {
+  border-radius: 50px;
+  border: 10px double #027a9f;
+  padding: 1% 0.5%;
+  height: 85%;
+  width: 90%;
 }
 
-.boxLogin header {
-  background-color: #c71f37;
-  border-radius: 30px 20px 100px 20px;
-  height: auto;
-  width: 70%;
-}
-
-.boxLogin form {
+.boxChat form {
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
   justify-content: space-around;
   align-content: center;
   align-items: center;
-  height: 60%;
+  height: 8%;
   margin-top: 3%;
   width: 70%;
 }
 
-.buttonRouter {
-  height: 8%;
-  width: 40%;
+.boxChat input {
+  height: 100%;
+  width: 70%;
+}
+
+.boxChat button {
+  width: 20%;
 }
 
 @media screen and (max-width: 800px) {

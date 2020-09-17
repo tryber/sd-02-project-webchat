@@ -17,7 +17,6 @@ const SubmitButton = ({ body, isDisabled, label, testId, type }) => {
 
   return (
     <Button
-      className="submitButton"
       data-testid={testId}
       disabled={isDisabled}
       onClick={async (event) =>
