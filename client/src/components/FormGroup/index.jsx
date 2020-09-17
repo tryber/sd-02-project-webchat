@@ -4,8 +4,10 @@ import Form from 'react-bootstrap/Form';
 
 import handleField from './handleField';
 
+import './formGroup.css';
+
 const FormGroup = ({ callback, defaultValue, field, state, testId }) => (
-  <Form.Group className="box80 flexColumnCenter H20 ref spaceThin">
+  <Form.Group className="boxField">
     <Form.Control
       data-testid={testId}
       defaultValue={defaultValue}

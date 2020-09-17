@@ -5,10 +5,10 @@ import Joi from '@hapi/joi';
 ReactJoiValidations.setJoi(Joi);
 
 const nickname = Joi.string()
-  .regex(/\S+@\S+\.\S+/)
+  .regex(/^[a-zA-Z0-9_][a-zA-Z0-9_.]*/)
   .messages({
-    'string.pattern.base': 'Email must be in a format <name>@<domain>',
-    'string.empty': 'Email is not allowed to be empty',
+    'string.pattern.base': 'Nickname in a wrong format',
+    'string.empty': 'Nickname is not allowed to be empty',
   });
 
 const password = Joi.string()

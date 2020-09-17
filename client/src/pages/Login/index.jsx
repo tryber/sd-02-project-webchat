@@ -1,23 +1,29 @@
 import React, { useState, useContext } from 'react';
+
 import { useHistory } from 'react-router-dom';
+
 import { Context } from '../../context';
-import Button from 'react-bootstrap/Button';
+
 import Form from 'react-bootstrap/Form';
+
+import Button from 'react-bootstrap/Button';
+
 import { FormGroup, Message, SubmitButton } from '../../components';
+
 import './login.css';
 
 function Login() {
-  const { message, setMessage, setUser } = useContext(Context);
+  const history = useHistory();
 
-  const [email, setEmail] = useState({ value: null, error: null });
+  const { message } = useContext(Context);
+
+  const [nickname, setNickname] = useState({ value: null, error: null });
 
   const [password, setPassword] = useState({ value: null, error: null });
 
-  const history = useHistory();
+  const isDisabled = !nickname.value || !password.value || nickname.error || password.error;
 
-  const isDisabled = !email.value || !password.value || email.error || password.error;
-
-  const body = { email: email.value, password: password.value };
+  const body = { nickname: nickname.value, password: password.value };
 
   return (
     <section className="boxHome">
@@ -25,35 +31,36 @@ function Login() {
         <h1>Welcome to Bolichat!</h1>
       </header>
 
-      {/* {message.value && <Message />}
-      <Form className="box50 boxColorYellow flexColumnCenter H80 spaceThin">
-        <FormGroup callback={setEmail} field="email" state={email} testId="emailLoginInput" />
+      {message.value && <Message />}
+
+      <Form>
+        <FormGroup
+          callback={setNickname}
+          field="nickname"
+          state={nickname}
+          testId="nickname-login-input"
+        />
         <FormGroup
           callback={setPassword}
           field="password"
           state={password}
-          testId="passwordLoginInput"
+          testId="password-login-input"
         />
-        <section className="box60 flexRowAround spaceLarge">
-          <SubmitButton
-            body={body}
-            className="box50 spaceThin"
-            isDisabled={isDisabled}
-            label="Login"
-            testId="loginButton"
-            type="LOGIN"
-          />
-          <Button
-            className="box30 spaceThin"
-            data-testid="registerRouterButton"
-            onClick={() => history.push('/register')}
-            type="button"
-            variant="outline-info"
-          >
-            Register
-          </Button>
-        </section>
-      </Form> */}
+        <SubmitButton
+          body={body}
+          isDisabled={isDisabled}
+          label="Login"
+          testId="loginButton"
+          type="LOGIN"
+        />
+      </Form>
+      <Button
+        className="buttonRouter"
+        variant="outline-danger"
+        onClick={() => history.push('/register')}
+      >
+        Register
+      </Button>
     </section>
   );
 }

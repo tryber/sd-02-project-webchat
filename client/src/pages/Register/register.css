@@ -1,4 +1,4 @@
-.boxHome {
+.boxRegister {
   align-content: center;
   align-items: center;
   display: flex;
@@ -9,20 +9,20 @@
   width: 60%;
 }
 
-.boxHome h1 {
+.boxRegister h1 {
   font-size: 70%;
   text-align: start;
   margin: 0% 0% 0% 5%;
 }
 
-.boxHome header {
+.boxRegister header {
   background-color: #c71f37;
   border-radius: 30px 20px 100px 20px;
   height: auto;
   width: 70%;
 }
 
-.boxHome form {
+.boxRegister form {
   display: flex;
   flex-flow: column wrap;
   justify-content: space-around;
@@ -33,21 +33,20 @@
   width: 70%;
 }
 
-.buttonRouter {
-  height: 8%;
-  width: 40%;
-}
-
 @media screen and (max-width: 800px) {
-  .boxHome {
+  .boxRegister {
     width: 70%;
   }
 }
 
 @media screen and (max-width: 500px) {
-  .boxHome {
+  .boxRegister {
     height: 100%;
     margin: 0%;
     width: 100%;
+  }
+
+  .boxRegister form {
+    height: 40%;
   }
 }
