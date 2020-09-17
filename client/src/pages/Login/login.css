@@ -1,0 +1,38 @@
+.boxHome {
+  background-color: black;
+  align-content: center;
+  align-items: center;
+  display: flex;
+  flex-flow: column wrap;
+  height: 80%;
+  margin: 1% 0%;
+  padding: 0.5%;
+  width: 60%;
+}
+
+.boxHome > header {
+  background-color: #ffaa01;
+  border-radius: 30px 20px 100px 20px;
+  height: auto;
+  width: 70%;
+}
+
+.boxHome h1 {
+  font-size: 70%;
+  text-align: start;
+  margin: 0% 0% 0% 5%;
+}
+
+@media screen and (max-width: 800px) {
+  .boxHome {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .boxHome {
+    height: 100%;
+    margin: 0%;
+    width: 100%;
+  }
+}
