@@ -9,27 +9,25 @@ class UserRepository {
   }
 
   async create() {
-    return new this.Users(getFields(this.data));
-  }
-
-  async find() {
-    return this.Users.findByPk(this.data.id);
+    return this.Users.create(getFields(this.data));
   }
 
   async findBy(field) {
-    return this.Users.findAll({ where: { [field]: this.data[field] } });
+    return this.Users.find({ [field]: this.data[field] });
   }
 
   async list() {
-    return this.Users.findAll();
+    return this.Users.find({});
   }
 
-  async remove() {
-    return this.Users.destroy({ where: { id: this.data.id } });
+  async removeBy(field) {
+    return this.Users.deleteOne({ [field]: this.data[field] });
   }
 
-  async update() {
-    return this.Users.update(getFields(this.data), { where: { id: this.data.id } });
+  async updateBy(field) {
+    return this.Users.findOneAndUpdate({ [field]: this.data[field] }, getFields(this.data), {
+      new: true,
+    });
   }
 }
 

@@ -1,4 +1,8 @@
-const { bcrypt, jsonWebToken } = require('../../utils');
+const {
+  bcrypt,
+  jsonWebToken,
+  service: { removePassword },
+} = require('../../utils');
 
 async function create({ data, Model }) {
   const hash = await bcrypt.createHash(data.password);
@@ -9,10 +13,10 @@ async function create({ data, Model }) {
 
   if (userExists.length !== 0) return { data: null, token: null, error: 'exists' };
 
-  const {
-    dataValues: { password, ...userWithoutPassword },
-  } = await userModel.create();
+  const { password, ...userWithoutPassword } = await userModel.create();
 
+  // const { password, ...userWithoutPassword } = user.toObject();
+  console.log(userWithoutPassword);
   const token = jsonWebToken.signToken(userWithoutPassword);
 
   return { data: userWithoutPassword, token, error: null };

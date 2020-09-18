@@ -8,7 +8,7 @@ const path = require('path');
 
 const middlewares = require('./middlewares');
 
-const { userRouter } = require('./app');
+const { userRouter } = require('./apps');
 
 const { User } = require('./env');
 
