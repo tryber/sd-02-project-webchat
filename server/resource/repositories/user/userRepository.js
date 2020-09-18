@@ -12,6 +12,10 @@ class UserRepository {
     return this.Users.create(getFields(this.data));
   }
 
+  async find() {
+    return this.Users.find({ _id: this.data.id });
+  }
+
   async findBy(field) {
     return this.Users.find({ [field]: this.data[field] });
   }
@@ -20,12 +24,12 @@ class UserRepository {
     return this.Users.find({});
   }
 
-  async removeBy(field) {
-    return this.Users.deleteOne({ [field]: this.data[field] });
+  async remove() {
+    return this.Users.deleteOne({ _id: this.data.id });
   }
 
-  async updateBy(field) {
-    return this.Users.findOneAndUpdate({ [field]: this.data[field] }, getFields(this.data), {
+  async update() {
+    return this.Users.findOneAndUpdate({ _id: this.data.id }, getFields(this.data), {
       new: true,
     });
   }

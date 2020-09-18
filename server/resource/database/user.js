@@ -10,6 +10,4 @@ const userSchema = new mongoose.Schema(
   { versionKey: false },
 );
 
-userSchema.set('toObject');
-
 module.exports = mongoose.model('user', userSchema);

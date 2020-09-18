@@ -6,6 +6,12 @@ const handleError = {
   exists: () => {
     throw Boom.badRequest('Usuário já existe');
   },
+  existsEmail: () => {
+    throw Boom.badRequest('Já existe um usuário com este email');
+  },
+  existsNickname: () => {
+    throw Boom.badRequest('Já existe um usuário com este nickname');
+  },
   notFound: () => {
     throw Boom.badRequest('Usuário não encontrado');
   },

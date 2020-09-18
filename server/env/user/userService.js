@@ -9,14 +9,18 @@ async function create({ data, Model }) {
 
   const userModel = new Model({ ...data, password: hash });
 
-  const userExists = await userModel.findBy('email');
+  const existEmail = await userModel.findBy('email');
 
-  if (userExists.length !== 0) return { data: null, token: null, error: 'exists' };
+  if (existEmail.length !== 0) return { data: null, token: null, error: 'existsEmail' };
 
-  const { password, ...userWithoutPassword } = await userModel.create();
+  const existNickname = await userModel.findBy('nickname');
 
-  // const { password, ...userWithoutPassword } = user.toObject();
-  console.log(userWithoutPassword);
+  if (existNickname.length !== 0) return { data: null, token: null, error: 'existsNickname' };
+
+  const user = await userModel.create();
+
+  const { password, ...userWithoutPassword } = user.toObject();
+
   const token = jsonWebToken.signToken(userWithoutPassword);
 
   return { data: userWithoutPassword, token, error: null };
@@ -26,12 +30,10 @@ async function find({ id, Model }) {
   const userModel = new Model({ id });
 
   const user = await userModel.find();
-
+  console.log(user);
   if (!user) return { data: null, error: 'notFound' };
 
-  const {
-    dataValues: { password, ...userWithoutPassword },
-  } = user;
+  const { password, ...userWithoutPassword } = user[0].toObject();
 
   return { data: userWithoutPassword, error: null };
 }
@@ -41,7 +43,10 @@ async function list({ Model }) {
 
   const users = await userModel.list();
 
-  return users.map(({ dataValues: { password, ...userWithoutPassword } }) => userWithoutPassword);
+  return users.map((eachUser) => {
+    const { password, ...userWithoutPassword } = eachUser.toObject();
+    return userWithoutPassword;
+  });
 }
 
 async function login({ email, password, Model }) {
@@ -51,9 +56,7 @@ async function login({ email, password, Model }) {
 
   if (user.length === 0) return { data: null, token: null, error: 'notFound' };
 
-  const {
-    dataValues: { password: userPassword, ...userWithoutPassword },
-  } = user[0];
+  const { password: userPassword, ...userWithoutPassword } = user[0].toObject();
 
   const isCorrectPassword = await bcrypt.checkString({
     string: password,
@@ -82,11 +85,9 @@ async function update({ data, id, Model }) {
 
   if (!userExists) return { data: null, error: 'notFound' };
 
-  await userModel.update();
+  const user = await userModel.update();
 
-  const {
-    dataValues: { password, ...userWithoutPassword },
-  } = await userModel.find();
+  const { password, ...userWithoutPassword } = user.toObject();
 
   return { data: userWithoutPassword, error: null };
 }
