@@ -12,4 +12,5 @@ module.exports = {
     '!**/resource/index.js**',
     '!**/resource/repositories/index.js**',
   ],
+  testEnvironment: 'node',
 };

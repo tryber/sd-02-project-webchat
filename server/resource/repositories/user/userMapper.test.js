@@ -2,7 +2,7 @@ const userMapper = require('./userMapper');
 
 const userRepository = require('./userRepository');
 
-const models = require('../../database/models');
+const models = require('../../database');
 
 jest.mock('./userRepository');
 
