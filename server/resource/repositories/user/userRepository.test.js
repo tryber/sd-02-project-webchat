@@ -5,19 +5,16 @@ const faker = require('faker');
 describe('User Repository', () => {
   it('Create User', async () => {
     const mockDataUserSent = {
-      id: faker.random.number(),
       email: faker.internet.email(),
-      displayName: faker.name.findName(),
+      nickname: faker.name.findName(),
       password: faker.random.hexaDecimal(),
     };
 
     const mockDataUserReceived = {
-      dataValues: {
-        id: faker.random.number(),
-        email: mockDataUserSent.email,
-        displayName: mockDataUserSent.displayName,
-        password: mockDataUserSent.password,
-      },
+      id: faker.random.number(),
+      email: mockDataUserSent.email,
+      nickname: mockDataUserSent.nickname,
+      password: mockDataUserSent.password,
     };
 
     const mockCreate = jest.fn().mockResolvedValue(mockDataUserReceived);
@@ -34,6 +31,8 @@ describe('User Repository', () => {
 
     expect(mockCreate).toHaveBeenCalledTimes(1);
 
+    expect(mockCreate).toHaveBeenCalledWith(mockDataUserSent);
+
     expect(data).toStrictEqual(mockDataUserReceived);
   });
 
@@ -43,19 +42,17 @@ describe('User Repository', () => {
     };
 
     const mockDataUserReceived = {
-      dataValues: {
-        id: faker.random.number(),
-        email: mockDataUserSent.email,
-        displayName: mockDataUserSent.displayName,
-        password: mockDataUserSent.password,
-      },
+      id: mockDataUserSent.id,
+      email: faker.internet.email(),
+      nickname: faker.name.findName(),
+      password: faker.random.hexaDecimal(),
     };
 
-    const mockFindByPk = jest.fn().mockResolvedValue(mockDataUserReceived);
+    const mockFind = jest.fn().mockResolvedValue(mockDataUserReceived);
 
     const mockModels = {
       Users: {
-        findByPk: mockFindByPk,
+        find: mockFind,
       },
     };
 
@@ -63,9 +60,9 @@ describe('User Repository', () => {
 
     const data = await repository.find();
 
-    expect(mockFindByPk).toHaveBeenCalledTimes(1);
+    expect(mockFind).toHaveBeenCalledTimes(1);
 
-    expect(mockFindByPk).toHaveBeenCalledWith(mockDataUserSent.id);
+    expect(mockFind).toHaveBeenCalledWith({ _id: mockDataUserSent.id });
 
     expect(data).toStrictEqual(mockDataUserReceived);
   });
@@ -73,22 +70,21 @@ describe('User Repository', () => {
   it('Find User By Email', async () => {
     const mockDataUserSent = {
       id: faker.random.number(),
+      email: faker.internet.email(),
     };
 
     const mockDataUserReceived = {
-      dataValues: {
-        id: faker.random.number(),
-        email: mockDataUserSent.email,
-        displayName: mockDataUserSent.displayName,
-        password: mockDataUserSent.password,
-      },
+      id: mockDataUserSent.id,
+      email: mockDataUserSent.email,
+      nickname: faker.name.findName(),
+      password: faker.random.hexaDecimal(),
     };
 
-    const mockFindAll = jest.fn().mockResolvedValue(mockDataUserReceived);
+    const mockFind = jest.fn().mockResolvedValue(mockDataUserReceived);
 
     const mockModels = {
       Users: {
-        findAll: mockFindAll,
+        find: mockFind,
       },
     };
 
@@ -96,29 +92,28 @@ describe('User Repository', () => {
 
     const data = await repository.findBy('email');
 
-    expect(mockFindAll).toHaveBeenCalledTimes(1);
+    expect(mockFind).toHaveBeenCalledTimes(1);
+
+    expect(mockFind).toHaveBeenCalledWith({ email: mockDataUserSent.email });
 
     expect(data).toStrictEqual(mockDataUserReceived);
   });
 
   it('List User', async () => {
     const createUser = () => ({
-      dataValues: {
-        id: faker.random.number(),
-        email: faker.internet.email(),
-        displayName: faker.name.findName(),
-        image: faker.internet.url(),
-        password: faker.internet.password(),
-      },
+      id: faker.random.number(),
+      email: faker.internet.email(),
+      nickname: faker.name.findName(),
+      password: faker.internet.password(),
     });
 
     const mockDataUsersReceived = new Array(10).fill(undefined).map(createUser);
 
-    const mockFindAll = jest.fn().mockResolvedValue(mockDataUsersReceived);
+    const mockFind = jest.fn().mockResolvedValue(mockDataUsersReceived);
 
     const mockModels = {
       Users: {
-        findAll: mockFindAll,
+        find: mockFind,
       },
     };
 
@@ -126,7 +121,7 @@ describe('User Repository', () => {
 
     const data = await repository.list();
 
-    expect(mockFindAll).toHaveBeenCalledTimes(1);
+    expect(mockFind).toHaveBeenCalledTimes(1);
 
     expect(data).toStrictEqual(mockDataUsersReceived);
   });
@@ -136,11 +131,11 @@ describe('User Repository', () => {
       id: faker.random.number(),
     };
 
-    const mockDestroy = jest.fn();
+    const mockDeleteOne = jest.fn();
 
     const mockModels = {
       Users: {
-        destroy: mockDestroy,
+        deleteOne: mockDeleteOne,
       },
     };
 
@@ -148,26 +143,48 @@ describe('User Repository', () => {
 
     await repository.remove();
 
-    expect(mockDestroy).toHaveBeenCalledTimes(1);
+    expect(mockDeleteOne).toHaveBeenCalledTimes(1);
+
+    expect(mockDeleteOne).toHaveBeenCalledWith({ _id: mockDataUserSent.id });
   });
 
   it('Update User', async () => {
     const mockDataUserSent = {
       id: faker.random.number(),
+      nickname: faker.name.findName(),
     };
 
-    const mockUpdate = jest.fn();
+    const mockDataUserUpdate = {
+      nickname: mockDataUserSent.nickname,
+    };
+
+    const mockDataUserReceived = {
+      id: mockDataUserSent.id,
+      email: mockDataUserSent.email,
+      nickname: mockDataUserSent.nickname,
+      password: faker.random.hexaDecimal(),
+    };
+
+    const mockFindOneAndUpdate = jest.fn().mockResolvedValue(mockDataUserReceived);
 
     const mockModels = {
       Users: {
-        update: mockUpdate,
+        findOneAndUpdate: mockFindOneAndUpdate,
       },
     };
 
     const repository = new userRepository({ models: mockModels, data: mockDataUserSent });
 
-    await repository.update();
+    const data = await repository.update();
 
-    expect(mockUpdate).toHaveBeenCalledTimes(1);
+    expect(mockFindOneAndUpdate).toHaveBeenCalledTimes(1);
+
+    expect(mockFindOneAndUpdate).toHaveBeenCalledWith(
+      { _id: mockDataUserSent.id },
+      mockDataUserUpdate,
+      { new: true },
+    );
+
+    expect(data).toStrictEqual(mockDataUserReceived);
   });
 });
