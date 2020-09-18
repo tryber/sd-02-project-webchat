@@ -16,12 +16,8 @@ class ChatRepository {
     return this.Chats.find({ _id: this.data.id });
   }
 
-  async findBy(field) {
-    return this.Chats.find({ [field]: this.data[field] });
-  }
-
-  async list() {
-    return this.Chats.find({});
+  async listBy(field) {
+    return this.Chats.find({ [field]: this.data[field] }).sort({ createdAt: 'asc' });
   }
 
   async remove() {
