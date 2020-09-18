@@ -1,5 +1,4 @@
 const errorMiddleware = require('./error');
-
 const faker = require('faker');
 
 describe('Error Middleware', () => {
