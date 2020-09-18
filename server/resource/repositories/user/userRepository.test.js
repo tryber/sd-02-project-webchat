@@ -1,4 +1,4 @@
-const userRepository = require('./userRepository');
+const UserRepository = require('./userRepository');
 
 const faker = require('faker');
 
@@ -25,7 +25,7 @@ describe('User Repository', () => {
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: mockDataUserSent });
+    const repository = new UserRepository({ models: mockModels, data: mockDataUserSent });
 
     const data = await repository.create();
 
@@ -56,7 +56,7 @@ describe('User Repository', () => {
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: mockDataUserSent });
+    const repository = new UserRepository({ models: mockModels, data: mockDataUserSent });
 
     const data = await repository.find();
 
@@ -88,7 +88,7 @@ describe('User Repository', () => {
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: mockDataUserSent });
+    const repository = new UserRepository({ models: mockModels, data: mockDataUserSent });
 
     const data = await repository.findBy('email');
 
@@ -117,7 +117,7 @@ describe('User Repository', () => {
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: null });
+    const repository = new UserRepository({ models: mockModels, data: null });
 
     const data = await repository.list();
 
@@ -139,7 +139,7 @@ describe('User Repository', () => {
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: mockDataUserSent });
+    const repository = new UserRepository({ models: mockModels, data: mockDataUserSent });
 
     await repository.remove();
 
@@ -173,7 +173,7 @@ describe('User Repository', () => {
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: mockDataUserSent });
+    const repository = new UserRepository({ models: mockModels, data: mockDataUserSent });
 
     const data = await repository.update();
 

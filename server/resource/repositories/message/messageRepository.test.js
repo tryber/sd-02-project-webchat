@@ -1,173 +1,204 @@
-const userRepository = require('./userRepository');
+const MessageRepository = require('./messageRepository');
 
 const faker = require('faker');
 
-describe('User Repository', () => {
-  it('Create User', async () => {
-    const mockDataUserSent = {
+describe('Message Repository', () => {
+  it('Create Message', async () => {
+    const mockDataMessageSent = {
+      createdAt: faker.date.recent(),
+      content: faker.lorem.words(),
+      userId: faker.random.number(),
+      chatId: faker.random.number(),
+    };
+
+    const mockDataMessageReceived = {
       id: faker.random.number(),
-      email: faker.internet.email(),
-      displayName: faker.name.findName(),
-      password: faker.random.hexaDecimal(),
+      createdAt: mockDataMessageSent.createdAt,
+      content: mockDataMessageSent.content,
+      userId: mockDataMessageSent.userId,
+      chatId: mockDataMessageSent.chatId,
     };
 
-    const mockDataUserReceived = {
-      dataValues: {
-        id: faker.random.number(),
-        email: mockDataUserSent.email,
-        displayName: mockDataUserSent.displayName,
-        password: mockDataUserSent.password,
-      },
-    };
-
-    const mockCreate = jest.fn().mockResolvedValue(mockDataUserReceived);
+    const mockCreate = jest.fn().mockResolvedValue(mockDataMessageReceived);
 
     const mockModels = {
-      Users: {
+      Messages: {
         create: mockCreate,
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: mockDataUserSent });
+    const repository = new MessageRepository({ models: mockModels, data: mockDataMessageSent });
 
     const data = await repository.create();
 
     expect(mockCreate).toHaveBeenCalledTimes(1);
 
-    expect(data).toStrictEqual(mockDataUserReceived);
+    expect(mockCreate).toHaveBeenCalledWith(mockDataMessageSent);
+
+    expect(data).toStrictEqual(mockDataMessageReceived);
   });
 
-  it('Find User', async () => {
-    const mockDataUserSent = {
+  it('Find Message', async () => {
+    const mockDataMessageSent = {
       id: faker.random.number(),
     };
 
-    const mockDataUserReceived = {
-      dataValues: {
-        id: faker.random.number(),
-        email: mockDataUserSent.email,
-        displayName: mockDataUserSent.displayName,
-        password: mockDataUserSent.password,
-      },
+    const mockDataMessageReceived = {
+      id: mockDataMessageSent.id,
+      createdAt: faker.date.recent(),
+      content: faker.lorem.words(),
+      userId: faker.random.number(),
+      chatId: faker.random.number(),
     };
 
-    const mockFindByPk = jest.fn().mockResolvedValue(mockDataUserReceived);
+    const mockFind = jest.fn().mockResolvedValue(mockDataMessageReceived);
 
     const mockModels = {
-      Users: {
-        findByPk: mockFindByPk,
+      Messages: {
+        find: mockFind,
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: mockDataUserSent });
+    const repository = new MessageRepository({ models: mockModels, data: mockDataMessageSent });
 
     const data = await repository.find();
 
-    expect(mockFindByPk).toHaveBeenCalledTimes(1);
+    expect(mockFind).toHaveBeenCalledTimes(1);
 
-    expect(mockFindByPk).toHaveBeenCalledWith(mockDataUserSent.id);
+    expect(mockFind).toHaveBeenCalledWith({ _id: mockDataMessageSent.id });
 
-    expect(data).toStrictEqual(mockDataUserReceived);
+    expect(data).toStrictEqual(mockDataMessageReceived);
   });
 
-  it('Find User By Email', async () => {
-    const mockDataUserSent = {
+  it('Find Message By UserId', async () => {
+    const mockDataMessageSent = {
       id: faker.random.number(),
+      userId: faker.random.number(),
     };
 
-    const mockDataUserReceived = {
-      dataValues: {
-        id: faker.random.number(),
-        email: mockDataUserSent.email,
-        displayName: mockDataUserSent.displayName,
-        password: mockDataUserSent.password,
-      },
+    const mockDataMessageReceived = {
+      id: mockDataMessageSent.id,
+      createdAt: faker.date.recent(),
+      content: faker.lorem.words(),
+      userId: mockDataMessageSent.userId,
+      chatId: faker.random.number(),
     };
 
-    const mockFindAll = jest.fn().mockResolvedValue(mockDataUserReceived);
+    const mockFind = jest.fn().mockResolvedValue(mockDataMessageReceived);
 
     const mockModels = {
-      Users: {
-        findAll: mockFindAll,
+      Messages: {
+        find: mockFind,
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: mockDataUserSent });
+    const repository = new MessageRepository({ models: mockModels, data: mockDataMessageSent });
 
     const data = await repository.findBy('email');
 
-    expect(mockFindAll).toHaveBeenCalledTimes(1);
+    expect(mockFind).toHaveBeenCalledTimes(1);
 
-    expect(data).toStrictEqual(mockDataUserReceived);
+    expect(mockFind).toHaveBeenCalledWith({ email: mockDataMessageSent.email });
+
+    expect(data).toStrictEqual(mockDataMessageReceived);
   });
 
-  it('List User', async () => {
-    const createUser = () => ({
-      dataValues: {
-        id: faker.random.number(),
-        email: faker.internet.email(),
-        displayName: faker.name.findName(),
-        image: faker.internet.url(),
-        password: faker.internet.password(),
-      },
+  it('List Message By ChatId', async () => {
+    const mockDataMessageSent = {
+      chatId: faker.random.number(),
+    };
+
+    const createMessage = () => ({
+      id: faker.random.number(),
+      createdAt: faker.date.recent(),
+      content: faker.lorem.words(),
+      userId: faker.random.number(),
+      chatId: mockDataMessageSent.chatId,
     });
 
-    const mockDataUsersReceived = new Array(10).fill(undefined).map(createUser);
+    const mockDataMessagesReceived = new Array(10).fill(undefined).map(createMessage);
 
-    const mockFindAll = jest.fn().mockResolvedValue(mockDataUsersReceived);
+    const mockSort = jest.fn().mockResolvedValue(mockDataMessagesReceived);
+
+    const mockFind = jest.fn().mockReturnValue({ sort: mockSort });
 
     const mockModels = {
-      Users: {
-        findAll: mockFindAll,
+      Messages: {
+        find: mockFind,
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: null });
+    const repository = new MessageRepository({ models: mockModels, data: mockDataMessageSent });
 
-    const data = await repository.list();
+    const data = await repository.listBy('chatId');
 
-    expect(mockFindAll).toHaveBeenCalledTimes(1);
+    expect(mockFind).toHaveBeenCalledTimes(1);
 
-    expect(data).toStrictEqual(mockDataUsersReceived);
+    expect(mockFind).toHaveBeenCalledWith({ chatId: mockDataMessageSent.chatId });
+
+    expect(data).toStrictEqual(mockDataMessagesReceived);
   });
 
-  it('Remove User', async () => {
-    const mockDataUserSent = {
+  it('Remove Message', async () => {
+    const mockDataMessageSent = {
       id: faker.random.number(),
     };
 
-    const mockDestroy = jest.fn();
+    const mockDeleteOne = jest.fn();
 
     const mockModels = {
-      Users: {
-        destroy: mockDestroy,
+      Messages: {
+        deleteOne: mockDeleteOne,
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: mockDataUserSent });
+    const repository = new MessageRepository({ models: mockModels, data: mockDataMessageSent });
 
     await repository.remove();
 
-    expect(mockDestroy).toHaveBeenCalledTimes(1);
+    expect(mockDeleteOne).toHaveBeenCalledTimes(1);
+
+    expect(mockDeleteOne).toHaveBeenCalledWith({ _id: mockDataMessageSent.id });
   });
 
-  it('Update User', async () => {
-    const mockDataUserSent = {
+  it('Update Message', async () => {
+    const mockDataMessageSent = {
       id: faker.random.number(),
+      content: faker.lorem.words(),
     };
 
-    const mockUpdate = jest.fn();
+    const mockDataMessageUpdate = {
+      content: mockDataMessageSent.content,
+    };
+
+    const mockDataMessageReceived = {
+      id: mockDataMessageSent.id,
+      content: mockDataMessageSent.content,
+      createdAt: faker.date.recent(),
+      userId: faker.random.number(),
+      chatId: faker.random.number(),
+    };
+
+    const mockFindOneAndUpdate = jest.fn().mockResolvedValue(mockDataMessageReceived);
 
     const mockModels = {
-      Users: {
-        update: mockUpdate,
+      Messages: {
+        findOneAndUpdate: mockFindOneAndUpdate,
       },
     };
 
-    const repository = new userRepository({ models: mockModels, data: mockDataUserSent });
+    const repository = new MessageRepository({ models: mockModels, data: mockDataMessageSent });
 
-    await repository.update();
+    const data = await repository.update();
 
-    expect(mockUpdate).toHaveBeenCalledTimes(1);
+    expect(mockFindOneAndUpdate).toHaveBeenCalledTimes(1);
+
+    expect(mockFindOneAndUpdate).toHaveBeenCalledWith(
+      { _id: mockDataMessageSent.id },
+      mockDataMessageUpdate,
+      { new: true },
+    );
+
+    expect(data).toStrictEqual(mockDataMessageReceived);
   });
 });
