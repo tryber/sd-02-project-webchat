@@ -1,8 +1,4 @@
-const {
-  bcrypt,
-  jsonWebToken,
-  service: { removePassword },
-} = require('../../utils');
+const { bcrypt, jsonWebToken } = require('../../utils');
 
 async function create({ data, Model }) {
   const hash = await bcrypt.createHash(data.password);
@@ -30,7 +26,7 @@ async function find({ id, Model }) {
   const userModel = new Model({ id });
 
   const user = await userModel.find();
-  console.log(user);
+
   if (!user) return { data: null, error: 'notFound' };
 
   const { password, ...userWithoutPassword } = user[0].toObject();
@@ -45,6 +41,7 @@ async function list({ Model }) {
 
   return users.map((eachUser) => {
     const { password, ...userWithoutPassword } = eachUser.toObject();
+
     return userWithoutPassword;
   });
 }
