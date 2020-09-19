@@ -145,13 +145,9 @@ describe('User Repository', () => {
       nickname: faker.name.findName(),
     };
 
-    const mockDataUpdated = {
-      nickname: mockDataSent.nickname,
-    };
-
     const mockDataReceived = {
       id: mockDataSent.id,
-      nickname: mockDataSent.nickname,
+      nickname: faker.name.findName(),
       ...faker.random.objectElement(),
     };
 
@@ -169,9 +165,13 @@ describe('User Repository', () => {
 
     expect(mockFindOneAndUpdate).toHaveBeenCalledTimes(1);
 
-    expect(mockFindOneAndUpdate).toHaveBeenCalledWith({ _id: mockDataSent.id }, mockDataUpdated, {
-      new: true,
-    });
+    expect(mockFindOneAndUpdate).toHaveBeenCalledWith(
+      { _id: mockDataSent.id },
+      { nickname: mockDataSent.nickname },
+      {
+        new: true,
+      },
+    );
 
     expect(data).toStrictEqual(mockDataReceived);
   });

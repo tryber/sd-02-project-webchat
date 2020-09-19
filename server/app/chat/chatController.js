@@ -21,13 +21,13 @@ function create({ Message, messageModel }) {
   };
 }
 
-function listIncludes({ Message, messageModel }) {
+function listBy({ Message, messageModel }) {
   return async (req, res) => {
     const { key, value } = req.params;
 
     const Messages = new Message({ messageModel, [key]: value });
 
-    const { data, error } = await Messages.listIncludes(key);
+    const { data, error } = await Messages.listBy(key);
 
     if (error) return handleError[error]();
 
@@ -51,7 +51,7 @@ function update({ Message, messageModel }) {
 
 module.exports = {
   create,
-  listIncludes,
+  listBy,
   remove,
   update,
 };

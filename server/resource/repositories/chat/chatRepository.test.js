@@ -4,20 +4,14 @@ const faker = require('faker');
 
 describe('Chat Repository', () => {
   it('Create Chat', async () => {
-    const mockDataChatSent = {
-      createdAt: faker.date.recent(),
-      title: faker.lorem.words(),
-      userId: faker.random.number(),
-    };
+    const mockDataSent = { ...faker.random.objectElement() };
 
-    const mockDataChatReceived = {
+    const mockDataReceived = {
       id: faker.random.number(),
-      createdAt: mockDataChatSent.createdAt,
-      title: mockDataChatSent.title,
-      userId: mockDataChatSent.userId,
+      ...mockDataSent,
     };
 
-    const mockCreate = jest.fn().mockResolvedValue(mockDataChatReceived);
+    const mockCreate = jest.fn().mockResolvedValue(mockDataReceived);
 
     const mockModels = {
       Chats: {
@@ -25,30 +19,28 @@ describe('Chat Repository', () => {
       },
     };
 
-    const repository = new ChatRepository({ models: mockModels, data: mockDataChatSent });
+    const repository = new ChatRepository({ models: mockModels, data: mockDataSent });
 
     const data = await repository.create();
 
     expect(mockCreate).toHaveBeenCalledTimes(1);
 
-    expect(mockCreate).toHaveBeenCalledWith(mockDataChatSent);
+    expect(mockCreate).toHaveBeenCalledWith(mockDataSent);
 
-    expect(data).toStrictEqual(mockDataChatReceived);
+    expect(data).toStrictEqual(mockDataReceived);
   });
 
   it('Find Chat', async () => {
-    const mockDataChatSent = {
+    const mockDataSent = {
       id: faker.random.number(),
     };
 
-    const mockDataChatReceived = {
-      id: mockDataChatSent.id,
-      createdAt: faker.date.recent(),
-      title: faker.lorem.words(),
-      userId: faker.random.number(),
+    const mockDataReceived = {
+      id: mockDataSent.id,
+      ...faker.random.objectElement(),
     };
 
-    const mockFind = jest.fn().mockResolvedValue(mockDataChatReceived);
+    const mockFind = jest.fn().mockResolvedValue(mockDataReceived);
 
     const mockModels = {
       Chats: {
@@ -56,19 +48,19 @@ describe('Chat Repository', () => {
       },
     };
 
-    const repository = new ChatRepository({ models: mockModels, data: mockDataChatSent });
+    const repository = new ChatRepository({ models: mockModels, data: mockDataSent });
 
     const data = await repository.find();
 
     expect(mockFind).toHaveBeenCalledTimes(1);
 
-    expect(mockFind).toHaveBeenCalledWith({ _id: mockDataChatSent.id });
+    expect(mockFind).toHaveBeenCalledWith({ _id: mockDataSent.id });
 
-    expect(data).toStrictEqual(mockDataChatReceived);
+    expect(data).toStrictEqual(mockDataReceived);
   });
 
   it('List Chat By UserId', async () => {
-    const mockDataChatSent = {
+    const mockDataSent = {
       userId: faker.random.number(),
     };
 
@@ -76,7 +68,7 @@ describe('Chat Repository', () => {
       id: faker.random.number(),
       createdAt: faker.date.recent(),
       title: faker.lorem.words(),
-      userId: mockDataChatSent.userId,
+      userId: mockDataSent.userId,
     });
 
     const mockDataChatsReceived = new Array(10).fill(undefined).map(createChat);
@@ -91,19 +83,19 @@ describe('Chat Repository', () => {
       },
     };
 
-    const repository = new ChatRepository({ models: mockModels, data: mockDataChatSent });
+    const repository = new ChatRepository({ models: mockModels, data: mockDataSent });
 
     const data = await repository.listBy('chatId');
 
     expect(mockFind).toHaveBeenCalledTimes(1);
 
-    expect(mockFind).toHaveBeenCalledWith({ chatId: mockDataChatSent.chatId });
+    expect(mockFind).toHaveBeenCalledWith({ chatId: mockDataSent.chatId });
 
     expect(data).toStrictEqual(mockDataChatsReceived);
   });
 
   it('Remove Chat', async () => {
-    const mockDataChatSent = {
+    const mockDataSent = {
       id: faker.random.number(),
     };
 
@@ -115,33 +107,29 @@ describe('Chat Repository', () => {
       },
     };
 
-    const repository = new ChatRepository({ models: mockModels, data: mockDataChatSent });
+    const repository = new ChatRepository({ models: mockModels, data: mockDataSent });
 
     await repository.remove();
 
     expect(mockDeleteOne).toHaveBeenCalledTimes(1);
 
-    expect(mockDeleteOne).toHaveBeenCalledWith({ _id: mockDataChatSent.id });
+    expect(mockDeleteOne).toHaveBeenCalledWith({ _id: mockDataSent.id });
   });
 
   it('Update Chat', async () => {
-    const mockDataChatSent = {
+    const mockDataSent = {
       id: faker.random.number(),
       title: faker.lorem.words(),
     };
 
-    const mockDataChatUpdate = {
-      title: mockDataChatSent.title,
-    };
-
-    const mockDataChatReceived = {
-      id: mockDataChatSent.id,
-      title: mockDataChatSent.title,
+    const mockDataReceived = {
+      id: mockDataSent.id,
+      title: mockDataSent.title,
       createdAt: faker.date.recent(),
       userId: faker.random.number(),
     };
 
-    const mockFindOneAndUpdate = jest.fn().mockResolvedValue(mockDataChatReceived);
+    const mockFindOneAndUpdate = jest.fn().mockResolvedValue(mockDataReceived);
 
     const mockModels = {
       Chats: {
@@ -149,18 +137,18 @@ describe('Chat Repository', () => {
       },
     };
 
-    const repository = new ChatRepository({ models: mockModels, data: mockDataChatSent });
+    const repository = new ChatRepository({ models: mockModels, data: mockDataSent });
 
     const data = await repository.update();
 
     expect(mockFindOneAndUpdate).toHaveBeenCalledTimes(1);
 
     expect(mockFindOneAndUpdate).toHaveBeenCalledWith(
-      { _id: mockDataChatSent.id },
-      mockDataChatUpdate,
+      { _id: mockDataSent.id },
+      { title: mockDataSent.title },
       { new: true },
     );
 
-    expect(data).toStrictEqual(mockDataChatReceived);
+    expect(data).toStrictEqual(mockDataReceived);
   });
 });

@@ -15,7 +15,7 @@ const router = express.Router();
 function chatRouter({ middlewares, ...dependencies }) {
   router
     .route('/')
-    .get(middlewares.auth, rescue(chatController.listIncludes(dependencies)))
+    .get(middlewares.auth, rescue(chatController.listBy(dependencies)))
     .post(middlewares.validate(createSchema), rescue(chatController.create(dependencies)));
 
   router
