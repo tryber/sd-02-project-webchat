@@ -17,10 +17,9 @@ describe('User Controller', () => {
       const mockDataTokenReceived = faker.random.hexaDecimal();
 
       const mockUser = jest.fn().mockReturnValue({
-        create: async () =>
-          new Promise((resolve, _reject) => {
-            resolve({ data: mockDataReceived, token: mockDataTokenReceived, error: null });
-          }),
+        create: jest
+          .fn()
+          .mockResolvedValue({ data: mockDataReceived, token: mockDataTokenReceived, error: null }),
       });
 
       const mockReq = { body: mockDataSent };

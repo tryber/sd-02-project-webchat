@@ -31,7 +31,7 @@ function listBy({ Message, messageModel }) {
 
     if (error) return handleError[error]();
 
-    res.status(200).json({ Messages: data });
+    res.status(200).json({ messages: data });
   };
 }
 
