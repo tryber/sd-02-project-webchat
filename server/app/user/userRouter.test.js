@@ -2,7 +2,7 @@ const request = require('supertest');
 
 const faker = require('faker');
 
-const app = require('../../main');
+const app = require('..');
 
 afterEach(() => {
   jest.clearAllMocks();
