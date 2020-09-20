@@ -25,9 +25,9 @@ function listBy({ Message, messageModel }) {
   return async (req, res) => {
     const { key, value } = req.params;
 
-    const Messages = new Message({ messageModel, [key]: value });
+    const message = new Message({ messageModel, [key]: value });
 
-    const { data, error } = await Messages.listBy(key);
+    const { data, error } = await message.listBy(key);
 
     if (error) return handleError[error]();
 
@@ -43,7 +43,7 @@ function update({ Message, messageModel }) {
   return service.update({
     Domain: Message,
     model: messageModel,
-    domainKey: 'Message',
+    domainKey: 'message',
     modelkey: 'messageModel',
     handleError,
   });

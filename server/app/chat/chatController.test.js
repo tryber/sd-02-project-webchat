@@ -1,11 +1,11 @@
-const messageController = require('./messageController');
+const chatController = require('./chatController');
 
 const faker = require('faker');
 
-describe('Message Controller', () => {
-  describe('Create Message', () => {
+describe('Chat Controller', () => {
+  describe('Create Chat', () => {
     it('on success', async () => {
-      const mockMessageModel = jest.fn();
+      const mockChatModel = jest.fn();
 
       const mockDataSent = { ...faker.random.objectElement() };
 
@@ -14,7 +14,7 @@ describe('Message Controller', () => {
         ...mockDataSent,
       };
 
-      const mockMessage = jest.fn().mockReturnValue({
+      const mockChat = jest.fn().mockReturnValue({
         create: jest.fn().mockResolvedValue(mockDataReceived),
       });
 
@@ -24,16 +24,16 @@ describe('Message Controller', () => {
 
       const mockRes = { status: jest.fn().mockReturnValue({ json: mockJson }) };
 
-      const act = messageController.create({
-        Message: mockMessage,
-        messageModel: mockMessageModel,
+      const act = chatController.create({
+        Chat: mockChat,
+        chatModel: mockChatModel,
       });
 
       await act(mockReq, mockRes);
 
-      expect(mockMessage).toHaveBeenCalledTimes(1);
+      expect(mockChat).toHaveBeenCalledTimes(1);
 
-      expect(mockMessage).toHaveBeenCalledWith({ ...mockReq.body, messageModel: mockMessageModel });
+      expect(mockChat).toHaveBeenCalledWith({ ...mockReq.body, chatModel: mockChatModel });
 
       expect(mockRes.status).toHaveBeenCalledTimes(1);
 
@@ -42,18 +42,18 @@ describe('Message Controller', () => {
       expect(mockJson).toHaveBeenCalledTimes(1);
 
       expect(mockJson).toHaveBeenCalledWith({
-        message: mockDataReceived,
+        chat: mockDataReceived,
       });
     });
   });
 
-  describe('List Message By ChatId', () => {
+  describe('List Chat By ChatId', () => {
     it('on success', async () => {
-      const mockMessageModel = jest.fn();
+      const mockChatModel = jest.fn();
 
       const mockChatId = faker.random.number();
 
-      const createMessage = () => ({
+      const createChat = () => ({
         id: faker.random.number(),
         createdAt: faker.date.recent(),
         content: faker.lorem.words(),
@@ -61,9 +61,9 @@ describe('Message Controller', () => {
         chatId: mockChatId,
       });
 
-      const mockDataReceived = new Array(10).fill(undefined).map(createMessage);
+      const mockDataReceived = new Array(10).fill(undefined).map(createChat);
 
-      const mockMessage = jest.fn().mockReturnValue({
+      const mockChat = jest.fn().mockReturnValue({
         listBy: jest.fn().mockResolvedValue({ data: mockDataReceived, error: null }),
       });
 
@@ -73,17 +73,17 @@ describe('Message Controller', () => {
 
       const mockRes = { status: jest.fn().mockReturnValue({ json: mockJson }) };
 
-      const act = messageController.listBy({
-        Message: mockMessage,
-        messageModel: mockMessageModel,
+      const act = chatController.listBy({
+        Chat: mockChat,
+        chatModel: mockChatModel,
       });
 
       await act(mockReq, mockRes);
 
-      expect(mockMessage).toHaveBeenCalledTimes(1);
+      expect(mockChat).toHaveBeenCalledTimes(1);
 
-      expect(mockMessage).toHaveBeenCalledWith({
-        messageModel: mockMessageModel,
+      expect(mockChat).toHaveBeenCalledWith({
+        chatModel: mockChatModel,
         chatId: mockChatId,
       });
 
@@ -93,13 +93,13 @@ describe('Message Controller', () => {
 
       expect(mockJson).toHaveBeenCalledTimes(1);
 
-      expect(mockJson).toHaveBeenCalledWith({ messages: mockDataReceived });
+      expect(mockJson).toHaveBeenCalledWith({ chats: mockDataReceived });
     });
 
-    it('on failure - message not found', async () => {
-      const mockMessageModel = jest.fn();
+    it('on failure - Chat not found', async () => {
+      const mockChatModel = jest.fn();
 
-      const mockMessage = jest.fn().mockReturnValue({
+      const mockChat = jest.fn().mockReturnValue({
         listBy: jest.fn().mockResolvedValue({ data: null, error: 'notFound' }),
       });
 
@@ -109,9 +109,9 @@ describe('Message Controller', () => {
 
       const mockReq = { params: { key: 'chatId', value: mockChatId } };
 
-      const act = messageController.listBy({
-        Message: mockMessage,
-        messageModel: mockMessageModel,
+      const act = chatController.listBy({
+        Chat: mockChat,
+        chatModel: mockChatModel,
       });
 
       try {
@@ -125,12 +125,12 @@ describe('Message Controller', () => {
 
         expect(statusCode).toBe(400);
 
-        expect(message).toBe('Mensagem não encontrada');
+        expect(message).toBe('Chat não encontrado');
       } finally {
-        expect(mockMessage).toHaveBeenCalledTimes(1);
+        expect(mockChat).toHaveBeenCalledTimes(1);
 
-        expect(mockMessage).toHaveBeenCalledWith({
-          messageModel: mockMessageModel,
+        expect(mockChat).toHaveBeenCalledWith({
+          chatModel: mockChatModel,
           chatId: mockChatId,
         });
 
@@ -139,13 +139,13 @@ describe('Message Controller', () => {
     });
   });
 
-  describe('Remove Message', () => {
+  describe('Remove Chat', () => {
     it('on success', async () => {
-      const mockMessageModel = jest.fn();
+      const mockChatModel = jest.fn();
 
       const mockId = faker.random.number();
 
-      const mockMessage = jest.fn().mockReturnValue({
+      const mockChat = jest.fn().mockReturnValue({
         remove: jest.fn(),
       });
 
@@ -155,16 +155,16 @@ describe('Message Controller', () => {
 
       const mockRes = { status: jest.fn().mockReturnValue({ end: mockEnd }) };
 
-      const act = messageController.remove({
-        Message: mockMessage,
-        messageModel: mockMessageModel,
+      const act = chatController.remove({
+        Chat: mockChat,
+        chatModel: mockChatModel,
       });
 
       await act(mockReq, mockRes);
 
-      expect(mockMessage).toHaveBeenCalledTimes(1);
+      expect(mockChat).toHaveBeenCalledTimes(1);
 
-      expect(mockMessage).toHaveBeenCalledWith({ messageModel: mockMessageModel, id: mockId });
+      expect(mockChat).toHaveBeenCalledWith({ chatModel: mockChatModel, id: mockId });
 
       expect(mockRes.status).toHaveBeenCalledTimes(1);
 
@@ -174,9 +174,9 @@ describe('Message Controller', () => {
     });
   });
 
-  describe('Update Message', () => {
+  describe('Update Chat', () => {
     it('on success', async () => {
-      const mockMessageModel = jest.fn();
+      const mockChatModel = jest.fn();
 
       const mockId = faker.random.number();
 
@@ -191,7 +191,7 @@ describe('Message Controller', () => {
         ...faker.random.objectElement(),
       };
 
-      const mockMessage = jest.fn().mockReturnValue({
+      const mockChat = jest.fn().mockReturnValue({
         update: jest.fn().mockResolvedValue({ data: mockDataReceived, error: null }),
       });
 
@@ -201,18 +201,18 @@ describe('Message Controller', () => {
 
       const mockRes = { status: jest.fn().mockReturnValue({ json: mockJson }) };
 
-      const act = messageController.update({
-        Message: mockMessage,
-        messageModel: mockMessageModel,
+      const act = chatController.update({
+        Chat: mockChat,
+        chatModel: mockChatModel,
       });
 
       await act(mockReq, mockRes);
 
-      expect(mockMessage).toHaveBeenCalledTimes(1);
+      expect(mockChat).toHaveBeenCalledTimes(1);
 
-      expect(mockMessage).toHaveBeenCalledWith({
+      expect(mockChat).toHaveBeenCalledWith({
         id: mockId,
-        messageModel: mockMessageModel,
+        chatModel: mockChatModel,
         ...mockReq.body,
       });
 
@@ -222,18 +222,18 @@ describe('Message Controller', () => {
 
       expect(mockJson).toHaveBeenCalledTimes(1);
 
-      expect(mockJson).toHaveBeenCalledWith({ message: mockDataReceived });
+      expect(mockJson).toHaveBeenCalledWith({ chat: mockDataReceived });
     });
 
-    it('on failure - Message not found', async () => {
-      const mockMessageModel = jest.fn();
+    it('on failure - Chat not found', async () => {
+      const mockChatModel = jest.fn();
 
       const mockDataSent = {
         id: faker.random.number(),
         nickname: faker.name.findName(),
       };
 
-      const mockMessage = jest.fn().mockReturnValue({
+      const mockChat = jest.fn().mockReturnValue({
         update: jest.fn().mockResolvedValue({ data: null, error: 'notFound' }),
       });
 
@@ -241,9 +241,9 @@ describe('Message Controller', () => {
 
       const mockRes = jest.fn();
 
-      const act = messageController.update({
-        Message: mockMessage,
-        messageModel: mockMessageModel,
+      const act = chatController.update({
+        Chat: mockChat,
+        chatModel: mockChatModel,
       });
 
       try {
@@ -257,13 +257,13 @@ describe('Message Controller', () => {
 
         expect(statusCode).toBe(400);
 
-        expect(message).toBe('Mensagem não encontrada');
+        expect(message).toBe('Chat não encontrado');
       } finally {
-        expect(mockMessage).toHaveBeenCalledTimes(1);
+        expect(mockChat).toHaveBeenCalledTimes(1);
 
-        expect(mockMessage).toHaveBeenCalledWith({
+        expect(mockChat).toHaveBeenCalledWith({
           id: mockDataSent.id,
-          messageModel: mockMessageModel,
+          chatModel: mockChatModel,
           ...mockReq.body,
         });
 

@@ -4,47 +4,47 @@ const service = require('../serviceController');
 
 const handleError = {
   notFound: () => {
-    throw Boom.badRequest('Mensagem não encontrada');
+    throw Boom.badRequest('Chat não encontrado');
   },
 };
 
-function create({ Message, messageModel }) {
+function create({ Chat, chatModel }) {
   return async (req, res) => {
-    const message = new Message({
+    const chat = new Chat({
       ...req.body,
-      messageModel,
+      chatModel,
     });
 
-    const data = await message.create();
+    const data = await chat.create();
 
-    res.status(201).json({ message: data });
+    res.status(201).json({ chat: data });
   };
 }
 
-function listBy({ Message, messageModel }) {
+function listBy({ Chat, chatModel }) {
   return async (req, res) => {
     const { key, value } = req.params;
 
-    const Messages = new Message({ messageModel, [key]: value });
+    const chat = new Chat({ chatModel, [key]: value });
 
-    const { data, error } = await Messages.listBy(key);
+    const { data, error } = await chat.listBy(key);
 
     if (error) return handleError[error]();
 
-    res.status(200).json({ Messages: data });
+    res.status(200).json({ chats: data });
   };
 }
 
-function remove({ Message, messageModel }) {
-  return service.remove({ Domain: Message, model: messageModel, modelkey: 'messageModel' });
+function remove({ Chat, chatModel }) {
+  return service.remove({ Domain: Chat, model: chatModel, modelkey: 'chatModel' });
 }
 
-function update({ Message, messageModel }) {
+function update({ Chat, chatModel }) {
   return service.update({
-    Domain: Message,
-    model: messageModel,
-    domainKey: 'Message',
-    modelkey: 'messageModel',
+    Domain: Chat,
+    model: chatModel,
+    domainKey: 'chat',
+    modelkey: 'chatModel',
     handleError,
   });
 }

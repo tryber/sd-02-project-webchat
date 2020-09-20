@@ -68,6 +68,7 @@ describe('Chat Repository', () => {
       id: faker.random.number(),
       createdAt: faker.date.recent(),
       title: faker.lorem.words(),
+      users: new Array(10).fill(undefined).map(() => faker.random.word),
       userId: mockDataSent.userId,
     });
 
