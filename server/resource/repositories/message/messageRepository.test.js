@@ -30,66 +30,6 @@ describe('Message Repository', () => {
     expect(data).toStrictEqual(mockDataReceived);
   });
 
-  it('Find Message', async () => {
-    const mockDataSent = {
-      id: faker.random.number(),
-    };
-
-    const mockDataReceived = {
-      id: mockDataSent.id,
-      ...faker.random.objectElement(),
-    };
-
-    const mockFind = jest.fn().mockResolvedValue(mockDataReceived);
-
-    const mockModels = {
-      Messages: {
-        find: mockFind,
-      },
-    };
-
-    const repository = new MessageRepository({ models: mockModels, data: mockDataSent });
-
-    const data = await repository.find();
-
-    expect(mockFind).toHaveBeenCalledTimes(1);
-
-    expect(mockFind).toHaveBeenCalledWith({ _id: mockDataSent.id });
-
-    expect(data).toStrictEqual(mockDataReceived);
-  });
-
-  it('Find Message By UserId', async () => {
-    const mockDataSent = {
-      id: faker.random.number(),
-      email: faker.internet.email(),
-    };
-
-    const mockDataReceived = {
-      id: mockDataSent.id,
-      email: mockDataSent.email,
-      ...faker.random.objectElement(),
-    };
-
-    const mockFind = jest.fn().mockResolvedValue(mockDataReceived);
-
-    const mockModels = {
-      Messages: {
-        find: mockFind,
-      },
-    };
-
-    const repository = new MessageRepository({ models: mockModels, data: mockDataSent });
-
-    const data = await repository.findBy('email');
-
-    expect(mockFind).toHaveBeenCalledTimes(1);
-
-    expect(mockFind).toHaveBeenCalledWith({ email: mockDataSent.email });
-
-    expect(data).toStrictEqual(mockDataReceived);
-  });
-
   it('List Message By ChatId', async () => {
     const mockDataSent = {
       chatId: faker.random.number(),

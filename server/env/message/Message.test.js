@@ -27,28 +27,6 @@ describe('Message', () => {
     expect(data).toStrictEqual(mockDataReceived);
   });
 
-  it('Find', async () => {
-    const mockDataSent = { a: 0 };
-
-    const mockDataReceived = { b: 1 };
-
-    const mockId = faker.random.number();
-
-    const mockModel = jest.fn();
-
-    const mockFind = jest.spyOn(messageService, 'find').mockReturnValue(mockDataReceived);
-
-    const message = new Message({ MessageModel: mockModel, id: mockId, ...mockDataSent });
-
-    const data = await message.find();
-
-    expect(mockFind).toHaveBeenCalledTimes(1);
-
-    expect(mockFind).toHaveBeenCalledWith({ Model: mockModel, id: mockId });
-
-    expect(data).toStrictEqual(mockDataReceived);
-  });
-
   it('ListBy', async () => {
     const mockDataSent = { a: 0 };
 

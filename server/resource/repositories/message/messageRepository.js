@@ -12,14 +12,6 @@ class MessageRepository {
     return this.Messages.create(getFields(this.data));
   }
 
-  async find() {
-    return this.Messages.find({ _id: this.data.id });
-  }
-
-  async findBy(field) {
-    return this.Messages.find({ [field]: this.data[field] });
-  }
-
   async listBy(field) {
     return this.Messages.find({ [field]: this.data[field] }).sort({ createdAt: 'asc' });
   }

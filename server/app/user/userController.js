@@ -33,13 +33,15 @@ function create({ User, userModel }) {
 }
 
 function find({ User, userModel }) {
-  return service.find({
-    Domain: User,
-    model: userModel,
-    domainKey: 'user',
-    modelkey: 'userModel',
-    handleError,
-  });
+  return async (req, res) => {
+    const user = new User({ userModel, id: req.params.id });
+
+    const { data, error } = await user.find();
+
+    if (error) return handleError[error]();
+
+    res.status(200).json({ user: data });
+  };
 }
 
 function list({ User, userModel }) {

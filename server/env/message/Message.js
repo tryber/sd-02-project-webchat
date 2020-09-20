@@ -1,4 +1,4 @@
-const MessageService = require('./messageService');
+const messageService = require('./messageService');
 
 class Message {
   constructor({ MessageModel, id, ...data }) {
@@ -8,23 +8,19 @@ class Message {
   }
 
   async create() {
-    return MessageService.create({ data: this.data, Model: this.MessageModel });
-  }
-
-  async find() {
-    return MessageService.find({ id: this.id, Model: this.MessageModel });
+    return messageService.create({ data: this.data, Model: this.MessageModel });
   }
 
   async listBy(field) {
-    return MessageService.listBy({ field, Model: this.MessageModel });
+    return messageService.listBy({ field, Model: this.MessageModel });
   }
 
   async remove() {
-    return MessageService.remove({ id: this.id, Model: this.MessageModel });
+    return messageService.remove({ id: this.id, Model: this.MessageModel });
   }
 
   async update() {
-    return MessageService.update({ data: this.data, id: this.id, Model: this.MessageModel });
+    return messageService.update({ data: this.data, id: this.id, Model: this.MessageModel });
   }
 }
 

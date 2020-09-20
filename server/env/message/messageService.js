@@ -4,20 +4,14 @@ async function create({ data, Model }) {
   return messageModel.create();
 }
 
-async function find({ id, Model }) {
-  const messageModel = new Model({ id });
-
-  const blogPost = await messageModel.find();
-
-  if (!blogPost) return { data: null, error: 'notFound' };
-
-  return { data: blogPost, error: null };
-}
-
 async function listBy({ Model, field }) {
   const messageModel = new Model();
 
-  return messageModel.listBy(field);
+  const message = messageModel.listBy(field);
+
+  if (message.length === 0) return { data: null, error: 'notFound' };
+
+  return { data: message, error: null };
 }
 
 async function remove({ id, Model }) {
@@ -26,33 +20,19 @@ async function remove({ id, Model }) {
   return messageModel.remove();
 }
 
-async function search({ name, Model }) {
-  const messageModel = new Model();
-
-  const blogPost = await messageModel.findBy(name);
-
-  if (blogPost.length === 0) return { data: null, error: 'notFound' };
-
-  return { data: blogPost, error: null };
-}
-
 async function update({ data, id, Model }) {
   const messageModel = new Model({ id, ...data });
 
-  const blogPostExists = await messageModel.find();
+  const message = await messageModel.update();
 
-  if (!blogPostExists) return { data: null, error: 'notFound' };
+  if (!message) return { data: null, error: 'notFound' };
 
-  await messageModel.update();
-
-  return { data: await messageModel.find(), error: null };
+  return { data: message, error: null };
 }
 
 module.exports = {
   create,
-  find,
   listBy,
-  search,
   remove,
   update,
 };

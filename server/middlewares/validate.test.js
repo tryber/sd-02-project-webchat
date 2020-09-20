@@ -34,7 +34,7 @@ describe('Validate Middleware', () => {
 
     const mockNext = jest.fn();
 
-    const mockError = { details: [] };
+    const mockError = { details: ['some-details'] };
 
     const mockSchema = {
       validate: jest.fn().mockReturnValue({ error: mockError }),
