@@ -17,8 +17,28 @@ const savedMessageByDate = async (date) => {
   return modelAnswer;
 };
 
+const saveUsers = async (user) => {
+  const db = await connection();
+  await db.collection('online').insertOne({ user });
+};
+
+const onlineUsers = async () => {
+  const db = await connection();
+  const modelAnswer = await db.collection('online').find({}).toArray();
+  return modelAnswer;
+};
+
+const findAndDelete = async (user) => {
+  const db = await connection();
+  const modelAnswer = await db.collection('online').deleteOne({ user });
+  return modelAnswer;
+};
+
 module.exports = {
   saveHistory,
   savedHistory,
   savedMessageByDate,
+  saveUsers,
+  onlineUsers,
+  findAndDelete,
 };

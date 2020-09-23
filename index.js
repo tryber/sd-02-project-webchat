@@ -6,7 +6,13 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-const { saveHistory, savedHistory, savedMessageByDate } = require('./models/ChatModel');
+const {
+  saveHistory,
+  savedHistory,
+  savedMessageByDate,
+  saveUsers,
+  onlineUsers,
+  findAndDelete } = require('./models/ChatModel');
 
 const PORT = process.env.PORT || 3000;
 
@@ -20,21 +26,22 @@ function randomNumber() {
 
 io.on('connection', (socket) => {
   socket.on('loginUser', async ({ user }) => {
-    socket.id = user;
-    if (!user || user === ' ') {
-      const userName = `User${randomNumber()}`;
-      socket.id = userName;
-    }
+    const userName = user ? socket.user = user : socket.user = `User${randomNumber()}`;
+    await saveUsers(userName);
+    const modelAnswer = await onlineUsers();
+    await io.emit('onlineList', { users: modelAnswer, id: socket.id });
     const historyMessages = await savedHistory();
-    historyMessages.forEach(({ user: userHistory, message, date }) => {
+    historyMessages.forEach(({ users: userHistory, message, date }) => {
       socket.emit('history', { modelAnswer: { userHistory, message, date } });
     });
+    await socket.broadcast.emit('loggedUser', `${socket.user} acabou de se conectar.`);
   });
 
-  io.emit('userConnect', `${socket.id} acabou de se conectar`);
-
-  socket.on('disconnect', () => {
-    socket.broadcast.emit('message', `Usuário ${socket.id} desconectou-se`);
+  socket.on('disconnect', async () => {
+    await findAndDelete(socket.user);
+    io.emit('disconnectChat', `Usuário ${socket.user} desconectou-se`);
+    const modelAnswer = await onlineUsers();
+    await io.emit('disconnectList', modelAnswer);
   });
 
   socket.on('message', async ({ user: userName, message }) => {

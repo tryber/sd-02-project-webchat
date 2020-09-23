@@ -9,15 +9,15 @@ body {
 .firstContainer {
   align-content: space-around;
   display: flex;
-  flex-direction: row;
   justify-content: center;
-  height: 70vh;
 }
 
 
 .messagesBox {
   display: flex;
   background-color: yellow;
+  border: 10px solid black;
+  box-shadow: inset -1px -1px 20px 6px black;
   justify-content: start;
   height: 66vh;
   margin: 0 1vh 1vh 0;
@@ -34,6 +34,7 @@ form {
 
 .inputMessageContainer {
   background-color: red;
+  border: 10px solid black;
   display: flex;
   flex-direction: row;
   height: 4vh;
@@ -65,6 +66,12 @@ button {
 
 li {
   list-style-type: none;
+  width: 100%;
+}
+
+ul {
+  display: flex;
+  flex-direction: column;
 }
 
 .msgContainer {
@@ -91,4 +98,40 @@ li {
   color: azure;
   display: flex;
   justify-content: flex-end;
+}
+
+.onlineContainer {
+  background-color: blue;
+  border: 10px solid black;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 68vh;
+  overflow: auto;
+  width: 15vw;
+}
+
+.usersTitle {
+  align-self: center;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.onlineUsers {
+  align-items: center;
+  border: 3px solid darkred;
+  border-radius: 20px;
+  padding: 1em;
+}
+
+.onlineSpan {
+  color: chartreuse;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.onlineUser:hover {
+  background-color: gray;
+  color: brown;
+  cursor: pointer;
 }
