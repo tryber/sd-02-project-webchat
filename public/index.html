@@ -28,9 +28,19 @@
         </form>
       </div>
     </div>
-    <div class="onlineContainer">
-      <div class="usersTitle">Usuários Online:</div>
-      <ul id="onlineUsers" class="onlineUsers"></ul>
+    <div class="containerOnlineNick">
+      <div class="onlineContainer">
+        <div class="usersTitle">Usuários Online:</div>
+        <ul id="onlineUsers" class="onlineUsers"></ul>
+      </div>
+      <div class="newUserName">
+        <input
+          type="text"
+          placeholder="Username and Submit"
+          class="newUserName"
+          onchange="changeName(event)"
+        >
+      </div>
     </div>
   </div>
 </body>

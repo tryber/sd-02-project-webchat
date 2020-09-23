@@ -20,18 +20,14 @@ app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/public/index.html`);
 });
 
-function randomNumber() {
-  return Math.floor(Math.random() * 256);
-}
-
 io.on('connection', (socket) => {
   socket.on('loginUser', async ({ user }) => {
-    const userName = user ? socket.user = user : socket.user = `User${randomNumber()}`;
-    await saveUsers(userName);
+    socket.user = user;
+    await saveUsers(user);
     const modelAnswer = await onlineUsers();
-    await io.emit('onlineList', { users: modelAnswer, id: socket.id });
+    await io.emit('onlineList', { users: modelAnswer });
     const historyMessages = await savedHistory();
-    historyMessages.forEach(({ users: userHistory, message, date }) => {
+    historyMessages.forEach(({ user: userHistory, message, date }) => {
       socket.emit('history', { modelAnswer: { userHistory, message, date } });
     });
     await socket.broadcast.emit('loggedUser', `${socket.user} acabou de se conectar.`);
@@ -46,9 +42,6 @@ io.on('connection', (socket) => {
 
   socket.on('message', async ({ user: userName, message }) => {
     const date = Date.now();
-    if (!userName) {
-      userName = `User${randomNumber()}`;
-    }
     await saveHistory({ user: userName, message, date });
     const modelAnswer = await savedMessageByDate(date);
     io.emit('message', { modelAnswer });

@@ -6,7 +6,10 @@ const ulUsers = document.getElementById('onlineUsers');
 const divMsgs = document.querySelector('.messagesBox');
 const spaceSpan1 = document.createTextNode(' ');
 const spaceSpan2 = document.createTextNode(' ');
+const userList = [];
 let userName;
+let clicked = false;
+let socketUser;
 
 function createLiMsg({ user, message, date }) {
   const liMsg = document.createElement('li');
@@ -26,17 +29,27 @@ function createLiMsg({ user, message, date }) {
   return liMsg;
 }
 
-function createLiNewUser(newUser, divClass, spanClass, id) {
+function randomNumber() {
+  return Math.floor(Math.random() * 256);
+}
+
+function setBgColor({ target }) {
+  const main = target;
+  const color = target.style.backgroundColor === 'white' ? '' : 'white';
+  main.style.backgroundColor = color;
+  clicked = !clicked;
+  socketUser = target.getAttribute('value');
+  console.log(socketUser);
+}
+
+function createLiNewUser(newUser, divClass, spanClass) {
   const liUser = document.createElement('li');
   const divTagNewUser = document.createElement('div');
   const spanNew1 = document.createElement('span');
   liUser.append(divTagNewUser);
-  divTagNewUser.onclick = ({ target }) => {
-    const main = target;
-    const color = target.style.backgroundColor === 'white' ? '' : 'white';
-    main.style.backgroundColor = color;
-  };
-  divTagNewUser.setAttribute('socket', id);
+  divTagNewUser.onclick = (e) => setBgColor(e);
+  divTagNewUser.setAttribute('value', newUser);
+  spanNew1.setAttribute('value', newUser);
   divTagNewUser.append(spanNew1);
   spanNew1.innerHTML = newUser;
   divTagNewUser.className = divClass;
@@ -51,17 +64,28 @@ function submitForm(event) {
     socket.emit('message', { user: userName, message: inputValue.value });
     inputValue.value = '';
   }
+  if (clicked) {
+    socket.emit(`message${socketUser}`, { user: userName, message: inputValue.value });
+    inputValue.value = '';
+  }
   return null;
 }
 
 function receiveMessage() {
-  socket.on('message', ({ modelAnswer: { user, message, date } }) => {
+  if (!clicked) {
+    socket.on('message', ({ modelAnswer: { user, message, date } }) => {
+      ulMsg.append(createLiMsg({ user, message, date }));
+      divMsgs.scrollTop = divMsgs.scrollHeight;
+    });
+  }
+  socket.on(`message${userName}`, ({ modelAnswer: { user, message, date } }) => {
     ulMsg.append(createLiMsg({ user, message, date }));
     divMsgs.scrollTop = divMsgs.scrollHeight;
   });
 }
 
 function receiveHistory() {
+  ulMsg.innerText = '';
   socket.on('history', ({ modelAnswer: { userHistory: user, message, date } }) => {
     ulMsg.append(createLiMsg({ user, message, date }));
     divMsgs.scrollTop = 0;
@@ -69,8 +93,10 @@ function receiveHistory() {
 }
 
 function setUserName() {
-  userName = prompt('Qual seu nome?');
-  socket.emit('loginUser', { user: userName });
+  userName = `User${randomNumber()}`;
+  userList.push(userName);
+  socketUser = userName;
+  return socket.emit('loginUser', { user: userName });
 }
 
 function newLoggin() {
@@ -88,10 +114,11 @@ function disconectUser() {
 }
 
 function onlineUsers() {
-  socket.on('onlineList', async ({ users, id }) => {
+  socket.on('onlineList', async ({ users }) => {
     ulUsers.innerText = '';
     users.forEach(({ user }) => {
-      ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan', id));
+      userList.push(user);
+      ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan'));
     });
   });
 }
@@ -103,6 +130,13 @@ function disconnectList() {
       ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan'));
     });
   });
+}
+
+function changeName({ target }) {
+  userName = target.value;
+  socket.disconnect();
+  socket.connect();
+  socket.emit('loginUser', { user: userName });
 }
 
 setUserName();
