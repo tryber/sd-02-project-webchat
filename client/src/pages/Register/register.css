@@ -3,10 +3,10 @@
   align-items: center;
   display: flex;
   flex-flow: column wrap;
-  height: 80%;
+  height: 90%;
   margin: 1% 0%;
   padding: 0.5%;
-  width: 60%;
+  width: 70%;
 }
 
 .boxRegister h1 {
@@ -28,9 +28,13 @@
   justify-content: space-around;
   align-content: center;
   align-items: center;
-  height: 60%;
+  height: 80%;
   margin-top: 3%;
   width: 70%;
+}
+
+.boxRegister .boxField {
+  height: 20%;
 }
 
 @media screen and (max-width: 800px) {

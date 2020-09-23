@@ -6,7 +6,7 @@ const chatController = require('./chatController');
 
 const {
   joiSchemas: {
-    messageSchema: { createSchema, updateSchema },
+    chatSchema: { createSchema, updateSchema },
   },
 } = require('../../utils');
 

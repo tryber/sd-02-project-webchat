@@ -30,6 +30,11 @@ const nicknameUpdate = Joi.string()
     'string.empty': 'Nickname is not allowed to be empty',
   });
 
+const friend = Joi.string().messages({
+  'string.base': 'friend must be a type of string',
+  'string.empty': 'friend is not allowed to be empty',
+});
+
 const password = Joi.string().min(6).required().messages({
   'any.required': 'password is required',
   'string.base': 'password must be a type of string',
@@ -50,6 +55,7 @@ const registerSchema = Joi.object({
 }).unknown(false);
 
 const updateSchema = Joi.object({
+  friend,
   nickname: nicknameUpdate,
   image,
 }).unknown(false);

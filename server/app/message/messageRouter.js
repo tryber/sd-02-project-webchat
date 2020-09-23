@@ -16,7 +16,11 @@ function messageRouter({ middlewares, ...dependencies }) {
   router
     .route('/')
     .get(middlewares.auth, rescue(messageController.listBy(dependencies)))
-    .post(middlewares.validate(createSchema), rescue(messageController.create(dependencies)));
+    .post(
+      middlewares.auth,
+      middlewares.validate(createSchema),
+      rescue(messageController.create(dependencies)),
+    );
 
   router
     .route('/:id')

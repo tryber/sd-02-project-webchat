@@ -2,11 +2,13 @@ const request = require('supertest');
 
 const faker = require('faker');
 
-const app = require('..');
+const { app } = require('../../apps');
 
 afterEach(() => {
   jest.clearAllMocks();
 });
+
+jest.setTimeout(30000);
 
 describe('User Router', () => {
   let mockToken, mockId;
@@ -15,21 +17,19 @@ describe('User Router', () => {
 
   const mockPassword = faker.internet.password(10);
 
-  const mockName = faker.name.findName();
+  const mockNickname = faker.name.findName();
 
-  const mockNewName = faker.name.findName();
+  const mockNewNickname = faker.name.findName();
 
   describe('Post /user', () => {
     it('on succes - create user', async () => {
       const mockDataSent = {
         email: mockEmail,
+        nickname: mockNickname,
         password: mockPassword,
-        displayName: mockName,
       };
 
       const response = await request.agent(app).post('/user').send(mockDataSent);
-
-      mockId = response.body.user.id;
 
       expect(response.error).toBeFalsy();
 
@@ -37,30 +37,75 @@ describe('User Router', () => {
 
       expect(response.body.token).toBeTruthy();
 
-      expect(response.body.user.id).toBeTruthy();
+      mockToken = response.body.token;
 
-      expect(response.body.user.displayName).toBe(mockDataSent.displayName);
+      expect(response.body.user._id).toBeTruthy();
 
-      expect(response.body.user.email).toBe(mockDataSent.email);
+      mockId = response.body.user._id;
+
+      expect(response.body.user.nickname).toBe(mockNickname);
+
+      expect(response.body.user.email).toBe(mockEmail);
 
       expect(response.body.user.password).toBeFalsy();
     });
 
     it('on failure - invalid data', async () => {
       const mockDataSent = {
-        email: 'email',
-        password: 'pass',
-        displayName: 1,
+        email: 'invalidEmail',
+        password: 'wrong',
       };
 
       const mockError = {
         error: {
           details: [
             'email must be in a format <name>@<domain>',
-            'displayName must be a type of string',
+            'nickname is required',
             'password length must be at least 6 characters long',
           ],
           message: 'Invalid Data',
+        },
+      };
+
+      const response = await request.agent(app).post('/user').send(mockDataSent);
+
+      expect(response.status).toBe(400);
+
+      expect(JSON.parse(response.text)).toStrictEqual(mockError);
+    });
+
+    it('on failure - email already exists', async () => {
+      const mockDataSent = {
+        email: mockEmail,
+        nickname: mockNewNickname,
+        password: mockPassword,
+      };
+
+      const mockError = {
+        error: {
+          details: null,
+          message: 'Já existe um usuário com este email',
+        },
+      };
+
+      const response = await request.agent(app).post('/user').send(mockDataSent);
+
+      expect(response.status).toBe(400);
+
+      expect(JSON.parse(response.text)).toStrictEqual(mockError);
+    });
+
+    it('on failure - nickaname already exists', async () => {
+      const mockDataSent = {
+        email: faker.internet.email(),
+        nickname: mockNickname,
+        password: mockPassword,
+      };
+
+      const mockError = {
+        error: {
+          details: null,
+          message: 'Já existe um usuário com este nickname',
         },
       };
 
@@ -80,10 +125,10 @@ describe('User Router', () => {
       };
 
       const mockUser = {
-        id: mockId,
-        displayName: mockName,
+        _id: mockId,
+        nickname: mockNickname,
         email: mockEmail,
-        image: null,
+        friends: [],
       };
 
       const response = await request.agent(app).post('/user/login').send(mockUserLogin);
@@ -139,23 +184,44 @@ describe('User Router', () => {
 
       expect(JSON.parse(response.text)).toStrictEqual(mockError);
     });
+
+    it('on faliure - wrong password', async () => {
+      const mockUserLogin = {
+        password: faker.lorem.words(10),
+        email: mockEmail,
+      };
+
+      const mockError = {
+        error: {
+          details: null,
+          message: 'Senha incorreta',
+        },
+      };
+
+      const response = await request.agent(app).post('/user/login').send(mockUserLogin);
+
+      expect(response.status).toBe(400);
+
+      expect(JSON.parse(response.text)).toStrictEqual(mockError);
+    });
   });
 
   describe('Get /user', () => {
     it('on succes - list users', async () => {
       const mockUser = {
-        id: 1,
-        displayName: 'Brett Wiltshire',
-        email: 'brett@email.com',
-        image:
-          'http://4.bp.blogspot.com/_YA50adQ-7vQ/S1gfR_6ufpI/AAAAAAAAAAk/1ErJGgRWZDg/S45/brett.png',
+        friends: [],
+        _id: mockId,
+        email: mockEmail,
+        nickname: mockNickname,
       };
 
       const response = await request.agent(app).get('/user').set('Authorization', mockToken);
 
+      const users = JSON.parse(response.text).users;
+
       expect(response.status).toBe(200);
 
-      expect(JSON.parse(response.text).users[0]).toStrictEqual(mockUser);
+      expect(users[users.length - 1]).toStrictEqual(mockUser);
     });
 
     it('on failure - no authentication', async () => {
@@ -175,19 +241,21 @@ describe('User Router', () => {
   });
 
   describe('Patch  /user/id', () => {
-    it('on succes', async () => {
+    it('on success - change nickname', async () => {
       const mockUser = {
-        id: mockId,
-        displayName: mockNewName,
+        friends: [],
+        _id: mockId,
         email: mockEmail,
-        image: null,
+        nickname: mockNewNickname,
       };
 
       const response = await request
         .agent(app)
         .patch(`/user/${mockId}`)
         .set('Authorization', mockToken)
-        .send({ displayName: mockNewName });
+        .send({ nickname: mockNewNickname });
+      console.log(mockToken);
+      console.log(response.text);
       expect(response.status).toBe(200);
 
       expect(JSON.parse(response.text)).toStrictEqual({ user: mockUser });
@@ -204,40 +272,40 @@ describe('User Router', () => {
       const response = await request
         .agent(app)
         .patch(`/user/${mockId}`)
-        .send({ displayName: mockNewName });
+        .send({ nickname: mockNewNickname });
 
       expect(response.status).toBe(401);
 
       expect(JSON.parse(response.text)).toStrictEqual(mockError);
     });
 
-    it('on failure - user not found', async () => {
-      const mockError = {
-        error: {
-          details: null,
-          message: 'Usuário não encontrado',
-        },
-      };
+    // it('on failure - user not found', async () => {
+    //   const mockError = {
+    //     error: {
+    //       details: null,
+    //       message: 'Usuário não encontrado',
+    //     },
+    //   };
 
-      const response = await request
-        .agent(app)
-        .patch(`/user/:fakeId`)
-        .set('Authorization', mockToken)
-        .send({ displayName: mockNewName });
+    //   const response = await request
+    //     .agent(app)
+    //     .patch(`/user/${mockId}`)
+    //     .set('Authorization', mockToken)
+    //     .send({ nickname: mockNewNickname });
+    //   console.log(response.text);
+    //   expect(response.status).toBe(400);
 
-      expect(response.status).toBe(400);
-
-      expect(JSON.parse(response.text)).toStrictEqual(mockError);
-    });
+    //   expect(JSON.parse(response.text)).toStrictEqual(mockError);
+    // });
   });
 
   describe('Get  /user/id', () => {
     it('on succes - find user', async () => {
       const mockUser = {
-        id: mockId,
-        displayName: mockNewName,
+        friends: [],
+        _id: mockId,
         email: mockEmail,
-        image: null,
+        nickname: mockNewNickname,
       };
 
       const response = await request
@@ -258,31 +326,9 @@ describe('User Router', () => {
         },
       };
 
-      const response = await request
-        .agent(app)
-        .get(`/user/${mockId}`)
-        .send({ displayName: mockNewName });
+      const response = await request.agent(app).get(`/user/${mockId}`);
 
       expect(response.status).toBe(401);
-
-      expect(JSON.parse(response.text)).toStrictEqual(mockError);
-    });
-
-    it('on failure - user not found', async () => {
-      const mockError = {
-        error: {
-          details: null,
-          message: 'Usuário não encontrado',
-        },
-      };
-
-      const response = await request
-        .agent(app)
-        .get('/user/:fakeId')
-        .set('Authorization', mockToken)
-        .send({ displayName: mockNewName });
-
-      expect(response.status).toBe(400);
 
       expect(JSON.parse(response.text)).toStrictEqual(mockError);
     });
@@ -293,14 +339,29 @@ describe('User Router', () => {
       const response = await request
         .agent(app)
         .delete(`/user/${mockId}`)
-        .set('Authorization', mockToken)
-        .send({ displayName: mockNewName });
+        .set('Authorization', mockToken);
 
       expect(response.status).toBe(204);
     });
   });
 
-  describe('Patch  /user/id/image', () => {
-    it('on succes', async () => {});
+  describe('User not found', () => {
+    it('GET /user/id', async () => {
+      const mockError = {
+        error: {
+          details: null,
+          message: 'Error by looking a user with this token',
+        },
+      };
+
+      const response = await request
+        .agent(app)
+        .get(`/user/${mockId}`)
+        .set('Authorization', mockToken);
+
+      expect(response.status).toBe(401);
+
+      expect(JSON.parse(response.text)).toStrictEqual(mockError);
+    });
   });
 });

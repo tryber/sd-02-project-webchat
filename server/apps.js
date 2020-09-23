@@ -1,14 +1,18 @@
 require('dotenv').config();
 
+const cors = require('cors');
+
 const bodyParser = require('body-parser');
 
 const path = require('path');
 
-const app = require('express')();
+const express = require('express');
+
+const app = express();
 
 const socketIoServer = require('http').createServer();
 
-const events = require('socket.io')(socketIoServer);
+const event = require('socket.io')(socketIoServer);
 
 const middlewares = require('./middlewares');
 
@@ -24,14 +28,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
 
+app.use(cors());
+
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-app.use('/chat', chatRouter({ Chat, chatModel, middlewares, events }));
+app.use('/chat', chatRouter({ Chat, chatModel, middlewares, event }));
 
-app.use('/message', messageRouter({ Message, messageModel, middlewares, events }));
+app.use('/message', messageRouter({ Message, messageModel, middlewares, event }));
 
 app.use('/user', userRouter({ User, userModel, middlewares }));
 
 app.use(middlewares.error);
 
-module.exports = { app, io: events };
+module.exports = { app, io: event };

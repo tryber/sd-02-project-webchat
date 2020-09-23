@@ -8,14 +8,18 @@ const handleError = {
   },
 };
 
-function create({ Message, messageModel }) {
+function create({ Message, messageModel, event }) {
   return async (req, res) => {
     const message = new Message({
       ...req.body,
+      userId: req.user._id,
+      nickname: req.user.nickname,
       messageModel,
     });
 
     const data = await message.create();
+    console.log(data);
+    event.emit('notification', { user: req.user.nickname, content: data.content });
 
     res.status(201).json({ message: data });
   };
@@ -23,7 +27,7 @@ function create({ Message, messageModel }) {
 
 function listBy({ Message, messageModel }) {
   return async (req, res) => {
-    const { key, value } = req.params;
+    const { key, value } = req.query;
 
     const message = new Message({ messageModel, [key]: value });
 
@@ -35,7 +39,7 @@ function listBy({ Message, messageModel }) {
   };
 }
 
-function remove({ Message, messageModel }) {
+function remove({ Message, messageModel, events }) {
   return service.remove({ Domain: Message, model: messageModel, modelkey: 'messageModel' });
 }
 

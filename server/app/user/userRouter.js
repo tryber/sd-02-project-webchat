@@ -31,6 +31,14 @@ function userRouter({ middlewares, ...dependencies }) {
     );
 
   router
+    .route('/:id/friend')
+    .patch(
+      middlewares.auth,
+      middlewares.validate(updateSchema),
+      rescue(userController.addFriend(dependencies)),
+    );
+
+  router
     .route('/:id')
     .get(middlewares.auth, rescue(userController.find(dependencies)))
     .patch(

@@ -18,7 +18,7 @@ async function authMiddleware(req, _res, next) {
 
     if (user.length === 0) throw Boom.unauthorized('Error by looking a user with this token');
 
-    req.user = user[0].dataValues;
+    req.user = user[0];
 
     next();
   } catch (err) {

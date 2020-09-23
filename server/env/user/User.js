@@ -7,6 +7,10 @@ class User {
     this.id = id;
   }
 
+  async addFriend() {
+    return userService.addFriend({ data: this.data, id: this.id, Model: this.userModel });
+  }
+
   async create() {
     return userService.create({ data: this.data, Model: this.userModel });
   }

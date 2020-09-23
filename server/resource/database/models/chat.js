@@ -2,7 +2,7 @@ const mongoose = require('../connection');
 
 const chatSchema = new mongoose.Schema(
   {
-    createdAt: Date,
+    createdAt: { type: Date, default: new Date() },
     title: String,
     userId: String,
     users: [String],

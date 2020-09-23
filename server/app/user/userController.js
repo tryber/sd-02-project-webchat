@@ -17,6 +17,22 @@ const handleError = {
   },
 };
 
+function addFriend({ User, userModel }) {
+  return async (req, res) => {
+    const user = new User({
+      friend: req.body.friend,
+      userModel,
+      id: req.params.id,
+    });
+
+    const { data, error } = await user.addFriend();
+
+    if (error) return handleError[error]();
+
+    res.status(200).json({ user: data });
+  };
+}
+
 function create({ User, userModel }) {
   return async (req, res) => {
     const user = new User({
@@ -81,6 +97,7 @@ function update({ User, userModel }) {
 }
 
 module.exports = {
+  addFriend,
   create,
   find,
   list,

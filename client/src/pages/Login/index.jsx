@@ -15,15 +15,15 @@ import './login.css';
 function Login() {
   const history = useHistory();
 
-  const { message } = useContext(Context);
-
-  const [nickname, setNickname] = useState({ value: null, error: null });
+  const [email, setEmail] = useState({ value: null, error: null });
 
   const [password, setPassword] = useState({ value: null, error: null });
 
-  const isDisabled = !nickname.value || !password.value || nickname.error || password.error;
+  const { message } = useContext(Context);
 
-  const body = { nickname: nickname.value, password: password.value };
+  const isDisabled = !email.value || !password.value || email.error || password.error;
+
+  const body = { email: email.value, password: password.value };
 
   return (
     <section className="boxLogin">
@@ -34,12 +34,7 @@ function Login() {
       {message.value && <Message />}
 
       <Form>
-        <FormGroup
-          callback={setNickname}
-          field="nickname"
-          state={nickname}
-          testId="nickname-login-input"
-        />
+        <FormGroup callback={setEmail} field="email" state={email} testId="email-input" />
         <FormGroup
           callback={setPassword}
           field="password"
@@ -51,7 +46,7 @@ function Login() {
           isDisabled={isDisabled}
           label="Login"
           testId="loginButton"
-          type="LOGIN"
+          endpoint="/user/login"
         />
       </Form>
       <Button

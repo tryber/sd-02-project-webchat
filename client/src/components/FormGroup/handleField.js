@@ -4,6 +4,13 @@ import Joi from '@hapi/joi';
 
 ReactJoiValidations.setJoi(Joi);
 
+const email = Joi.string()
+  .regex(/\S+@\S+\.\S+/)
+  .messages({
+    'string.pattern.base': 'Email must be in a format <name>@<domain>',
+    'string.empty': 'Email is not allowed to be empty',
+  });
+
 const nickname = Joi.string()
   .regex(/^[a-zA-Z0-9_][a-zA-Z0-9_.]*/)
   .messages({
@@ -19,6 +26,7 @@ const password = Joi.string()
   });
 
 const schemas = {
+  email,
   nickname,
   password,
 };

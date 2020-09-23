@@ -8,15 +8,19 @@ import Form from 'react-bootstrap/Form';
 
 import Button from 'react-bootstrap/Button';
 
-import { Chat, FormGroup, Message, SubmitButton } from '../../components';
+import { Chat, Message } from '../../components';
 
 import './home.css';
 
 function Home() {
   const history = useHistory();
 
+  const { message } = useContext(Context);
+
   return (
     <section className="boxHome">
+      {message.value && <Message infinity />}
+
       <section className="homeMenu">
         <Button variant="outline-danger" onClick={() => history.push('/people')}>
           People
@@ -25,7 +29,7 @@ function Home() {
           Groups
         </Button>
       </section>
-      <Chat />
+      <Chat id="home" />
     </section>
   );
 }

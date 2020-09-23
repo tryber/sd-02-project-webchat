@@ -8,7 +8,7 @@ const handleError = {
   },
 };
 
-function create({ Chat, chatModel }) {
+function create({ Chat, chatModel, event }) {
   return async (req, res) => {
     const chat = new Chat({
       ...req.body,
@@ -16,6 +16,8 @@ function create({ Chat, chatModel }) {
     });
 
     const data = await chat.create();
+
+    event.to(data._id).emit({ user: req.user.id, title: data.title });
 
     res.status(201).json({ chat: data });
   };

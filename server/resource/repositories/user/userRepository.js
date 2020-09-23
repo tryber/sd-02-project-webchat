@@ -8,6 +8,16 @@ class UserRepository {
     this.data = data;
   }
 
+  async addFriend() {
+    return this.Users.findOneAndUpdate(
+      { _id: this.data.id },
+      { $push: { friends: this.data.friend } },
+      {
+        new: true,
+      },
+    );
+  }
+
   async create() {
     return this.Users.create(getFields(this.data));
   }

@@ -24,11 +24,11 @@
 
 .message_comp > button > .material-icons {
   color: white;
-  font-size: 1em;
+  font-size: 70%;
   height: 1em;
 }
 
 .message_comp > strong {
-  font-size: 1em;
+  font-size: 30%;
   padding: 2%;
 }

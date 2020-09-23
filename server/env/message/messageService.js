@@ -4,10 +4,10 @@ async function create({ data, Model }) {
   return messageModel.create();
 }
 
-async function listBy({ Model, field }) {
-  const messageModel = new Model();
+async function listBy({ Model, field, data }) {
+  const messageModel = new Model(data);
 
-  const message = messageModel.listBy(field);
+  const message = await messageModel.listBy(field);
 
   if (message.length === 0) return { data: null, error: 'notFound' };
 

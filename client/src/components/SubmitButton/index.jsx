@@ -10,17 +10,18 @@ import handleSubmit from './handleSubmit';
 
 import './submitButton.css';
 
-const SubmitButton = ({ body, isDisabled, label, testId, type }) => {
+const SubmitButton = ({ body, isDisabled, label, testId, endpoint }) => {
   const { setMessage, setUser } = useContext(Context);
 
   const history = useHistory();
 
   return (
     <Button
+      className="submitButton"
       data-testid={testId}
       disabled={isDisabled}
       onClick={async (event) =>
-        await handleSubmit({ event, body, history, label, setMessage, setUser, type })
+        await handleSubmit({ event, body, history, label, setMessage, setUser, endpoint })
       }
       type="submit"
       variant="outline-danger"

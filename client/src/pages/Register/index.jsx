@@ -7,13 +7,22 @@ import './register.css';
 const Register = () => {
   const { message } = useContext(Context);
 
+  const [email, setEmail] = useState({ value: null, error: null });
+
   const [nickname, setNickname] = useState({ value: null, error: null });
 
   const [password, setPassword] = useState({ value: null, error: null });
 
-  const isDisabled = nickname.error || !nickname.value || password.error || !password.value;
+  const isDisabled =
+    !email.value ||
+    email.error ||
+    nickname.error ||
+    !nickname.value ||
+    password.error ||
+    !password.value;
 
   const body = {
+    email: email.value,
     nickname: nickname.value,
     password: password.value,
   };
@@ -24,27 +33,28 @@ const Register = () => {
         <h1>Register</h1>
       </header>
 
-      {message.value && <Message infinity />}
+      {message.value && <Message />}
 
       <Form>
+        <FormGroup callback={setEmail} field="email" state={email} testId="email-register-input" />
         <FormGroup
           callback={setNickname}
           field="nickname"
           state={nickname}
-          testId="nickname-login-input"
+          testId="nickname-register-input"
         />
         <FormGroup
           callback={setPassword}
           field="password"
           state={password}
-          testId="password-login-input"
+          testId="password-register-input"
         />
         <SubmitButton
           body={body}
           isDisabled={isDisabled}
           label="Create User"
           testId="registerButton"
-          type="REGISTER"
+          endpoint="/user"
         />
       </Form>
     </section>

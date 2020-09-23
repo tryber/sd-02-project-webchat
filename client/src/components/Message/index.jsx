@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { Context } from '../../context';
-import './style.css';
+import './message.css';
 
 const types = {
   ALERT: '#e71d36',
@@ -28,7 +28,7 @@ const Message = ({ infinity }) => {
 
   return (
     <div
-      className="box60 boxColorYellow"
+      className="message_comp"
       data-testid="messageBox"
       style={{ display: value ? 'flex' : 'none' }}
     >

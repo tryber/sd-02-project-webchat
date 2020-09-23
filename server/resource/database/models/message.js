@@ -2,9 +2,10 @@ const mongoose = require('../connection');
 
 const messageSchema = new mongoose.Schema(
   {
-    createdAt: Date,
+    createdAt: { type: Date, default: new Date() },
     content: String,
     userId: String,
+    nickname: String,
     chatId: String,
   },
   { versionKey: false },

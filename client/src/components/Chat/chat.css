@@ -1,6 +1,5 @@
 .boxChat {
   align-content: center;
-
   align-items: center;
   display: flex;
   flex-flow: column wrap;
@@ -11,12 +10,21 @@
   width: 90%;
 }
 
-.boxChat div {
+.boxChat section {
   border-radius: 50px;
   border: 10px double #027a9f;
   padding: 1% 0.5%;
-  height: 85%;
+  height: 80%;
+  overflow: scroll;
+
   width: 90%;
+}
+
+.boxChat section::-webkit-scrollbar {
+  color: #027a9f;
+  border-radius: 10px;
+  
+  width: 10px;
 }
 
 .boxChat form {

@@ -1,16 +1,12 @@
 import { request } from '../../service';
 
-async function handleSubmit({ body, event, history, setMessage, setUser, type }) {
+async function handleSubmit({ body, event, history, setMessage, setUser, endpoint }) {
   event.preventDefault();
 
-  const { data, error } = await request.postData({ body, type });
+  const { data, error } = await request.postData({ body, endpoint });
 
   if (error) {
-    return setMessage({ content: error.message, type: 'ALERT' });
-  }
-
-  if (type === 'REGISTER') {
-    setMessage({ content: 'User registered with success', type: 'SUCCESS' });
+    return setMessage({ value: error.message, type: 'ALERT' });
   }
 
   const { token, ...user } = data;
