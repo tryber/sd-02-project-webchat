@@ -12,29 +12,38 @@ const {
   savedMessageByDate,
   saveUsers,
   onlineUsers,
-  findAndDelete } = require('./models/ChatModel');
+  findAndDelete,
+  savePrivateHistory,
+  savedPrivateHistory,
+  savedPrivateMessages } = require('./models/ChatModel');
 
 const PORT = process.env.PORT || 3000;
+
+const usersOnline = [];
 
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/public/index.html`);
 });
 
 io.on('connection', (socket) => {
-  socket.on('loginUser', async ({ user }) => {
+  socket.on('loginUser', async ({ user, newEmit }) => {
     socket.user = user;
-    await saveUsers(user);
+    const socketId = socket.id;
+    usersOnline.push({ user, socket: socketId });
+    await saveUsers(user, socketId);
     const modelAnswer = await onlineUsers();
     await io.emit('onlineList', { users: modelAnswer });
     const historyMessages = await savedHistory();
     historyMessages.forEach(({ user: userHistory, message, date }) => {
       socket.emit('history', { modelAnswer: { userHistory, message, date } });
     });
-    await socket.broadcast.emit('loggedUser', `${socket.user} acabou de se conectar.`);
+    if (newEmit) {
+      await socket.broadcast.emit('loggedUser', `${socket.user} acabou de se conectar.`);
+    }
   });
 
   socket.on('disconnect', async () => {
-    await findAndDelete(socket.user);
+    await findAndDelete(socket.id);
     io.emit('disconnectChat', `Usuário ${socket.user} desconectou-se`);
     const modelAnswer = await onlineUsers();
     await io.emit('disconnectList', modelAnswer);
@@ -45,6 +54,22 @@ io.on('connection', (socket) => {
     await saveHistory({ user: userName, message, date });
     const modelAnswer = await savedMessageByDate(date);
     io.emit('message', { modelAnswer });
+  });
+
+  socket.on('messagePrivate', async ({ user, message, forId }) => {
+    const date = Date.now();
+    const meSocket = socket.id;
+    const { user: userFor } = usersOnline.find(({ socket: userSocket }) => userSocket === forId);
+    await savePrivateHistory({ user, message, date, userFor });
+    const modelAnswer = await savedPrivateHistory(date);
+    io.to(forId).emit('messagePrivate', { modelAnswer, meSocket });
+    io.to(meSocket).emit('messagePrivate', { modelAnswer, meSocket });
+  });
+
+  socket.on('privateHistory', async ({ user, forUser }) => {
+    const modelAnswer = await savedPrivateMessages(user, forUser);
+    const meSocket = socket.id;
+    socket.emit('messagePrivate', { modelAnswer, meSocket });
   });
 });
 

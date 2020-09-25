@@ -7,9 +7,12 @@ const divMsgs = document.querySelector('.messagesBox');
 const spaceSpan1 = document.createTextNode(' ');
 const spaceSpan2 = document.createTextNode(' ');
 const userList = [];
+const allMessages = [];
 let userName;
 let clicked = false;
-let socketUser;
+let socketUser = 'Geral';
+let socketIdPrivate;
+let meSocketId;
 
 function createLiMsg({ user, message, date }) {
   const liMsg = document.createElement('li');
@@ -29,27 +32,55 @@ function createLiMsg({ user, message, date }) {
   return liMsg;
 }
 
-function randomNumber() {
+function createPrivateMsg({ user, message, date }) {
+  const liMsg = document.createElement('li');
+  const divTagMsg = document.createElement('div');
+  const span1 = document.createElement('span');
+  const span2 = document.createElement('span');
+  const span3 = document.createElement('span');
+  liMsg.append(divTagMsg);
+  divTagMsg.append(span1, spaceSpan1, span2, spaceSpan2, span3);
+  span1.innerHTML = user;
+  span2.innerHTML = message;
+  span3.innerHTML = new Date(date).toLocaleString();
+  divTagMsg.className = 'msgContainer';
+  span1.className = 'userName';
+  span2.className = 'msgSpan';
+  span3.className = 'date';
+  return liMsg;
+}
+
+function randomNumber256() {
   return Math.floor(Math.random() * 256);
 }
 
 function setBgColor({ target }) {
-  const main = target;
-  const color = target.style.backgroundColor === 'white' ? '' : 'white';
-  main.style.backgroundColor = color;
-  clicked = !clicked;
-  socketUser = target.getAttribute('value');
-  console.log(socketUser);
+  socketUser = target.innerText;
+  socketIdPrivate = target.getAttribute('value');
+  if (socketUser !== 'Geral') {
+    socket.emit('privateHistory', { user: userName, forUser: socketUser });
+    clicked = true;
+  } else if (socketUser === 'Geral') {
+    socket.emit('loginUser', { user: userName, newEmit: false });
+    clicked = false;
+  }
+  ulMsg.innerText = `Falando com: ${socketUser}`;
 }
 
-function createLiNewUser(newUser, divClass, spanClass) {
+function createLiNewUser(newUser, divClass, spanClass, socketIdUser) {
   const liUser = document.createElement('li');
   const divTagNewUser = document.createElement('div');
   const spanNew1 = document.createElement('span');
+  const socketNum = Math.random();
   liUser.append(divTagNewUser);
   divTagNewUser.onclick = (e) => setBgColor(e);
-  divTagNewUser.setAttribute('value', newUser);
-  spanNew1.setAttribute('value', newUser);
+  if (newUser !== 'Geral') {
+    divTagNewUser.setAttribute('value', socketIdUser);
+    spanNew1.setAttribute('value', socketIdUser);
+  } else if (newUser === 'Geral') {
+    divTagNewUser.setAttribute('value', socketNum);
+    spanNew1.setAttribute('value', socketNum);
+  }
   divTagNewUser.append(spanNew1);
   spanNew1.innerHTML = newUser;
   divTagNewUser.className = divClass;
@@ -60,27 +91,38 @@ function createLiNewUser(newUser, divClass, spanClass) {
 function submitForm(event) {
   event.preventDefault();
   const lengthMsg = inputValue.value;
-  if (lengthMsg.length > 0) {
-    socket.emit('message', { user: userName, message: inputValue.value });
+  if (lengthMsg.length > 0 && !clicked) {
+    socket.emit('message', { user: userName, message: lengthMsg });
     inputValue.value = '';
   }
-  if (clicked) {
-    socket.emit(`message${socketUser}`, { user: userName, message: inputValue.value });
+  if (clicked && socketUser !== 'Geral') {
+    socket.emit('messagePrivate', {
+      user: userName,
+      message: inputValue.value,
+      forId: socketIdPrivate,
+    });
     inputValue.value = '';
   }
-  return null;
 }
 
-function receiveMessage() {
-  if (!clicked) {
-    socket.on('message', ({ modelAnswer: { user, message, date } }) => {
+function receiveMessageAll() {
+  socket.on('message', ({ modelAnswer: { user, message, date } }) => {
+    if (socketUser === 'Geral') {
       ulMsg.append(createLiMsg({ user, message, date }));
       divMsgs.scrollTop = divMsgs.scrollHeight;
-    });
-  }
-  socket.on(`message${userName}`, ({ modelAnswer: { user, message, date } }) => {
-    ulMsg.append(createLiMsg({ user, message, date }));
-    divMsgs.scrollTop = divMsgs.scrollHeight;
+    }
+  });
+}
+
+function receiveMessagePrivate() {
+  socket.on('messagePrivate', ({ modelAnswer: { user, message, date }, meSocket }) => {
+    if (
+      ((user !== undefined) && (clicked) && (meSocket === socketIdPrivate))
+      || ((user !== undefined) && (clicked) && meSocket === meSocketId)
+    ) {
+      ulMsg.append(createPrivateMsg({ user, message, date }));
+      divMsgs.scrollTop = divMsgs.scrollHeight;
+    }
   });
 }
 
@@ -90,13 +132,16 @@ function receiveHistory() {
     ulMsg.append(createLiMsg({ user, message, date }));
     divMsgs.scrollTop = 0;
   });
+  ulMsg.innerText = `Falando com: ${socketUser}`;
 }
 
 function setUserName() {
-  userName = `User${randomNumber()}`;
-  userList.push(userName);
-  socketUser = userName;
-  return socket.emit('loginUser', { user: userName });
+  userName = prompt('Qual seu nome?');
+  if (!userName) {
+    userName = `User${randomNumber256()}`;
+  }
+  userList.push({ user: userName });
+  return socket.emit('loginUser', { user: userName, newEmit: true });
 }
 
 function newLoggin() {
@@ -116,9 +161,12 @@ function disconectUser() {
 function onlineUsers() {
   socket.on('onlineList', async ({ users }) => {
     ulUsers.innerText = '';
-    users.forEach(({ user }) => {
-      userList.push(user);
-      ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan'));
+    ulUsers.append(createLiNewUser('Geral', 'onlineUser', 'onlineSpan'));
+    users.forEach(({ user, socket: socketIdUser }) => {
+      if (user === userName) {
+        meSocketId = socketIdUser;
+      }
+      ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan', socketIdUser));
     });
   });
 }
@@ -126,23 +174,18 @@ function onlineUsers() {
 function disconnectList() {
   socket.on('disconnectList', (users) => {
     ulUsers.innerText = '';
+    ulUsers.append(createLiNewUser('Geral', 'onlineUser', 'onlineSpan'));
     users.forEach(({ user }) => {
       ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan'));
     });
   });
 }
 
-function changeName({ target }) {
-  userName = target.value;
-  socket.disconnect();
-  socket.connect();
-  socket.emit('loginUser', { user: userName });
-}
-
 setUserName();
-receiveMessage();
+receiveMessageAll();
 receiveHistory();
 disconectUser();
 newLoggin();
 onlineUsers();
 disconnectList();
+receiveMessagePrivate();

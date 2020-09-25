@@ -11,15 +11,43 @@ const savedHistory = async () => {
   return modelAnswer;
 };
 
+const savedPrivateMessages = async () => {
+  const db = await connection();
+  const modelAnswer = db.collection('privateHistory').find({}).toArray();
+  return modelAnswer;
+};
+
+const savePrivateHistory = async ({ user, message, date, userFor }) => {
+  const db = await connection();
+  await db.collection('privateHistory').insertOne(
+    {
+      user,
+      message,
+      date,
+      forWho: userFor,
+    },
+  );
+};
+
+const savedPrivateHistory = async (date) => {
+  const db = await connection();
+  const modelAnswer = db.collection('privateHistory').findOne({ date });
+  return modelAnswer;
+};
+
 const savedMessageByDate = async (date) => {
   const db = await connection();
   const modelAnswer = db.collection('history').findOne({ date });
   return modelAnswer;
 };
 
-const saveUsers = async (user) => {
+const saveUsers = async (user, socketId) => {
   const db = await connection();
-  await db.collection('online').insertOne({ user });
+  await db.collection('online').updateOne(
+    { socket: socketId },
+    { $set: { user, socket: socketId } },
+    { upsert: true },
+  );
 };
 
 const onlineUsers = async () => {
@@ -28,9 +56,9 @@ const onlineUsers = async () => {
   return modelAnswer;
 };
 
-const findAndDelete = async (user) => {
+const findAndDelete = async (socketId) => {
   const db = await connection();
-  const modelAnswer = await db.collection('online').deleteOne({ user });
+  const modelAnswer = await db.collection('online').deleteOne({ socket: socketId });
   return modelAnswer;
 };
 
@@ -41,4 +69,7 @@ module.exports = {
   saveUsers,
   onlineUsers,
   findAndDelete,
+  savePrivateHistory,
+  savedPrivateHistory,
+  savedPrivateMessages,
 };
