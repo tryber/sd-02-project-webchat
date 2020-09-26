@@ -182,7 +182,9 @@ function onlineUsers() {
       if (user === userName) {
         meSocketId = socketIdUser;
       }
-      ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan', socketIdUser));
+      if (user !== userName) {
+        ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan', socketIdUser));
+      }
     });
   });
 }

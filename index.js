@@ -28,11 +28,11 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+  const meSocket = socket.id;
   socket.on('loginUser', async ({ user, newEmit }) => {
     socket.user = user;
-    const socketId = socket.id;
-    usersOnline.push({ user, socket: socketId });
-    await saveUsers(user, socketId);
+    usersOnline.push({ user, socket: meSocket });
+    await saveUsers(user, meSocket);
     const modelAnswer = await onlineUsers();
     await io.emit('onlineList', { users: modelAnswer });
     const historyMessages = await savedHistory();
@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', async () => {
-    await findAndDelete(socket.id);
+    await findAndDelete(meSocket);
     io.emit('disconnectChat', `Usuário ${socket.user} desconectou-se`);
     const modelAnswer = await onlineUsers();
     await io.emit('disconnectList', modelAnswer);
@@ -60,7 +60,6 @@ io.on('connection', (socket) => {
 
   socket.on('messagePrivate', async ({ user, message, forId }) => {
     const date = Date.now();
-    const meSocket = socket.id;
     const { user: userFor } = usersOnline.find(({ socket: userSocket }) => userSocket === forId);
     const chatExist = await existPrivateChat(user, userFor);
     if (!chatExist) {
@@ -75,7 +74,6 @@ io.on('connection', (socket) => {
 
   socket.on('privateHistory', async ({ user, forUser }) => {
     const allHistory = await savedPrivateHistory(user, forUser);
-    const meSocket = socket.id;
     if (allHistory.length !== 0) {
       const { messages } = allHistory[0];
       messages.forEach((modelAnswer) => {
