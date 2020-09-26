@@ -77,9 +77,9 @@ io.on('connection', (socket) => {
     const allHistory = await savedPrivateHistory(user, forUser);
     const meSocket = socket.id;
     if (allHistory.length !== 0) {
-      allHistory.forEach((modelAnswer) => {
-        console.log(modelAnswer);
-        // io.to(meSocket).emit('mePrivateHistory', { modelAnswer, meSocket });
+      const { messages } = allHistory[0];
+      messages.forEach((modelAnswer) => {
+        io.to(meSocket).emit('mePrivateHistory', { modelAnswer, meSocket });
       });
     }
   });

@@ -60,7 +60,7 @@ const savedPrivateHistory = async (user, userFor) => {
     .aggregate([
       { $match: { users: { $all: [user, userFor] } } },
       { $unwind: '$messages' },
-      { $sort: { 'messages.date': -1 } },
+      { $sort: { 'messages.date': 1 } },
       { $group: { _id: '$users', messages: { $push: '$messages' } } },
       { $project: { _id: 0, messages: 1 } },
     ]).toArray();

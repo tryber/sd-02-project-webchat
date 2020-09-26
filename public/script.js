@@ -127,15 +127,14 @@ function receiveMessagePrivate() {
 }
 
 function historyPrivateMessage() {
-  socket.on('mePrivateHistory', ({ modelAnswer, meSocket }) => {
-    console.log(modelAnswer, meSocket);
-    // if (
-    //   ((user !== undefined) && (clicked) && (meSocket === socketIdPrivate))
-    //   || ((user !== undefined) && (clicked) && meSocket === meSocketId)
-    // ) {
-    //   ulMsg.append(createPrivateMsg({ user, message, date }));
-    //   divMsgs.scrollTop = divMsgs.scrollHeight;
-    // }
+  socket.on('mePrivateHistory', ({ modelAnswer: { user, message, date }, meSocket }) => {
+    if (
+      ((user !== undefined) && (clicked) && (meSocket === socketIdPrivate))
+      || ((user !== undefined) && (clicked) && meSocket === meSocketId)
+    ) {
+      ulMsg.append(createPrivateMsg({ user, message, date }));
+      divMsgs.scrollTop = divMsgs.scrollHeight;
+    }
   });
 }
 
@@ -159,15 +158,19 @@ function setUserName() {
 
 function newLoggin() {
   socket.on('loggedUser', (msg) => {
-    ulMsg.append(createLiNewUser(msg, 'msgContainer', 'userName'));
-    divMsgs.scrollTop = divMsgs.scrollHeight;
+    if (socketUser === 'Geral') {
+      ulMsg.append(createLiNewUser(msg, 'msgContainer', 'userName'));
+      divMsgs.scrollTop = divMsgs.scrollHeight;
+    }
   });
 }
 
 function disconectUser() {
   socket.on('disconnectChat', (msg) => {
-    ulMsg.append(createLiNewUser(msg, 'msgContainer', 'userName'));
-    divMsgs.scrollTop = divMsgs.scrollHeight;
+    if (socketUser === 'Geral') {
+      ulMsg.append(createLiNewUser(msg, 'msgContainer', 'userName'));
+      divMsgs.scrollTop = divMsgs.scrollHeight;
+    }
   });
 }
 
