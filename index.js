@@ -15,7 +15,9 @@ const {
   findAndDelete,
   savePrivateHistory,
   savedPrivateHistory,
-  savedPrivateMessages } = require('./models/ChatModel');
+  savedPrivateMessages,
+  existPrivateChat,
+  updatePrivateHistory } = require('./models/ChatModel');
 
 const PORT = process.env.PORT || 3000;
 
@@ -60,16 +62,26 @@ io.on('connection', (socket) => {
     const date = Date.now();
     const meSocket = socket.id;
     const { user: userFor } = usersOnline.find(({ socket: userSocket }) => userSocket === forId);
-    await savePrivateHistory({ user, message, date, userFor });
-    const modelAnswer = await savedPrivateHistory(date);
-    io.to(forId).emit('messagePrivate', { modelAnswer, meSocket });
-    io.to(meSocket).emit('messagePrivate', { modelAnswer, meSocket });
+    const chatExist = await existPrivateChat(user, userFor);
+    if (!chatExist) {
+      await savePrivateHistory({ user, message, date, userFor });
+    } else {
+      await updatePrivateHistory({ user, message, date, userFor });
+    }
+    const [{ messages }] = await savedPrivateMessages(user, userFor);
+    io.to(forId).emit('messagePrivate', { modelAnswer: messages, meSocket });
+    io.to(meSocket).emit('messagePrivate', { modelAnswer: messages, meSocket });
   });
 
   socket.on('privateHistory', async ({ user, forUser }) => {
-    const modelAnswer = await savedPrivateMessages(user, forUser);
+    const allHistory = await savedPrivateHistory(user, forUser);
     const meSocket = socket.id;
-    socket.emit('messagePrivate', { modelAnswer, meSocket });
+    if (allHistory.length !== 0) {
+      allHistory.forEach((modelAnswer) => {
+        console.log(modelAnswer);
+        // io.to(meSocket).emit('mePrivateHistory', { modelAnswer, meSocket });
+      });
+    }
   });
 });
 

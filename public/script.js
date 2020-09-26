@@ -126,6 +126,19 @@ function receiveMessagePrivate() {
   });
 }
 
+function historyPrivateMessage() {
+  socket.on('mePrivateHistory', ({ modelAnswer, meSocket }) => {
+    console.log(modelAnswer, meSocket);
+    // if (
+    //   ((user !== undefined) && (clicked) && (meSocket === socketIdPrivate))
+    //   || ((user !== undefined) && (clicked) && meSocket === meSocketId)
+    // ) {
+    //   ulMsg.append(createPrivateMsg({ user, message, date }));
+    //   divMsgs.scrollTop = divMsgs.scrollHeight;
+    // }
+  });
+}
+
 function receiveHistory() {
   ulMsg.innerText = '';
   socket.on('history', ({ modelAnswer: { userHistory: user, message, date } }) => {
@@ -189,3 +202,4 @@ newLoggin();
 onlineUsers();
 disconnectList();
 receiveMessagePrivate();
+historyPrivateMessage();
