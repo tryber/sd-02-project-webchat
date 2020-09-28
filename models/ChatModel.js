@@ -90,8 +90,7 @@ const onlineUsers = async () => {
 
 const findAndDelete = async (socketId) => {
   const db = await connection();
-  const modelAnswer = await db.collection('online').deleteOne({ socket: socketId });
-  return modelAnswer;
+  await db.collection('online').deleteOne({ socket: socketId });
 };
 
 module.exports = {
