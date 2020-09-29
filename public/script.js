@@ -149,31 +149,23 @@ function receiveHistory() {
   ulMsg.innerText = `Falando com: ${socketUser}`;
 }
 
-// function setUserName() {
-//   userName = prompt('Qual seu nome?');
-//   if (!userName) {
-//     userName = `User${randomNumber256()}`;
-//   }
-//   return socket.emit('loginUser', { user: userName, newEmit: true });
+// function newLoggin() {
+//   socket.on('loggedUser', (msg) => {
+//     if (socketUser === 'Geral') {
+//       ulMsg.append(createLiNewUser(msg, 'msgContainer', 'userName'));
+//       divMsgs.scrollTop = divMsgs.scrollHeight;
+//     }
+//   });
 // }
 
-function newLoggin() {
-  socket.on('loggedUser', (msg) => {
-    if (socketUser === 'Geral') {
-      ulMsg.append(createLiNewUser(msg, 'msgContainer', 'userName'));
-      divMsgs.scrollTop = divMsgs.scrollHeight;
-    }
-  });
-}
-
-function disconnectUser() {
-  socket.on('disconnectChat', (msg) => {
-    if (socketUser === 'Geral') {
-      ulMsg.append(createLiNewUser(msg, 'msgContainer', 'userName'));
-      divMsgs.scrollTop = divMsgs.scrollHeight;
-    }
-  });
-}
+// function disconnectUser() {
+//   socket.on('disconnectChat', (msg) => {
+//     if (socketUser === 'Geral') {
+//       ulMsg.append(createLiNewUser(msg, 'msgContainer', 'userName'));
+//       divMsgs.scrollTop = divMsgs.scrollHeight;
+//     }
+//   });
+// }
 
 function onlineUsers() {
   socket.on('onlineList', async ({ users }) => {
@@ -190,24 +182,24 @@ function onlineUsers() {
   });
 }
 
-function disconnectList() {
-  socket.on('disconnectList', (users) => {
-    ulUsers.innerText = '';
-    ulUsers.append(createLiNewUser('Geral', 'onlineUser', 'onlineSpan'));
-    users.forEach(({ user }) => {
-      ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan'));
-    });
-  });
-}
+// function disconnectList() {
+//   socket.on('disconnectList', (users) => {
+//     ulUsers.innerText = '';
+//     ulUsers.append(createLiNewUser('Geral', 'onlineUser', 'onlineSpan'));
+//     users.forEach(({ user }) => {
+//       ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan'));
+//     });
+//   });
+// }
 
 window.onload = () => {
   userName = setUserName(randomNumber256, socket, prompt);
   receiveMessageAll();
   receiveHistory();
-  disconnectUser();
-  newLoggin();
+  disconnectUser(socket, socketUser, ulMsg, divMsgs, createLiNewUser);
+  newLoggin(socket, socketUser, ulMsg, divMsgs, createLiNewUser);
   onlineUsers();
-  disconnectList();
+  disconnectList(socket, ulUsers, createLiNewUser);
   receiveMessagePrivate();
   historyPrivateMessage();
 };
