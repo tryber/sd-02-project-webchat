@@ -1,42 +1,31 @@
-const {
-  service: { getFields },
-} = require('../../../utils');
-
 class ChatRepository {
   constructor({ models, data }) {
+    const { _id, ...Data } = data || {};
+
     this.Chats = models.Chats;
-    this.data = data;
+    this.Data = Data;
+    this._id = _id;
   }
 
   async create() {
-    return this.Chats.create(getFields(this.data));
+    return this.Chats.create(this.Data);
   }
 
   async find() {
-    return this.Chats.find({ _id: this.data.id });
+    return this.Chats.find({ _id: this._id });
   }
 
-  async listBy(field) {
-    if (field === 'users') {
-      return this.Chats.find({
-        [field]: { $all: this.data[field] },
-        isPrivate: this.data.isPrivate,
-      }).sort({
-        createdAt: 'asc',
-      });
-    }
-    return this.Chats.find({ [field]: this.data[field], isPrivate: this.data.isPrivate }).sort({
+  async listByUserId() {
+    return this.Chats.find({ userId: this.Data.userId }).sort({
       createdAt: 'asc',
     });
   }
 
-  async remove() {
-    return this.Chats.deleteOne({ _id: this.data.id });
-  }
-
-  async update() {
-    return this.Chats.findOneAndUpdate({ _id: this.data.id }, getFields(this.data), {
-      new: true,
+  async listByUsers() {
+    return this.Chats.find({
+      users: { $all: this.Data.users },
+    }).sort({
+      createdAt: 'asc',
     });
   }
 }

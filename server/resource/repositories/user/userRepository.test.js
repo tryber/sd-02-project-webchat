@@ -7,7 +7,7 @@ describe('User Repository', () => {
     const mockDataSent = { ...faker.random.objectElement() };
 
     const mockDataReceived = {
-      id: faker.random.number(),
+      _id: faker.random.number(),
       ...mockDataSent,
     };
 
@@ -32,11 +32,11 @@ describe('User Repository', () => {
 
   it('Find User', async () => {
     const mockDataSent = {
-      id: faker.random.number(),
+      _id: faker.random.number(),
     };
 
     const mockDataReceived = {
-      id: mockDataSent.id,
+      _id: mockDataSent._id,
       ...faker.random.objectElement(),
     };
 
@@ -54,19 +54,19 @@ describe('User Repository', () => {
 
     expect(mockFind).toHaveBeenCalledTimes(1);
 
-    expect(mockFind).toHaveBeenCalledWith({ _id: mockDataSent.id });
+    expect(mockFind).toHaveBeenCalledWith({ _id: mockDataSent._id });
 
     expect(data).toStrictEqual(mockDataReceived);
   });
 
   it('Find User By Email', async () => {
     const mockDataSent = {
-      id: faker.random.number(),
+      _id: faker.random.number(),
       email: faker.internet.email(),
     };
 
     const mockDataReceived = {
-      id: mockDataSent.id,
+      _id: mockDataSent._id,
       email: mockDataSent.email,
       ...faker.random.objectElement(),
     };
@@ -92,7 +92,7 @@ describe('User Repository', () => {
 
   it('List User', async () => {
     const createUser = () => ({
-      id: faker.random.number(),
+      _id: faker.random.number(),
       email: faker.internet.email(),
       nickname: faker.name.findName(),
       password: faker.internet.password(),
@@ -119,7 +119,7 @@ describe('User Repository', () => {
 
   it('Remove User', async () => {
     const mockDataSent = {
-      id: faker.random.number(),
+      _id: faker.random.number(),
     };
 
     const mockDeleteOne = jest.fn();
@@ -136,17 +136,17 @@ describe('User Repository', () => {
 
     expect(mockDeleteOne).toHaveBeenCalledTimes(1);
 
-    expect(mockDeleteOne).toHaveBeenCalledWith({ _id: mockDataSent.id });
+    expect(mockDeleteOne).toHaveBeenCalledWith({ _id: mockDataSent._id });
   });
 
   it('Update User', async () => {
     const mockDataSent = {
-      id: faker.random.number(),
+      _id: faker.random.number(),
       nickname: faker.name.findName(),
     };
 
     const mockDataReceived = {
-      id: mockDataSent.id,
+      _id: mockDataSent._id,
       nickname: faker.name.findName(),
       ...faker.random.objectElement(),
     };
@@ -166,7 +166,7 @@ describe('User Repository', () => {
     expect(mockFindOneAndUpdate).toHaveBeenCalledTimes(1);
 
     expect(mockFindOneAndUpdate).toHaveBeenCalledWith(
-      { _id: mockDataSent.id },
+      { _id: mockDataSent._id },
       { nickname: mockDataSent.nickname },
       {
         new: true,

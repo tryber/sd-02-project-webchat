@@ -1,33 +1,22 @@
-const {
-  service: { getFields },
-} = require('../../../utils');
-
 class UserRepository {
   constructor({ models, data }) {
-    this.Users = models.Users;
-    this.data = data;
-  }
+    const { _id, ...Data } = data || {};
 
-  async addFriend() {
-    return this.Users.findOneAndUpdate(
-      { id: this.data.id },
-      { $push: { friends: this.data.friend } },
-      {
-        new: true,
-      },
-    );
+    this.Users = models.Users;
+    this.Data = Data;
+    this._id = _id;
   }
 
   async create() {
-    return this.Users.create(getFields(this.data));
+    return this.Users.create(this.Data);
   }
 
   async find() {
-    return this.Users.find({ _id: this.data.id });
+    return this.Users.find({ _id: this._id });
   }
 
   async findBy(field) {
-    return this.Users.find({ [field]: this.data[field] });
+    return this.Users.find({ [field]: this.Data[field] });
   }
 
   async list() {
@@ -35,11 +24,11 @@ class UserRepository {
   }
 
   async remove() {
-    return this.Users.deleteOne({ _id: this.data.id });
+    return this.Users.deleteOne({ _id: this._id });
   }
 
   async update() {
-    return this.Users.findOneAndUpdate({ _id: this.data.id }, getFields(this.data), {
+    return this.Users.findOneAndUpdate({ _id: this._id }, this.Data, {
       new: true,
     });
   }

@@ -4,8 +4,8 @@ const chatSchema = new mongoose.Schema(
   {
     createdAt: { type: Date, default: new Date() },
     isPrivate: Boolean,
-    owner: String,
     title: String,
+    userId: String,
     users: [String],
   },
   { versionKey: false },

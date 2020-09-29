@@ -7,7 +7,7 @@ describe('Message Repository', () => {
     const mockDataSent = { ...faker.random.objectElement() };
 
     const mockDataReceived = {
-      id: faker.random.number(),
+      _id: faker.random.number(),
       ...mockDataSent,
     };
 
@@ -68,7 +68,7 @@ describe('Message Repository', () => {
 
   it('Remove Message', async () => {
     const mockDataSent = {
-      id: faker.random.number(),
+      _id: faker.random.number(),
     };
 
     const mockDeleteOne = jest.fn();
@@ -85,17 +85,17 @@ describe('Message Repository', () => {
 
     expect(mockDeleteOne).toHaveBeenCalledTimes(1);
 
-    expect(mockDeleteOne).toHaveBeenCalledWith({ _id: mockDataSent.id });
+    expect(mockDeleteOne).toHaveBeenCalledWith({ _id: mockDataSent._id });
   });
 
   it('Update Message', async () => {
     const mockDataSent = {
-      id: faker.random.number(),
+      _id: faker.random.number(),
       content: faker.lorem.words(),
     };
 
     const mockDataReceived = {
-      id: mockDataSent.id,
+      _id: mockDataSent._id,
       content: faker.lorem.words(),
       ...faker.random.objectElement(),
     };
@@ -115,7 +115,7 @@ describe('Message Repository', () => {
     expect(mockFindOneAndUpdate).toHaveBeenCalledTimes(1);
 
     expect(mockFindOneAndUpdate).toHaveBeenCalledWith(
-      { _id: mockDataSent.id },
+      { _id: mockDataSent._id },
       { content: mockDataSent.content },
       { new: true },
     );
