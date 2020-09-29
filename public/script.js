@@ -1,7 +1,3 @@
-document.write(
-  'https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js',
-);
-
 const socket = io('http://localhost:3000/');
 
 const inputValue = document.getElementById('messageInput');
@@ -118,6 +114,8 @@ function receiveMessageAll() {
 
 function receiveMessagePrivate() {
   socket.on('messagePrivate', ({ modelAnswer: { user, message, date }, meSocket }) => {
+    console.log('mesocket', meSocket);
+    console.log('meSocktId', meSocketId);
     if (
       ((user !== undefined) && (clicked) && (meSocket === socketIdPrivate))
       || ((user !== undefined) && (clicked) && meSocket === meSocketId)
@@ -149,57 +147,30 @@ function receiveHistory() {
   ulMsg.innerText = `Falando com: ${socketUser}`;
 }
 
-// function newLoggin() {
-//   socket.on('loggedUser', (msg) => {
-//     if (socketUser === 'Geral') {
-//       ulMsg.append(createLiNewUser(msg, 'msgContainer', 'userName'));
-//       divMsgs.scrollTop = divMsgs.scrollHeight;
-//     }
-//   });
-// }
-
-// function disconnectUser() {
-//   socket.on('disconnectChat', (msg) => {
-//     if (socketUser === 'Geral') {
-//       ulMsg.append(createLiNewUser(msg, 'msgContainer', 'userName'));
-//       divMsgs.scrollTop = divMsgs.scrollHeight;
-//     }
-//   });
-// }
-
-function onlineUsers() {
-  socket.on('onlineList', async ({ users }) => {
-    ulUsers.innerText = '';
-    ulUsers.append(createLiNewUser('Geral', 'onlineUser', 'onlineSpan'));
-    users.forEach(({ user, socket: socketIdUser }) => {
-      if (user === userName) {
-        meSocketId = socketIdUser;
-      }
-      if (user !== userName) {
-        ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan', socketIdUser));
-      }
-    });
-  });
-}
-
-// function disconnectList() {
-//   socket.on('disconnectList', (users) => {
+// function onlineUsers() {
+//   socket.on('onlineList', ({ users }) => {
 //     ulUsers.innerText = '';
 //     ulUsers.append(createLiNewUser('Geral', 'onlineUser', 'onlineSpan'));
-//     users.forEach(({ user }) => {
-//       ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan'));
+//     users.forEach(({ user, socket: socketIdUser }) => {
+//       if (user === userName) {
+//         meSocketId = socketIdUser;
+//       }
+//       if (user !== userName) {
+//         ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan', socketIdUser));
+//       }
 //     });
 //   });
 // }
 
-window.onload = () => {
+window.onload = async () => {
   userName = setUserName(randomNumber256, socket, prompt);
+  meSocketId = await onlineUsers(socket, ulUsers, createLiNewUser, userName);
+  // onlineUsers();
+  newLoggin(socket, socketUser, ulMsg, divMsgs, createLiNewUser);
   receiveMessageAll();
   receiveHistory();
-  disconnectUser(socket, socketUser, ulMsg, divMsgs, createLiNewUser);
-  newLoggin(socket, socketUser, ulMsg, divMsgs, createLiNewUser);
-  onlineUsers();
-  disconnectList(socket, ulUsers, createLiNewUser);
   receiveMessagePrivate();
   historyPrivateMessage();
+  disconnectList(socket, ulUsers, createLiNewUser);
+  disconnectUser(socket, socketUser, ulMsg, divMsgs, createLiNewUser);
 };

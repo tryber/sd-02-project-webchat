@@ -35,9 +35,52 @@ function disconnectList(socket, ulUsers, createLiNewUser) {
   });
 }
 
+function onlineUsers(socket, ulUsers, createLiNewUser, userName, meSocketId) {
+  socket.on('onlineList', ({ users }) => {
+    ulUsers.innerText = '';
+    ulUsers.append(createLiNewUser('Geral', 'onlineUser', 'onlineSpan'));
+    users.forEach(({ user, socket: socketIdUser }) => {
+      if (user === userName) {
+        meSocketId = socketIdUser;
+      }
+      if (user !== userName) {
+        ulUsers.append(createLiNewUser(user, 'onlineUser', 'onlineSpan', socketIdUser));
+      }
+    });
+  });
+  return meSocketId;
+}
+
+// function receiveMessagePrivate(socket, clicked, socketIdPrivate, ulMsg, createPrivateMsg, divMsgs) {
+//   socket.on('messagePrivate', ({ modelAnswer: { user, message, date }, meSocket }) => {
+//     if (
+//       ((user !== undefined) && (clicked) && (meSocket === socketIdPrivate))
+//       || ((user !== undefined) && (clicked) && meSocket === meSocketId)
+//     ) {
+//       ulMsg.append(createPrivateMsg({ user, message, date }));
+//       divMsgs.scrollTop = divMsgs.scrollHeight;
+//     }
+//   });
+// }
+
+// function historyPrivateMessage(socket, clicked, socketIdPrivate, ulMsg, createPrivateMsg, divMsgs) {
+//   socket.on('mePrivateHistory', ({ modelAnswer: { user, message, date }, meSocket }) => {
+//     if (
+//       ((user !== undefined) && (clicked) && (meSocket === socketIdPrivate))
+//       || ((user !== undefined) && (clicked) && meSocket === meSocketId)
+//     ) {
+//       ulMsg.append(createPrivateMsg({ user, message, date }));
+//       divMsgs.scrollTop = divMsgs.scrollHeight;
+//     }
+//   });
+// }
+
 module.exports = {
   setUserName,
   newLoggin,
   disconnectUser,
   disconnectList,
+  onlineUsers,
+  // receiveMessagePrivate,
+  // historyPrivateMessage,
 };

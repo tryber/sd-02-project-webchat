@@ -180,4 +180,41 @@ describe('Testing FrontEnd Functions', () => {
       expect(createLiNewUser).toHaveBeenNthCalledWith(3, 'lala', 'onlineUser', 'onlineSpan');
     });
   });
+
+  // describe('Testing onlineUsers', () => {
+  //   test('Create a Li \'Geral\' and not create li with user\'s when user === userName', () => {
+  //     // eslint-disable-next-line prefer-const
+  //     const ulUsers = {
+  //       innerText: '',
+  //       append: jest.fn(),
+  //     };
+  //     const createLiNewUser = jest
+  //       .fn()
+  //       .mockReturnValueOnce('Geral', 'onlineUser', 'onlineSpan');
+  //     const users = {
+  //       users: [
+  //         { user: 'lipe', socket: 'xbIAleIiPn3ULEPtAAAD' },
+  //       ],
+  //     };
+
+  //     const socketMocked = ({ on: jest.fn().mockImplementation(async (_, cb) => {
+  //       cb(users);
+  //       return users;
+  //     }) });
+
+  //     const result = func.onlineUsers(
+  //       socketMocked, ulUsers, createLiNewUser, 'lipe', 'WcUYSNLCTdrTRB4wAAAE',
+  //     );
+  //     expect(ulUsers.innerText).toEqual('');
+  //     expect(ulUsers.append).toBeCalled();
+  //     expect(ulUsers.append).toBeCalledTimes(1);
+  //     expect(createLiNewUser).toBeCalled();
+  //     expect(createLiNewUser).toBeCalledTimes(1);
+  //     expect(createLiNewUser).toHaveBeenNthCalledWith(1, 'Geral', 'onlineUser', 'onlineSpan');
+  //     console.log(result);
+  //     // console.log(socketMocked.on.mock.results[0].value);
+  //     // console.log(socketMocked.on.mock.results[0].value);
+  //     // expect(meSocketId).toEqual(users.users[0].socket);
+  //   });
+  // });
 });
