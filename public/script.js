@@ -1,3 +1,7 @@
+document.write(
+  'https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js',
+);
+
 const socket = io('http://localhost:3000/');
 
 const inputValue = document.getElementById('messageInput');
@@ -6,8 +10,6 @@ const ulUsers = document.getElementById('onlineUsers');
 const divMsgs = document.querySelector('.messagesBox');
 const spaceSpan1 = document.createTextNode(' ');
 const spaceSpan2 = document.createTextNode(' ');
-const userList = [];
-const allMessages = [];
 let userName;
 let clicked = false;
 let socketUser = 'Geral';
@@ -147,14 +149,13 @@ function receiveHistory() {
   ulMsg.innerText = `Falando com: ${socketUser}`;
 }
 
-function setUserName() {
-  userName = prompt('Qual seu nome?');
-  if (!userName) {
-    userName = `User${randomNumber256()}`;
-  }
-  userList.push({ user: userName });
-  return socket.emit('loginUser', { user: userName, newEmit: true });
-}
+// function setUserName() {
+//   userName = prompt('Qual seu nome?');
+//   if (!userName) {
+//     userName = `User${randomNumber256()}`;
+//   }
+//   return socket.emit('loginUser', { user: userName, newEmit: true });
+// }
 
 function newLoggin() {
   socket.on('loggedUser', (msg) => {
@@ -165,7 +166,7 @@ function newLoggin() {
   });
 }
 
-function disconectUser() {
+function disconnectUser() {
   socket.on('disconnectChat', (msg) => {
     if (socketUser === 'Geral') {
       ulMsg.append(createLiNewUser(msg, 'msgContainer', 'userName'));
@@ -199,12 +200,14 @@ function disconnectList() {
   });
 }
 
-setUserName();
-receiveMessageAll();
-receiveHistory();
-disconectUser();
-newLoggin();
-onlineUsers();
-disconnectList();
-receiveMessagePrivate();
-historyPrivateMessage();
+window.onload = () => {
+  userName = setUserName(randomNumber256, socket, prompt);
+  receiveMessageAll();
+  receiveHistory();
+  disconnectUser();
+  newLoggin();
+  onlineUsers();
+  disconnectList();
+  receiveMessagePrivate();
+  historyPrivateMessage();
+};
