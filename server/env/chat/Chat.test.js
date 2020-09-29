@@ -16,7 +16,7 @@ describe('Chat', () => {
 
     const mockCreate = jest.spyOn(chatService, 'create').mockReturnValue(mockDataReceived);
 
-    const chat = new Chat({ ChatModel: mockModel, id: mockId, ...mockDataSent });
+    const chat = new Chat({ chatModel: mockModel, id: mockId, ...mockDataSent });
 
     const data = await chat.create();
 
@@ -28,8 +28,6 @@ describe('Chat', () => {
   });
 
   it('Find', async () => {
-    const mockDataSent = { a: 0 };
-
     const mockDataReceived = { b: 1 };
 
     const mockId = faker.random.number();
@@ -38,7 +36,7 @@ describe('Chat', () => {
 
     const mockFind = jest.spyOn(chatService, 'find').mockReturnValue(mockDataReceived);
 
-    const chat = new Chat({ ChatModel: mockModel, id: mockId });
+    const chat = new Chat({ chatModel: mockModel, id: mockId });
 
     const data = await chat.find();
 
@@ -49,59 +47,43 @@ describe('Chat', () => {
     expect(data).toStrictEqual(mockDataReceived);
   });
 
-  it('ListBy', async () => {
+  it('listByUserId', async () => {
     const mockDataSent = { a: 0 };
 
     const mockDataReceived = { b: 1 };
 
-    const mockField = faker.random.word();
-
     const mockModel = jest.fn();
 
-    const mockList = jest.spyOn(chatService, 'listBy').mockReturnValue(mockDataReceived);
+    const mockList = jest.spyOn(chatService, 'listByUserId').mockReturnValue(mockDataReceived);
 
-    const chat = new Chat({ ChatModel: mockModel, ...mockDataSent });
+    const chat = new Chat({ chatModel: mockModel, ...mockDataSent });
 
-    const data = await chat.listBy(mockField);
+    const data = await chat.listByUserId();
 
     expect(mockList).toHaveBeenCalledTimes(1);
 
-    expect(mockList).toHaveBeenCalledWith({ field: mockField, Model: mockModel });
+    expect(mockList).toHaveBeenCalledWith({ data: mockDataSent, Model: mockModel });
 
     expect(data).toStrictEqual(mockDataReceived);
   });
 
-  it('Remove', async () => {
-    const mockId = faker.random.number();
+  it('listByUsers', async () => {
+    const mockDataSent = { a: 0 };
+
+    const mockDataReceived = { b: 1 };
 
     const mockModel = jest.fn();
 
-    const mockRemove = jest.spyOn(chatService, 'remove').mockImplementation(jest.fn());
+    const mockList = jest.spyOn(chatService, 'listByUsers').mockReturnValue(mockDataReceived);
 
-    const chat = new Chat({ ChatModel: mockModel, id: mockId });
+    const chat = new Chat({ chatModel: mockModel, ...mockDataSent });
 
-    await chat.remove();
+    const data = await chat.listByUsers();
 
-    expect(mockRemove).toHaveBeenCalledTimes(1);
+    expect(mockList).toHaveBeenCalledTimes(1);
 
-    expect(mockRemove).toHaveBeenCalledWith({ Model: mockModel, id: mockId });
-  });
+    expect(mockList).toHaveBeenCalledWith({ data: mockDataSent, Model: mockModel });
 
-  it('Update', async () => {
-    const mockDataSent = { email: faker.internet.email(), password: faker.internet.password() };
-
-    const mockId = faker.random.number();
-
-    const mockModel = jest.fn();
-
-    const mockUpdate = jest.spyOn(chatService, 'update').mockImplementation(jest.fn());
-
-    const chat = new Chat({ ChatModel: mockModel, id: mockId, ...mockDataSent });
-
-    await chat.update();
-
-    expect(mockUpdate).toHaveBeenCalledTimes(1);
-
-    expect(mockUpdate).toHaveBeenCalledWith({ Model: mockModel, id: mockId, data: mockDataSent });
+    expect(data).toStrictEqual(mockDataReceived);
   });
 });

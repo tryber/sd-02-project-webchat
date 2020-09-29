@@ -1,19 +1,5 @@
 const { bcrypt, jsonWebToken } = require('../../utils');
 
-async function addFriend({ data, id, Model }) {
-  const userModel = new Model({ id, ...data });
-
-  const userExists = await userModel.find();
-
-  if (!userExists) return { data: null, error: 'notFound' };
-
-  const user = await userModel.addFriend();
-
-  const { password, ...userWithoutPassword } = user.toObject();
-
-  return { data: userWithoutPassword, error: null };
-}
-
 async function create({ data, Model }) {
   const hash = await bcrypt.createHash(data.password);
 
@@ -108,7 +94,6 @@ async function update({ data, id, Model }) {
 }
 
 module.exports = {
-  addFriend,
   create,
   find,
   list,

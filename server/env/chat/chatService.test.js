@@ -88,19 +88,17 @@ describe('Chat Service', () => {
 
       const mockDataChatsReceived = new Array(10).fill(undefined).map(createChat);
 
-      const mockListBy = jest.fn().mockReturnValue(mockDataChatsReceived);
+      const mockListByUserId = jest.fn().mockReturnValue(mockDataChatsReceived);
 
       const mockModel = jest.fn().mockReturnValue({
-        listBy: mockListBy,
+        listByUserId: mockListByUserId,
       });
 
-      const data = await chatService.listBy({ Model: mockModel, field: mockDataSent.chatId });
+      const data = await chatService.listByUserId({ Model: mockModel, data: mockDataSent });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockListBy).toHaveBeenCalledTimes(1);
-
-      expect(mockListBy).toHaveBeenCalledWith(mockDataSent.chatId);
+      expect(mockListByUserId).toHaveBeenCalledTimes(1);
 
       expect(data).toStrictEqual({ data: mockDataChatsReceived, error: null });
     });
@@ -110,111 +108,71 @@ describe('Chat Service', () => {
         userId: faker.random.number(),
       };
 
-      const mockListBy = jest.fn().mockReturnValue([]);
+      const mockListByUserId = jest.fn().mockReturnValue(null);
 
       const mockModel = jest.fn().mockReturnValue({
-        listBy: mockListBy,
+        listByUserId: mockListByUserId,
       });
 
-      const data = await chatService.listBy({ Model: mockModel, field: mockDataSent.userId });
+      const data = await chatService.listByUserId({ Model: mockModel, field: mockDataSent.userId });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockListBy).toHaveBeenCalledTimes(1);
-
-      expect(mockListBy).toHaveBeenCalledWith(mockDataSent.userId);
+      expect(mockListByUserId).toHaveBeenCalledTimes(1);
 
       expect(data).toStrictEqual({ data: null, error: 'notFound' });
     });
   });
 
-  describe('Remove Chat', () => {
-    it('on success', async () => {
-      const mockId = faker.random.number();
-
-      const mockRemove = jest.fn();
-
-      const mockModel = jest.fn().mockReturnValue({
-        remove: mockRemove,
-      });
-
-      await chatService.remove({ id: mockId, Model: mockModel });
-
-      expect(mockModel).toHaveBeenCalledTimes(1);
-
-      expect(mockModel).toHaveBeenCalledWith({ id: mockId });
-
-      expect(mockRemove).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('Update Chat', () => {
+  describe('List Chat By Users', () => {
     it('on success', async () => {
       const mockDataSent = {
+        userId: faker.random.number(),
+      };
+
+      const createChat = () => ({
         id: faker.random.number(),
-        content: faker.lorem.words(),
-      };
+        createdAt: faker.date.recent(),
+        title: faker.lorem.words(),
+        users: new Array(10).fill(undefined).map(() => faker.random.word),
+        userId: mockDataSent.userId,
+      });
 
-      const mockDataReceived = {
-        id: mockDataSent.id,
-        content: faker.lorem.words(),
-        ...faker.random.objectElement(),
-      };
+      const mockDataChatsReceived = new Array(10).fill(undefined).map(createChat);
 
-      const mockUpdate = jest.fn().mockResolvedValueOnce(mockDataReceived);
+      const mockListByUsers = jest.fn().mockReturnValue(mockDataChatsReceived);
 
       const mockModel = jest.fn().mockReturnValue({
-        update: mockUpdate,
+        listByUsers: mockListByUsers,
       });
 
-      const data = await chatService.update({
-        data: { content: mockDataSent.content },
-        id: mockDataSent.id,
-        Model: mockModel,
-      });
+      const data = await chatService.listByUsers({ Model: mockModel, field: mockDataSent.chatId });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockModel).toHaveBeenCalledWith({ id: mockDataSent.id, ...mockDataSent });
+      expect(mockListByUsers).toHaveBeenCalledTimes(1);
 
-      expect(mockUpdate).toHaveBeenCalledTimes(1);
-
-      expect(data).toStrictEqual({
-        data: mockDataReceived,
-        error: null,
-      });
+      expect(data).toStrictEqual({ data: mockDataChatsReceived, error: null });
     });
 
-    it('on failure - Chat not found', async () => {
-      const mockId = faker.random.number();
-
+    it('on failure', async () => {
       const mockDataSent = {
-        id: faker.random.number(),
-        content: faker.lorem.words(),
+        userId: faker.random.number(),
       };
 
-      const mockUpdate = jest.fn().mockResolvedValue(null);
+      const mockListByUsers = jest.fn().mockReturnValue(null);
 
       const mockModel = jest.fn().mockReturnValue({
-        update: mockUpdate,
+        listByUsers: mockListByUsers,
       });
 
-      const data = await chatService.update({
-        data: { content: mockDataSent.content },
-        id: mockDataSent.id,
-        Model: mockModel,
-      });
+      const data = await chatService.listByUsers({ Model: mockModel, field: mockDataSent.userId });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockModel).toHaveBeenCalledWith({ id: mockId, ...mockDataSent });
+      expect(mockListByUsers).toHaveBeenCalledTimes(1);
 
-      expect(mockUpdate).toHaveBeenCalledTimes(1);
-
-      expect(data).toStrictEqual({
-        data: null,
-        error: 'notFound',
-      });
+      expect(data).toStrictEqual({ data: null, error: 'notFound' });
     });
   });
 });

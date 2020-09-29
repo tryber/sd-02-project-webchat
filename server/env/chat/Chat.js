@@ -15,16 +15,12 @@ class Message {
     return chatService.find({ id: this.id, Model: this.ChatModel });
   }
 
-  async listBy() {
-    return chatService.listBy({ data: this.data, Model: this.ChatModel });
+  async listByUserId() {
+    return chatService.listByUserId({ data: this.data, Model: this.ChatModel });
   }
 
-  async remove() {
-    return chatService.remove({ id: this.id, Model: this.ChatModel });
-  }
-
-  async update() {
-    return chatService.update({ data: this.data, id: this.id, Model: this.ChatModel });
+  async listByUsers() {
+    return chatService.listByUsers({ data: this.data, Model: this.ChatModel });
   }
 }
 

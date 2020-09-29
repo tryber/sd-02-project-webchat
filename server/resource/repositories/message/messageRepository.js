@@ -14,16 +14,6 @@ class MessageRepository {
   async listBy(field) {
     return this.Messages.find({ [field]: this.Data[field] }).sort({ createdAt: 'asc' });
   }
-
-  async remove() {
-    return this.Messages.deleteOne({ _id: this._id });
-  }
-
-  async update() {
-    return this.Messages.findOneAndUpdate({ _id: this._id }, this.Data, {
-      new: true,
-    });
-  }
 }
 
 module.exports = MessageRepository;

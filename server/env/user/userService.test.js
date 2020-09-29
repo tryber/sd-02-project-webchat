@@ -341,6 +341,7 @@ describe('User Service', () => {
 
       const mockModel = jest.fn().mockReturnValue({
         find: jest.fn().mockResolvedValueOnce(true),
+        findBy: jest.fn().mockResolvedValueOnce([]),
         update: mockUpdate,
       });
 
@@ -391,6 +392,39 @@ describe('User Service', () => {
       expect(data).toStrictEqual({
         data: null,
         error: 'notFound',
+      });
+    });
+
+    it('on failure - nickname already exists', async () => {
+      const mockId = faker.random.number();
+
+      const mockDataUserSent = {
+        nickname: faker.name.findName(),
+      };
+
+      const mockUpdate = jest.fn().mockResolvedValue();
+
+      const mockModel = jest.fn().mockReturnValue({
+        find: jest.fn().mockResolvedValueOnce(true),
+        findBy: jest.fn().mockResolvedValueOnce(['user']),
+        update: mockUpdate,
+      });
+
+      const data = await userService.update({
+        data: mockDataUserSent,
+        id: mockId,
+        Model: mockModel,
+      });
+
+      expect(mockModel).toHaveBeenCalledTimes(1);
+
+      expect(mockModel).toHaveBeenCalledWith({ id: mockId, ...mockDataUserSent });
+
+      expect(mockUpdate).toHaveBeenCalledTimes(0);
+
+      expect(data).toStrictEqual({
+        data: null,
+        error: 'existsNickname',
       });
     });
   });

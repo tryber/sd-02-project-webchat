@@ -14,14 +14,6 @@ class Message {
   async listBy(field) {
     return messageService.listBy({ field, Model: this.MessageModel, data: this.data });
   }
-
-  async remove() {
-    return messageService.remove({ id: this.id, Model: this.MessageModel });
-  }
-
-  async update() {
-    return messageService.update({ data: this.data, id: this.id, Model: this.MessageModel });
-  }
 }
 
 module.exports = Message;

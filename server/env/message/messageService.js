@@ -14,25 +14,7 @@ async function listBy({ Model, field, data }) {
   return { data: message, error: null };
 }
 
-async function remove({ id, Model }) {
-  const messageModel = new Model({ id });
-
-  return messageModel.remove();
-}
-
-async function update({ data, id, Model }) {
-  const messageModel = new Model({ id, ...data });
-
-  const message = await messageModel.update();
-
-  if (!message) return { data: null, error: 'notFound' };
-
-  return { data: message, error: null };
-}
-
 module.exports = {
   create,
   listBy,
-  remove,
-  update,
 };

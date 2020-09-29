@@ -14,28 +14,20 @@ async function find({ id, Model }) {
   return { data: chat, error: null };
 }
 
-async function listBy({ data, Model }) {
-  let value;
+async function listByUserId({ data, Model }) {
+  const chatModel = new Model(data);
 
-  if (data.key === 'users') {
-    value = data.value.split(',');
-  }
+  const chat = await chatModel.listByUserId();
 
-  const chatModel = new Model({ [data.key]: value || data.value, isPrivate: data.isPrivate });
+  if (!chat) return { data: null, error: 'notFound' };
 
-  return chatModel.listBy(data.key);
+  return { data: chat, error: null };
 }
 
-async function remove({ id, Model }) {
-  const chatModel = new Model({ id });
+async function listByUsers({ data, Model }) {
+  const chatModel = new Model(data);
 
-  return chatModel.remove();
-}
-
-async function update({ data, id, Model }) {
-  const chatModel = new Model({ id, ...data });
-
-  const chat = await chatModel.update();
+  const chat = await chatModel.listByUsers();
 
   if (!chat) return { data: null, error: 'notFound' };
 
@@ -45,7 +37,6 @@ async function update({ data, id, Model }) {
 module.exports = {
   create,
   find,
-  listBy,
-  remove,
-  update,
+  listByUserId,
+  listByUsers,
 };
