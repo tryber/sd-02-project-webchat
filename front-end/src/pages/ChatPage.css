@@ -1,0 +1,30 @@
+from {
+  background: black;
+  bottom: 0;
+  padding: 3px;
+  position: fixed;
+  width: 100%;
+}
+
+from input {
+  border: 0;
+  margin-right: 0.5%;
+  padding: 10px;
+  width: 90%;
+}
+
+form button {
+  background: rgb(130, 224, 255);
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  width: 9%;
+}
+
+#messagens li {
+  padding: 5px 10px;
+}
+
+#messagens li:nth-child(odd) {
+  background: rgb(238, 238, 238);
+}
