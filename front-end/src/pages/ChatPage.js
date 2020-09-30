@@ -78,8 +78,6 @@ const allMessagesRender = (chatMessages) => (
   </div>
 );
 
-const onlineUser = (chatMessages);
-
 const ChatPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
@@ -98,7 +96,6 @@ const ChatPage = () => {
       setChatMessages((state) => [
         ...state, { message, timestamp: Date.now(), nickname: nicknameIo },
       ]);
-      console.log('teste');
     });
   }, []);
 
@@ -106,7 +103,6 @@ const ChatPage = () => {
 
   return (
     <div>
-      {onlineUser(chatMessages)}
       {allMessagesRender(chatMessages, nickname)}
       <input id="mensagemInput" value={inputValue} onChange={({ target: { value } }) => setInputValue(value)} />
       <button
