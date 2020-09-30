@@ -25,16 +25,19 @@ const onlineArray = [];
 
 io.on('connection', (socket) => {
   socket.on('login', ({ nickname }) => {
-    onlineArray.push(nickname);
-    console.log(`a user ${nickname} connected`);
-    console.log(onlineArray);
+    onlineArray.push({ chatId: socket.id, nickname });
+    io.emit('online', onlineArray);
   });
   socket.on('disconnect', () => {
-    // apps.splice( apps.findIndex(a => a.id === 37) , 1);
-    console.log('Desconectado');
+    onlineArray.splice(onlineArray.findIndex(({ chatId }) => chatId === socket.id), 1);
+    console.log(onlineArray);
+    io.emit('online', onlineArray);
   });
   socket.on('mensagem', ({ message, nickname }) => {
     io.emit('serverMsg', { message, nickname });
+  });
+  socket.on('privatechatroom', () => {
+    socket.join(socket.id);
   });
 });
 

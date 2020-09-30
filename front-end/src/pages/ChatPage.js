@@ -33,7 +33,7 @@ const submitForm = async (message, nickname) => {
   socket.emit('mensagem', { message, nickname });
 };
 
-const sendNickname = async (setUserError, nickname) => {
+const sendNickname = async (nickname) => {
   try {
     await axios({
       baseURL: 'http://localhost:3001/users',
@@ -44,21 +44,20 @@ const sendNickname = async (setUserError, nickname) => {
       },
       data: { nickname },
     });
-    setUserError();
   } catch (err) {
-    setUserError('Usuario Duplicado, digite novamente');
+    console.log(err);
   }
   socket.emit('login', { nickname });
 };
 
-const getNickname = (setNickname, setUserError, nickname) => (
+const getNickname = (setNickname, nickname, setCanRedirect) => (
   <div>
     <input
       type="text"
       placeholder="Digite seu nickname"
       onChange={(e) => setNickname(e.target.value)}
     />
-    <button type="button" onClick={() => sendNickname(setUserError, nickname)}>
+    <button type="button" onClick={() => setCanRedirect(true) || sendNickname(nickname)}>
       Send
     </button>
   </div>
@@ -79,11 +78,25 @@ const allMessagesRender = (chatMessages) => (
   </div>
 );
 
+const onlineChat = (onlineUsers) => (
+  <div>
+    <ul>
+      {onlineUsers.map(({ nickname }) => (
+        <li>
+          {nickname}
+          <button type="button" onClick={() => console.log(nickname)}>Criar uma sala privada</button>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
 const ChatPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
   const [nickname, setNickname] = useState('');
-  const [userError, setUserError] = useState(true);
+  const [canRedirect, setCanRedirect] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -98,12 +111,16 @@ const ChatPage = () => {
         ...state, { message, timestamp: Date.now(), nickname: nicknameIo },
       ]);
     });
+    socket.on('online', (userNick) => setOnlineUsers(userNick));
   }, []);
 
-  if (!nickname || userError) return getNickname(setNickname, setUserError, nickname);
+  console.log(onlineUsers);
+
+  if (!canRedirect) return getNickname(setNickname, nickname, setCanRedirect);
 
   return (
     <div>
+      {(onlineUsers.length === 0) || onlineChat(onlineUsers)}
       {allMessagesRender(chatMessages, nickname)}
       <input id="mensagemInput" value={inputValue} onChange={({ target: { value } }) => setInputValue(value)} />
       <button

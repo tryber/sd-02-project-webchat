@@ -4,7 +4,6 @@ const ChatModel = require('../models/ChatModels');
 const saveNickname = rescue(async (req, res) => {
   const { nickname } = req.body;
   const addUser = await ChatModel.saveNickname(nickname);
-  console.log(addUser);
   if (addUser) return res.status(200).end();
   return res.status(500).end();
 });
