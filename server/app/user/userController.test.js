@@ -43,7 +43,7 @@ describe('User Controller', () => {
       expect(mockJson).toHaveBeenCalledTimes(1);
 
       expect(mockJson).toHaveBeenCalledWith({
-        user: mockDataReceived,
+        ...mockDataReceived,
         token: mockDataTokenReceived,
       });
     });
@@ -150,7 +150,7 @@ describe('User Controller', () => {
 
       expect(mockUser).toHaveBeenCalledTimes(1);
 
-      expect(mockUser).toHaveBeenCalledWith({ id: mockDataSent.id, userModel: mockUserModel });
+      expect(mockUser).toHaveBeenCalledWith({ _id: mockDataSent.id, userModel: mockUserModel });
 
       expect(mockRes.status).toHaveBeenCalledTimes(1);
 
@@ -158,7 +158,7 @@ describe('User Controller', () => {
 
       expect(mockJson).toHaveBeenCalledTimes(1);
 
-      expect(mockJson).toHaveBeenCalledWith({ user: mockDataReceived });
+      expect(mockJson).toHaveBeenCalledWith(mockDataReceived);
     });
 
     it('on failure - user not found', async () => {
@@ -192,7 +192,7 @@ describe('User Controller', () => {
       } finally {
         expect(mockUser).toHaveBeenCalledTimes(1);
 
-        expect(mockUser).toHaveBeenCalledWith({ id: mockDataSent.id, userModel: mockUserModel });
+        expect(mockUser).toHaveBeenCalledWith({ _id: mockDataSent.id, userModel: mockUserModel });
 
         expect(mockRes).toHaveBeenCalledTimes(0);
       }
@@ -234,7 +234,7 @@ describe('User Controller', () => {
 
       expect(mockJson).toHaveBeenCalledTimes(1);
 
-      expect(mockJson).toHaveBeenCalledWith({ users: mockDataReceived });
+      expect(mockJson).toHaveBeenCalledWith(mockDataReceived);
     });
   });
 
@@ -282,7 +282,7 @@ describe('User Controller', () => {
       expect(mockJson).toHaveBeenCalledTimes(1);
 
       expect(mockJson).toHaveBeenCalledWith({
-        user: mockDataReceived,
+        ...mockDataReceived,
         token: mockDataTokenReceived,
       });
     });
@@ -388,7 +388,7 @@ describe('User Controller', () => {
 
       expect(mockUser).toHaveBeenCalledTimes(1);
 
-      expect(mockUser).toHaveBeenCalledWith({ userModel: mockUserModel, id: mockId });
+      expect(mockUser).toHaveBeenCalledWith({ userModel: mockUserModel, _id: mockId });
 
       expect(mockRes.status).toHaveBeenCalledTimes(1);
 
@@ -405,7 +405,7 @@ describe('User Controller', () => {
       const mockId = faker.random.number();
 
       const mockDataSent = {
-        id: faker.random.number(),
+        id: mockId,
         nickname: faker.name.findName(),
       };
 
@@ -419,20 +419,28 @@ describe('User Controller', () => {
         update: jest.fn().mockResolvedValue({ data: mockDataReceived, error: null }),
       });
 
+      const mockEmit = jest.fn();
+
+      const mockEvent = { emit: mockEmit };
+
       const mockReq = { params: { id: mockDataSent.id }, body: mockDataSent };
 
       const mockJson = jest.fn();
 
       const mockRes = { status: jest.fn().mockReturnValue({ json: mockJson }) };
 
-      const act = userController.update({ User: mockUser, userModel: mockUserModel });
+      const act = userController.update({
+        User: mockUser,
+        userModel: mockUserModel,
+        event: mockEvent,
+      });
 
       await act(mockReq, mockRes);
 
       expect(mockUser).toHaveBeenCalledTimes(1);
 
       expect(mockUser).toHaveBeenCalledWith({
-        id: mockId,
+        _id: mockId,
         userModel: mockUserModel,
         ...mockReq.body,
       });
@@ -443,7 +451,11 @@ describe('User Controller', () => {
 
       expect(mockJson).toHaveBeenCalledTimes(1);
 
-      expect(mockJson).toHaveBeenCalledWith({ user: mockDataReceived });
+      expect(mockJson).toHaveBeenCalledWith(mockDataReceived);
+
+      expect(mockEmit).toHaveBeenCalledTimes(1);
+
+      expect(mockEmit).toHaveBeenCalledWith('update');
     });
 
     it('on failure - user not found', async () => {
@@ -480,7 +492,7 @@ describe('User Controller', () => {
         expect(mockUser).toHaveBeenCalledTimes(1);
 
         expect(mockUser).toHaveBeenCalledWith({
-          id: mockDataSent.id,
+          _id: mockDataSent.id,
           userModel: mockUserModel,
           ...mockReq.body,
         });

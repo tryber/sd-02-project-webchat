@@ -5,9 +5,15 @@ const title = Joi.string().messages({
   'string.empty': 'title is not allowed to be empty',
 });
 
-const users = Joi.array().items(Joi.string()).messages({
-  'string.base': 'users must be a type of array',
-  'string.empty': 'users is not allowed to be empty',
+const userId = Joi.string().messages({
+  'string.base': 'title must be a type of string',
+  'string.empty': 'title is not allowed to be empty',
+});
+
+const users = Joi.array().required().items(Joi.string()).min(2).messages({
+  'array.base': 'users must be a type of array',
+  'array.min': 'users must contain at least two users',
+  'array.empty': 'users is not allowed to be empty',
 });
 
 const isPrivate = Joi.boolean().messages({
@@ -19,13 +25,14 @@ const createSchema = Joi.object({
   isPrivate,
   title,
   users,
+  userId,
 }).unknown(false);
 
-const updateSchema = Joi.object({
-  title,
-}).unknown(false);
+const listByUsersSchema = Joi.object({
+  users,
+});
 
 module.exports = {
   createSchema,
-  updateSchema,
+  listByUsersSchema,
 };

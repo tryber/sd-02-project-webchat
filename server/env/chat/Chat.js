@@ -1,10 +1,10 @@
 const chatService = require('./chatService');
 
 class Message {
-  constructor({ chatModel, id, ...data }) {
+  constructor({ chatModel, _id, ...data }) {
     this.ChatModel = chatModel;
     this.data = data;
-    this.id = id;
+    this._id = _id;
   }
 
   async create() {
@@ -12,7 +12,7 @@ class Message {
   }
 
   async find() {
-    return chatService.find({ id: this.id, Model: this.ChatModel });
+    return chatService.find({ _id: this._id, Model: this.ChatModel });
   }
 
   async listByUserId() {

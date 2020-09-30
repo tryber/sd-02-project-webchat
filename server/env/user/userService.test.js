@@ -132,11 +132,11 @@ describe('User Service', () => {
         find: jest.fn().mockResolvedValue([{ toObject: () => mockDataUserReceived }]),
       });
 
-      const data = await userService.find({ id: mockId, Model: mockModel });
+      const data = await userService.find({ _id: mockId, Model: mockModel });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockModel).toHaveBeenCalledWith({ id: mockId });
+      expect(mockModel).toHaveBeenCalledWith({ _id: mockId });
 
       expect(data).toStrictEqual({
         data: mockUserWithoutPassord,
@@ -151,11 +151,11 @@ describe('User Service', () => {
         find: jest.fn().mockResolvedValue(null),
       });
 
-      const data = await userService.find({ id: mockId, Model: mockModel });
+      const data = await userService.find({ _id: mockId, Model: mockModel });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockModel).toHaveBeenCalledWith({ id: mockId });
+      expect(mockModel).toHaveBeenCalledWith({ _id: mockId });
 
       expect(data).toStrictEqual({ data: null, error: 'notFound' });
     });
@@ -308,11 +308,11 @@ describe('User Service', () => {
         remove: mockRemove,
       });
 
-      await userService.remove({ id: mockId, Model: mockModel });
+      await userService.remove({ _id: mockId, Model: mockModel });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockModel).toHaveBeenCalledWith({ id: mockId });
+      expect(mockModel).toHaveBeenCalledWith({ _id: mockId });
 
       expect(mockRemove).toHaveBeenCalledTimes(1);
     });
@@ -327,7 +327,7 @@ describe('User Service', () => {
       };
 
       const mockUserWithoutPassord = {
-        id: faker.random.number(),
+        id: mockId,
         email: faker.internet.email(),
         nickname: mockDataUserSent.nickname,
       };
@@ -347,13 +347,13 @@ describe('User Service', () => {
 
       const data = await userService.update({
         data: mockDataUserSent,
-        id: mockId,
+        _id: mockId,
         Model: mockModel,
       });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockModel).toHaveBeenCalledWith({ id: mockId, ...mockDataUserSent });
+      expect(mockModel).toHaveBeenCalledWith({ _id: mockId, ...mockDataUserSent });
 
       expect(mockUpdate).toHaveBeenCalledTimes(1);
 
@@ -373,19 +373,19 @@ describe('User Service', () => {
       const mockUpdate = jest.fn().mockResolvedValue();
 
       const mockModel = jest.fn().mockReturnValue({
-        find: jest.fn().mockResolvedValueOnce(false),
+        find: jest.fn().mockResolvedValueOnce([]),
         update: mockUpdate,
       });
 
       const data = await userService.update({
         data: mockDataUserSent,
-        id: mockId,
+        _id: mockId,
         Model: mockModel,
       });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockModel).toHaveBeenCalledWith({ id: mockId, ...mockDataUserSent });
+      expect(mockModel).toHaveBeenCalledWith({ _id: mockId, ...mockDataUserSent });
 
       expect(mockUpdate).toHaveBeenCalledTimes(0);
 
@@ -412,13 +412,13 @@ describe('User Service', () => {
 
       const data = await userService.update({
         data: mockDataUserSent,
-        id: mockId,
+        _id: mockId,
         Model: mockModel,
       });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockModel).toHaveBeenCalledWith({ id: mockId, ...mockDataUserSent });
+      expect(mockModel).toHaveBeenCalledWith({ _id: mockId, ...mockDataUserSent });
 
       expect(mockUpdate).toHaveBeenCalledTimes(0);
 

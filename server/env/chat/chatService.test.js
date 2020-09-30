@@ -5,7 +5,7 @@ const faker = require('faker');
 describe('Chat Service', () => {
   describe('Create Chat', () => {
     it('on success', async () => {
-      const mockDataSent = { ...faker.random.objectElement() };
+      const mockDataSent = { ...faker.random.objectElement(), isPrivate: false };
 
       const mockDataReceived = {
         id: faker.random.number(),
@@ -22,11 +22,11 @@ describe('Chat Service', () => {
 
       expect(mockModel).toHaveBeenCalledWith(mockDataSent);
 
-      expect(data).toStrictEqual(mockDataReceived);
+      expect(data).toStrictEqual({ ...mockDataReceived });
     });
   });
 
-  describe('Find User', () => {
+  describe('Find Chat', () => {
     it('on success', async () => {
       const mockId = faker.random.number();
 
@@ -43,11 +43,11 @@ describe('Chat Service', () => {
         find: jest.fn().mockResolvedValue(mockDataUserReceived),
       });
 
-      const data = await chatService.find({ id: mockId, Model: mockModel });
+      const data = await chatService.find({ _id: mockId, Model: mockModel });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockModel).toHaveBeenCalledWith({ id: mockId });
+      expect(mockModel).toHaveBeenCalledWith({ _id: mockId });
 
       expect(data).toStrictEqual({
         data: mockDataUserReceived,
@@ -62,11 +62,11 @@ describe('Chat Service', () => {
         find: jest.fn().mockResolvedValue(null),
       });
 
-      const data = await chatService.find({ id: mockId, Model: mockModel });
+      const data = await chatService.find({ _id: mockId, Model: mockModel });
 
       expect(mockModel).toHaveBeenCalledTimes(1);
 
-      expect(mockModel).toHaveBeenCalledWith({ id: mockId });
+      expect(mockModel).toHaveBeenCalledWith({ _id: mockId });
 
       expect(data).toStrictEqual({ data: null, error: 'notFound' });
     });

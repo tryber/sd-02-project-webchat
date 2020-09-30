@@ -16,7 +16,7 @@ describe('Chat', () => {
 
     const mockCreate = jest.spyOn(chatService, 'create').mockReturnValue(mockDataReceived);
 
-    const chat = new Chat({ chatModel: mockModel, id: mockId, ...mockDataSent });
+    const chat = new Chat({ chatModel: mockModel, _id: mockId, ...mockDataSent });
 
     const data = await chat.create();
 
@@ -36,13 +36,13 @@ describe('Chat', () => {
 
     const mockFind = jest.spyOn(chatService, 'find').mockReturnValue(mockDataReceived);
 
-    const chat = new Chat({ chatModel: mockModel, id: mockId });
+    const chat = new Chat({ chatModel: mockModel, _id: mockId });
 
     const data = await chat.find();
 
     expect(mockFind).toHaveBeenCalledTimes(1);
 
-    expect(mockFind).toHaveBeenCalledWith({ Model: mockModel, id: mockId });
+    expect(mockFind).toHaveBeenCalledWith({ Model: mockModel, _id: mockId });
 
     expect(data).toStrictEqual(mockDataReceived);
   });

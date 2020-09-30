@@ -1,6 +1,6 @@
 function remove({ Domain, model, modelkey }) {
   return async (req, res) => {
-    const domain = new Domain({ [modelkey]: model, id: req.params.id });
+    const domain = new Domain({ [modelkey]: model, _id: req.params.id });
 
     await domain.remove();
 
@@ -10,7 +10,7 @@ function remove({ Domain, model, modelkey }) {
 
 function update({ Domain, model, domainKey, modelkey, handleError }) {
   return async (req, res) => {
-    const domain = new Domain({ [modelkey]: model, ...req.body, id: req.params.id });
+    const domain = new Domain({ [modelkey]: model, ...req.body, _id: req.params.id });
 
     const { data, error } = await domain.update();
 

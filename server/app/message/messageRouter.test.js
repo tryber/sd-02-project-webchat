@@ -14,8 +14,6 @@ afterEach(async () => {
 
 jest.setTimeout(30000);
 
-async function getToken() {}
-
 describe('Message Router', () => {
   let mockToken, mockId;
 
@@ -37,11 +35,12 @@ describe('Message Router', () => {
       };
 
       const {
-        body: {
-          token: mockToken,
-          user: { _id: mockUserId },
-        },
+        body: { token, _id },
       } = await request.agent(app).post('/user').send(mockUser);
+
+      mockToken = token;
+
+      mockId = _id;
 
       const response = await request
         .agent(app)
@@ -53,17 +52,15 @@ describe('Message Router', () => {
 
       expect(response.status).toBe(201);
 
-      expect(response.body.message._id).toBeTruthy();
+      expect(response.body._id).toBeTruthy();
 
-      mockId = response.body.message._id;
+      expect(response.body.content).toBe(mockContent);
 
-      expect(response.body.message.content).toBe(mockContent);
+      expect(response.body.userId).toBe(mockId);
 
-      expect(response.body.message.chatId).toBe(mockChatId);
+      expect(response.body.chat).toBeTruthy();
 
-      expect(response.body.message.nickname).toBe(mockNickname);
-
-      await request.agent(app).delete(`/user/${mockUserId}`).set('Authorization', mockToken);
+      await request.agent(app).delete(`/user/${_id}`).set('Authorization', token);
     });
 
     it('on failure - invalid data', async () => {
@@ -73,11 +70,12 @@ describe('Message Router', () => {
       };
 
       const {
-        body: {
-          token: mockToken,
-          user: { _id: mockUserId },
-        },
-      } = await request.agent(app).post('/user').send(mockUser);
+        body: { token, _id },
+      } = await request.agent(app).post('/user').send({
+        email: faker.internet.email(),
+        nickname: faker.name.firstName(),
+        password: faker.internet.password(),
+      });
 
       const mockError = {
         error: {
@@ -89,39 +87,36 @@ describe('Message Router', () => {
       const response = await request
         .agent(app)
         .post('/message')
-        .set('Authorization', mockToken)
+        .set('Authorization', token)
         .send(mockDataSent);
 
       expect(response.status).toBe(400);
 
       expect(JSON.parse(response.text)).toStrictEqual(mockError);
 
-      await request.agent(app).delete(`/user/${mockUserId}`).set('Authorization', mockToken);
+      await request.agent(app).delete(`/user/${_id}`).set('Authorization', token);
     });
   });
 
   describe('Get /message', () => {
     it('on succes - list messages', async () => {
       const {
-        body: {
-          token: mockToken,
-          user: { _id: mockUserId },
-        },
+        body: { token, _id },
       } = await request.agent(app).post('/user').send(mockUser);
 
       const response = await request
         .agent(app)
         .get(`/message`)
         .query({ key: 'chatId', value: mockChatId })
-        .set('Authorization', mockToken);
+        .set('Authorization', token);
 
-      const messages = JSON.parse(response.text).messages;
-      console.log(response.body);
+      const messages = JSON.parse(response.text);
+
       expect(response.status).toBe(200);
 
       expect(messages[messages.length - 1].content).toBe(mockContent);
 
-      await request.agent(app).delete(`/user/${mockUserId}`).set('Authorization', mockToken);
+      await request.agent(app).delete(`/user/${_id}`).set('Authorization', token);
     });
 
     it('on failure - no authentication', async () => {
@@ -133,131 +128,6 @@ describe('Message Router', () => {
       };
 
       const response = await request.agent(app).get('/message');
-
-      expect(response.status).toBe(401);
-
-      expect(JSON.parse(response.text)).toStrictEqual(mockError);
-    });
-  });
-
-  describe('Patch  /message/id', () => {
-    it('on success - change nickname', async () => {
-      const mockmessage = {
-        friends: [],
-        _id: mockId,
-        email: mockEmail,
-        nickname: mockNewNickname,
-      };
-
-      const response = await request
-        .agent(app)
-        .patch(`/message/${mockId}`)
-        .set('Authorization', mockToken)
-        .send({ nickname: mockNewNickname });
-      console.log(mockToken);
-      console.log(response.text);
-      expect(response.status).toBe(200);
-
-      expect(JSON.parse(response.text)).toStrictEqual({ message: mockmessage });
-    });
-
-    it('on failure - no authentication', async () => {
-      const mockError = {
-        error: {
-          details: null,
-          message: 'Token not found',
-        },
-      };
-
-      const response = await request
-        .agent(app)
-        .patch(`/message/${mockId}`)
-        .send({ nickname: mockNewNickname });
-
-      expect(response.status).toBe(401);
-
-      expect(JSON.parse(response.text)).toStrictEqual(mockError);
-    });
-
-    // it('on failure - message not found', async () => {
-    //   const mockError = {
-    //     error: {
-    //       details: null,
-    //       message: 'Usuário não encontrado',
-    //     },
-    //   };
-
-    //   const response = await request
-    //     .agent(app)
-    //     .patch(`/message/${mockId}`)
-    //     .set('Authorization', mockToken)
-    //     .send({ nickname: mockNewNickname });
-    //   console.log(response.text);
-    //   expect(response.status).toBe(400);
-
-    //   expect(JSON.parse(response.text)).toStrictEqual(mockError);
-    // });
-  });
-
-  describe('Get  /message/id', () => {
-    it('on succes - find message', async () => {
-      const mockmessage = {
-        friends: [],
-        _id: mockId,
-        email: mockEmail,
-        nickname: mockNewNickname,
-      };
-
-      const response = await request
-        .agent(app)
-        .get(`/message/${mockId}`)
-        .set('Authorization', mockToken);
-
-      expect(response.status).toBe(200);
-
-      expect(JSON.parse(response.text)).toStrictEqual({ message: mockmessage });
-    });
-
-    it('on failure - no authentication', async () => {
-      const mockError = {
-        error: {
-          details: null,
-          message: 'Token not found',
-        },
-      };
-
-      const response = await request.agent(app).get(`/message/${mockId}`);
-
-      expect(response.status).toBe(401);
-
-      expect(JSON.parse(response.text)).toStrictEqual(mockError);
-    });
-  });
-
-  describe('Delete  /message/id', () => {
-    it('on succes', async () => {
-      const response = await request
-        .agent(app)
-        .delete(`/message/${mockId}`)
-        .set('Authorization', mockToken);
-
-      expect(response.status).toBe(204);
-    });
-  });
-
-  describe('message not found', () => {
-    it('GET /message/id', async () => {
-      const mockError = {
-        error: {
-          details: null,
-          message: 'Error by looking a message with this token',
-        },
-      };
-
-      const response = await request
-        .agent(app)
-        .get(`/message/${mockId}`)
-        .set('Authorization', mockToken);
 
       expect(response.status).toBe(401);
 

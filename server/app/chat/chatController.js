@@ -1,7 +1,5 @@
 const Boom = require('@hapi/boom');
 
-const service = require('../serviceController');
-
 const handleError = {
   notFound: () => {
     throw Boom.badRequest('Chat não encontrado');
@@ -17,54 +15,52 @@ function create({ Chat, chatModel, event }) {
 
     const data = await chat.create();
 
-    event.to(data._id).emit('chat', { user: req.user.id, title: data.title });
+    !data.isPrivate &&
+      event.emit('chat', { title: data.title, user: req.user.id, users: data.users });
 
-    res.status(201).json({ chat: data });
+    res.status(201).json(data);
   };
 }
 
 function find({ Chat, chatModel }) {
   return async (req, res) => {
-    const chat = new Chat({ chatModel, id: req.params.id });
+    const chat = new Chat({ chatModel, _id: req.params.id });
 
     const { data, error } = await chat.find();
 
     if (error) return handleError[error]();
 
-    res.status(200).json({ chat: data });
+    res.status(200).json(data);
   };
 }
 
-function listBy({ Chat, chatModel }) {
+function listByUserId({ Chat, chatModel }) {
   return async (req, res) => {
-    const { key, value, isPrivate } = req.query;
+    const chat = new Chat({ chatModel, userId: req.params.id });
 
-    const chat = new Chat({ chatModel, key, value, isPrivate: JSON.parse(isPrivate) });
+    const { data, error } = await chat.listByUserId();
 
-    const data = await chat.listBy();
+    if (error) return handleError[error]();
 
-    res.status(200).json({ chats: data });
+    res.status(200).json(data);
   };
 }
 
-function remove({ Chat, chatModel }) {
-  return service.remove({ Domain: Chat, model: chatModel, modelkey: 'chatModel' });
-}
+function listByUsers({ Chat, chatModel }) {
+  return async (req, res) => {
+    const chat = new Chat({ chatModel, ...req.body });
 
-function update({ Chat, chatModel }) {
-  return service.update({
-    Domain: Chat,
-    model: chatModel,
-    domainKey: 'chat',
-    modelkey: 'chatModel',
-    handleError,
-  });
+    const { data, error } = await chat.listByUsers();
+
+    if (error) return handleError[error]();
+
+    res.status(200).json(data);
+  };
 }
 
 module.exports = {
   create,
   find,
-  listBy,
-  remove,
-  update,
+  listByUserId,
+  listByUsers,
 };

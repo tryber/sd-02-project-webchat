@@ -1,7 +1,5 @@
 const Boom = require('@hapi/boom');
 
-const service = require('../serviceController');
-
 const handleError = {
   notFound: () => {
     throw Boom.badRequest('Mensagem não encontrada');
@@ -19,18 +17,14 @@ function create({ Message, messageModel, event }) {
 
     const data = await message.create();
 
-    event.on('connection', (socket) => {
-      event.emit('joinRoom', { room: chatId, users: data.users });
-    });
-
-    event.to(data.chatId).emit('message', {
+    event.emit('message', {
       user: req.user.nickname,
       content: data.content,
       chatTitle: data.chatTitle,
       chatId: data.chatId,
     });
 
-    res.status(201).json({ message: data });
+    res.status(201).json(data);
   };
 }
 
@@ -44,27 +38,11 @@ function listBy({ Message, messageModel }) {
 
     if (error) return handleError[error]();
 
-    res.status(200).json({ messages: data });
+    res.status(200).json(data);
   };
-}
-
-function remove({ Message, messageModel, events }) {
-  return service.remove({ Domain: Message, model: messageModel, modelkey: 'messageModel' });
-}
-
-function update({ Message, messageModel }) {
-  return service.update({
-    Domain: Message,
-    model: messageModel,
-    domainKey: 'message',
-    modelkey: 'messageModel',
-    handleError,
-  });
 }
 
 module.exports = {
   create,
   listBy,
-  remove,
-  update,
 };

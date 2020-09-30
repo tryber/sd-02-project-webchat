@@ -17,6 +17,9 @@ describe('Message Repository', () => {
       Messages: {
         create: mockCreate,
       },
+      Chats: {
+        find: jest.fn().mockResolvedValue([]),
+      },
     };
 
     const repository = new MessageRepository({ models: mockModels, data: mockDataSent });
@@ -27,7 +30,7 @@ describe('Message Repository', () => {
 
     expect(mockCreate).toHaveBeenCalledWith(mockDataSent);
 
-    expect(data).toStrictEqual(mockDataReceived);
+    expect(data).toStrictEqual({ ...mockDataReceived, chat: [] });
   });
 
   it('List Message By ChatId', async () => {

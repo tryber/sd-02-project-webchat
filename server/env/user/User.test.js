@@ -16,7 +16,7 @@ describe('User', () => {
 
     const mockCreate = jest.spyOn(userService, 'create').mockReturnValue(mockDataReceived);
 
-    const user = new User({ userModel: mockModel, id: mockId, ...mockDataSent });
+    const user = new User({ userModel: mockModel, _id: mockId, ...mockDataSent });
 
     const data = await user.create();
 
@@ -38,13 +38,13 @@ describe('User', () => {
 
     const mockFind = jest.spyOn(userService, 'find').mockReturnValue(mockDataReceived);
 
-    const user = new User({ userModel: mockModel, id: mockId, ...mockDataSent });
+    const user = new User({ userModel: mockModel, _id: mockId, ...mockDataSent });
 
     const data = await user.find();
 
     expect(mockFind).toHaveBeenCalledTimes(1);
 
-    expect(mockFind).toHaveBeenCalledWith({ Model: mockModel, id: mockId });
+    expect(mockFind).toHaveBeenCalledWith({ Model: mockModel, _id: mockId });
 
     expect(data).toStrictEqual(mockDataReceived);
   });
@@ -96,13 +96,13 @@ describe('User', () => {
 
     const mockRemove = jest.spyOn(userService, 'remove').mockImplementation(jest.fn());
 
-    const user = new User({ userModel: mockModel, id: mockId });
+    const user = new User({ userModel: mockModel, _id: mockId });
 
     await user.remove();
 
     expect(mockRemove).toHaveBeenCalledTimes(1);
 
-    expect(mockRemove).toHaveBeenCalledWith({ Model: mockModel, id: mockId });
+    expect(mockRemove).toHaveBeenCalledWith({ Model: mockModel, _id: mockId });
   });
 
   it('Update', async () => {
@@ -114,12 +114,12 @@ describe('User', () => {
 
     const mockUpdate = jest.spyOn(userService, 'update').mockImplementation(jest.fn());
 
-    const user = new User({ userModel: mockModel, id: mockId, ...mockDataSent });
+    const user = new User({ userModel: mockModel, _id: mockId, ...mockDataSent });
 
     await user.update();
 
     expect(mockUpdate).toHaveBeenCalledTimes(1);
 
-    expect(mockUpdate).toHaveBeenCalledWith({ Model: mockModel, id: mockId, data: mockDataSent });
+    expect(mockUpdate).toHaveBeenCalledWith({ Model: mockModel, _id: mockId, data: mockDataSent });
   });
 });

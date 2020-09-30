@@ -1,11 +1,13 @@
 async function create({ data, Model }) {
-  const chatModel = new Model(data);
+  const { isPrivate, ...Data } = data;
+
+  const chatModel = new Model({ ...Data, isPrivate: isPrivate || false });
 
   return chatModel.create();
 }
 
-async function find({ id, Model }) {
-  const chatModel = new Model({ id });
+async function find({ _id, Model }) {
+  const chatModel = new Model({ _id });
 
   const chat = await chatModel.find();
 

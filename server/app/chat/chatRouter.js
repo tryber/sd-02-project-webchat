@@ -6,7 +6,7 @@ const chatController = require('./chatController');
 
 const {
   joiSchemas: {
-    chatSchema: { createSchema, updateSchema },
+    chatSchema: { createSchema, listByUsersSchema },
   },
 } = require('../../utils');
 
@@ -15,7 +15,6 @@ const router = express.Router();
 function chatRouter({ middlewares, ...dependencies }) {
   router
     .route('/')
-    .get(middlewares.auth, rescue(chatController.listBy(dependencies)))
     .post(
       middlewares.auth,
       middlewares.validate(createSchema),
@@ -23,14 +22,18 @@ function chatRouter({ middlewares, ...dependencies }) {
     );
 
   router
-    .route('/:id')
-    .get(middlewares.auth, rescue(chatController.find(dependencies)))
-    .patch(
+    .route('/user')
+    .post(
       middlewares.auth,
-      middlewares.validate(updateSchema),
-      rescue(chatController.update(dependencies)),
-    )
-    .delete(middlewares.auth, rescue(chatController.remove(dependencies)));
+      middlewares.validate(listByUsersSchema),
+      rescue(chatController.listByUsers(dependencies)),
+    );
+
+  router
+    .route('/user/:id')
+    .get(middlewares.auth, rescue(chatController.listByUserId(dependencies)));
+
+  router.route('/:id').get(middlewares.auth, rescue(chatController.find(dependencies)));
 
   return router;
 }

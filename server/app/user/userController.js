@@ -17,22 +17,6 @@ const handleError = {
   },
 };
 
-function addFriend({ User, userModel }) {
-  return async (req, res) => {
-    const user = new User({
-      friend: req.body.friend,
-      userModel,
-      id: req.params.id,
-    });
-
-    const { data, error } = await user.addFriend();
-
-    if (error) return handleError[error]();
-
-    res.status(200).json({ user: data });
-  };
-}
-
 function create({ User, userModel }) {
   return async (req, res) => {
     const user = new User({
@@ -44,19 +28,19 @@ function create({ User, userModel }) {
 
     if (error) return handleError[error]();
 
-    res.status(201).json({ user: data, token });
+    res.status(201).json({ ...data, token });
   };
 }
 
 function find({ User, userModel }) {
   return async (req, res) => {
-    const user = new User({ userModel, id: req.params.id });
+    const user = new User({ userModel, _id: req.params.id });
 
     const { data, error } = await user.find();
 
     if (error) return handleError[error]();
 
-    res.status(200).json({ user: data });
+    res.status(200).json(data);
   };
 }
 
@@ -66,7 +50,7 @@ function list({ User, userModel }) {
 
     const data = await users.list();
 
-    res.status(200).json({ users: data });
+    res.status(200).json(data);
   };
 }
 
@@ -78,7 +62,7 @@ function login({ User, userModel }) {
 
     if (error) return handleError[error]();
 
-    res.status(200).json({ user: data, token });
+    res.status(200).json({ ...data, token });
   };
 }
 
@@ -88,7 +72,7 @@ function remove({ User, userModel }) {
 
 function update({ User, userModel, event }) {
   return async (req, res) => {
-    const user = new User({ userModel, ...req.body, id: req.params.id });
+    const user = new User({ userModel, ...req.body, _id: req.params.id });
 
     const { data, error } = await user.update();
 
@@ -96,7 +80,7 @@ function update({ User, userModel, event }) {
 
     event.emit('update');
 
-    res.status(200).json({ user: data });
+    res.status(200).json(data);
   };
 }
 
@@ -107,7 +91,6 @@ function validateToken(req, res) {
 }
 
 module.exports = {
-  addFriend,
   create,
   find,
   list,

@@ -22,8 +22,8 @@ async function create({ data, Model }) {
   return { data: userWithoutPassword, token, error: null };
 }
 
-async function find({ id, Model }) {
-  const userModel = new Model({ id });
+async function find({ _id, Model }) {
+  const userModel = new Model({ _id });
 
   const user = await userModel.find();
 
@@ -69,18 +69,18 @@ async function login({ email, password, Model }) {
   return { data: userWithoutPassword, token, error: null };
 }
 
-async function remove({ id, Model }) {
-  const userModel = new Model({ id });
+async function remove({ _id, Model }) {
+  const userModel = new Model({ _id });
 
   return userModel.remove();
 }
 
-async function update({ data, id, Model }) {
-  const userModel = new Model({ id, ...data });
+async function update({ data, _id, Model }) {
+  const userModel = new Model({ _id, ...data });
 
   const userExistsId = await userModel.find();
 
-  if (!userExistsId) return { data: null, error: 'notFound' };
+  if (userExistsId.length === 0) return { data: null, error: 'notFound' };
 
   const userExistsNickname = await userModel.findBy('nickname');
 

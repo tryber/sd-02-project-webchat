@@ -4,6 +4,8 @@ const faker = require('faker');
 
 const { app } = require('../../apps');
 
+const userIdRandom = require('mongoose').Types.ObjectId();
+
 afterEach(() => {
   jest.clearAllMocks();
 });
@@ -39,15 +41,15 @@ describe('User Router', () => {
 
       mockToken = response.body.token;
 
-      expect(response.body.user._id).toBeTruthy();
+      expect(response.body._id).toBeTruthy();
 
-      mockId = response.body.user._id;
+      mockId = response.body._id;
 
-      expect(response.body.user.nickname).toBe(mockNickname);
+      expect(response.body.nickname).toBe(mockNickname);
 
-      expect(response.body.user.email).toBe(mockEmail);
+      expect(response.body.email).toBe(mockEmail);
 
-      expect(response.body.user.password).toBeFalsy();
+      expect(response.body.password).toBeFalsy();
     });
 
     it('on failure - invalid data', async () => {
@@ -124,13 +126,6 @@ describe('User Router', () => {
         email: mockEmail,
       };
 
-      const mockUser = {
-        _id: mockId,
-        nickname: mockNickname,
-        email: mockEmail,
-        friends: [],
-      };
-
       const response = await request.agent(app).post('/user/login').send(mockUserLogin);
 
       mockToken = response.body.token;
@@ -139,7 +134,13 @@ describe('User Router', () => {
 
       expect(response.body.token).toBeTruthy();
 
-      expect(response.body.user).toStrictEqual(mockUser);
+      expect(response.body._id).toBe(mockId);
+
+      expect(response.body.nickname).toBe(mockNickname);
+
+      expect(response.body.email).toBe(mockEmail);
+
+      expect(response.body.password).toBeFalsy();
     });
 
     it('on faliure - invalid data', async () => {
@@ -209,7 +210,6 @@ describe('User Router', () => {
   describe('Get /user', () => {
     it('on succes - list users', async () => {
       const mockUser = {
-        friends: [],
         _id: mockId,
         email: mockEmail,
         nickname: mockNickname,
@@ -217,7 +217,7 @@ describe('User Router', () => {
 
       const response = await request.agent(app).get('/user').set('Authorization', mockToken);
 
-      const users = JSON.parse(response.text).users;
+      const users = JSON.parse(response.text);
 
       expect(response.status).toBe(200);
 
@@ -243,7 +243,6 @@ describe('User Router', () => {
   describe('Patch  /user/id', () => {
     it('on success - change nickname', async () => {
       const mockUser = {
-        friends: [],
         _id: mockId,
         email: mockEmail,
         nickname: mockNewNickname,
@@ -254,11 +253,10 @@ describe('User Router', () => {
         .patch(`/user/${mockId}`)
         .set('Authorization', mockToken)
         .send({ nickname: mockNewNickname });
-      console.log(mockToken);
-      console.log(response.text);
+
       expect(response.status).toBe(200);
 
-      expect(JSON.parse(response.text)).toStrictEqual({ user: mockUser });
+      expect(JSON.parse(response.text)).toStrictEqual(mockUser);
     });
 
     it('on failure - no authentication', async () => {
@@ -279,30 +277,29 @@ describe('User Router', () => {
       expect(JSON.parse(response.text)).toStrictEqual(mockError);
     });
 
-    // it('on failure - user not found', async () => {
-    //   const mockError = {
-    //     error: {
-    //       details: null,
-    //       message: 'Usuário não encontrado',
-    //     },
-    //   };
+    it('on failure - user not found', async () => {
+      const mockError = {
+        error: {
+          details: null,
+          message: 'Usuário não encontrado',
+        },
+      };
 
-    //   const response = await request
-    //     .agent(app)
-    //     .patch(`/user/${mockId}`)
-    //     .set('Authorization', mockToken)
-    //     .send({ nickname: mockNewNickname });
-    //   console.log(response.text);
-    //   expect(response.status).toBe(400);
+      const response = await request
+        .agent(app)
+        .patch(`/user/${userIdRandom}`)
+        .set('Authorization', mockToken)
+        .send({ nickname: mockNewNickname });
 
-    //   expect(JSON.parse(response.text)).toStrictEqual(mockError);
-    // });
+      expect(response.status).toBe(400);
+
+      expect(JSON.parse(response.text)).toStrictEqual(mockError);
+    });
   });
 
   describe('Get  /user/id', () => {
     it('on succes - find user', async () => {
       const mockUser = {
-        friends: [],
         _id: mockId,
         email: mockEmail,
         nickname: mockNewNickname,
@@ -315,7 +312,7 @@ describe('User Router', () => {
 
       expect(response.status).toBe(200);
 
-      expect(JSON.parse(response.text)).toStrictEqual({ user: mockUser });
+      expect(JSON.parse(response.text)).toStrictEqual(mockUser);
     });
 
     it('on failure - no authentication', async () => {

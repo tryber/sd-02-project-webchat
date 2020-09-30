@@ -6,7 +6,7 @@ const messageController = require('./messageController');
 
 const {
   joiSchemas: {
-    messageSchema: { createSchema, updateSchema },
+    messageSchema: { createSchema },
   },
 } = require('../../utils');
 
@@ -21,15 +21,6 @@ function messageRouter({ middlewares, ...dependencies }) {
       middlewares.validate(createSchema),
       rescue(messageController.create(dependencies)),
     );
-
-  router
-    .route('/:id')
-    .patch(
-      middlewares.auth,
-      middlewares.validate(updateSchema),
-      rescue(messageController.update(dependencies)),
-    )
-    .delete(middlewares.auth, rescue(messageController.remove(dependencies)));
 
   return router;
 }
