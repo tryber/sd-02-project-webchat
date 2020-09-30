@@ -48,6 +48,7 @@ const sendNickname = async (setUserError, nickname) => {
   } catch (err) {
     setUserError('Usuario Duplicado, digite novamente');
   }
+  socket.emit('login', { nickname });
 };
 
 const getNickname = (setNickname, setUserError, nickname) => (

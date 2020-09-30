@@ -21,8 +21,16 @@ app.get('/messages', getAllChats);
 
 app.listen(3001, () => console.log('Listening on 3001'));
 
+const onlineArray = [];
+
 io.on('connection', (socket) => {
+  socket.on('login', ({ nickname }) => {
+    onlineArray.push(nickname);
+    console.log(`a user ${nickname} connected`);
+    console.log(onlineArray);
+  });
   socket.on('disconnect', () => {
+    // apps.splice( apps.findIndex(a => a.id === 37) , 1);
     console.log('Desconectado');
   });
   socket.on('mensagem', ({ message, nickname }) => {
