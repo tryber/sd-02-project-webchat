@@ -6,78 +6,115 @@ import './ChatPage.css';
 const ENDPOINT = 'http://localhost:5000/';
 const socket = socketIOClient(ENDPOINT);
 
-const submitForm = async (e) => {
-  e.preventDefault();
+const timestampToDate = (timestamp = Date.now()) => (new Date(timestamp)).toLocaleString('pt-br');
+
+const getAllMessages = async () => {
   const resp = await axios({
-    baseURL: 'http://localhost:3001/users',
+    baseURL: 'http://localhost:3001/messages',
+    method: 'get',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  });
+  return resp.data.allMessages;
+};
+
+const submitForm = async (message, nickname) => {
+  await axios({
+    baseURL: 'http://localhost:3001/messages',
     method: 'post',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-    data: { message: e.target[0].value },
+    data: { message, nickname },
   });
-  socket.emit('mensagem', e.target[0].value);
+  socket.emit('mensagem', { message, nickname });
 };
 
-const sendNickname = async (e, setUserError) => {
-  e.preventDefault();
+const sendNickname = async (setUserError, nickname) => {
   try {
-    const resp = await axios({
+    await axios({
       baseURL: 'http://localhost:3001/users',
       method: 'post',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      data: { nickname: e.target[0].value },
+      data: { nickname },
     });
     setUserError();
-    console.log(resp);
   } catch (err) {
     setUserError('Usuario Duplicado, digite novamente');
   }
 };
 
-const getNickname = (setNickname, setUserError) => (
+const getNickname = (setNickname, setUserError, nickname) => (
   <div>
-    <form onSubmit={(e) => setNickname(e.target[0].value) || sendNickname(e, setUserError)}>
-      <input
-        type="text"
-        placeholder="Digite seu nickname"
-      />
-      <button type="submit">
-        Send
-      </button>
-    </form>
+    <input
+      type="text"
+      placeholder="Digite seu nickname"
+      onChange={(e) => setNickname(e.target.value)}
+    />
+    <button type="button" onClick={() => sendNickname(setUserError, nickname)}>
+      Send
+    </button>
   </div>
 );
 
+const allMessagesRender = (chatMessages) => (
+  <div>
+    {(chatMessages.length === 0)
+      || (
+        <ul className="messagens">
+          {chatMessages.map(({ message, timestamp, nickname }) => (
+            <li key={Math.random()}>
+              {`${timestampToDate(timestamp)} - ${nickname} - ${message}`}
+            </li>
+          ))}
+        </ul>
+      )}
+  </div>
+);
+
+const onlineUser = (chatMessages);
+
 const ChatPage = () => {
   const [inputValue, setInputValue] = useState('');
-  const [message, setMessage] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
   const [nickname, setNickname] = useState('');
-  const [userError, setUserError] = useState('');
+  const [userError, setUserError] = useState(true);
 
   useEffect(() => {
-    socket.on('serverMsg', (msg) => {
-      setMessage((state) => ([...state, msg]));
-    });
-  }, [message.msg]);
+    const fetchMessages = async () => {
+      setChatMessages(await getAllMessages());
+    };
+    fetchMessages();
+  }, []);
 
-  if (!nickname || userError) return getNickname(setNickname, setUserError);
+  useEffect(() => {
+    socket.on('serverMsg', ({ message, nickname: nicknameIo }) => {
+      setChatMessages((state) => [
+        ...state, { message, timestamp: Date.now(), nickname: nicknameIo },
+      ]);
+      console.log('teste');
+    });
+  }, []);
+
+  if (!nickname || userError) return getNickname(setNickname, setUserError, nickname);
 
   return (
     <div>
-      <ul id="messagens">
-        <li>{JSON.stringify(message)}</li>
-      </ul>
-      <form action="" onSubmit={(e) => setInputValue('') || submitForm(e)}>
-        <input id="mensagemInput" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
-        <button type="submit">
-          Send
-        </button>
-      </form>
+      {onlineUser(chatMessages)}
+      {allMessagesRender(chatMessages, nickname)}
+      <input id="mensagemInput" value={inputValue} onChange={({ target: { value } }) => setInputValue(value)} />
+      <button
+        type="button"
+        onClick={() => setInputValue('') || submitForm(inputValue, nickname)}
+      >
+        Send
+      </button>
     </div>
   );
 };

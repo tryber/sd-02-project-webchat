@@ -13,14 +13,37 @@ const saveNickname = async (nickname) => {
   }
 };
 
-const saveMessage = async (nickname, message) => {
+const savePrivateMessage = async (nickname, messageAndTimestamp) => {
   try {
     const db = await connection();
-    const updatedUser = await db
+    await db
       .collection('users')
-      .updateOne({ nickname }, { $push: { messages: message } }, { upsert: true });
-    console.log(updatedUser);
+      .updateOne({ nickname }, { $push: { messages: messageAndTimestamp } });
     return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
+const saveAllMessages = async (message, nickname) => {
+  try {
+    const db = await connection();
+    await db
+      .collection('messages')
+      .insertOne({ nickname, message, timestamp: Date.now() });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
+const getAllMessages = async () => {
+  try {
+    const db = await connection();
+    const allMessages = await db.collection('messages').find().toArray();
+    return allMessages;
   } catch (err) {
     console.log(err);
     return false;
@@ -29,4 +52,6 @@ const saveMessage = async (nickname, message) => {
 
 module.exports = {
   saveNickname,
+  saveAllMessages,
+  getAllMessages,
 };

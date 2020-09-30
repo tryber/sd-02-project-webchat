@@ -4,7 +4,9 @@ const bodyParser = require('body-parser');
 const io = require('socket.io')(http);
 const cors = require('cors');
 
-const { saveNickname } = require('./controllers/userControllers');
+const {
+  saveNickname, insertMessages, getAllChats,
+} = require('./controllers/userControllers');
 
 const app = express();
 app.use(cors());
@@ -13,17 +15,19 @@ app.use(bodyParser.json());
 
 app.post('/users', saveNickname);
 
+app.post('/messages', insertMessages);
+
+app.get('/messages', getAllChats);
+
 app.listen(3001, () => console.log('Listening on 3001'));
 
 io.on('connection', (socket) => {
-  console.log('Conectado');
   socket.on('disconnect', () => {
     console.log('Desconectado');
   });
-  socket.on('mensagem', (msg) => {
-    io.emit('serverMsg', msg);
+  socket.on('mensagem', ({ message, nickname }) => {
+    io.emit('serverMsg', { message, nickname });
   });
-  socket.broadcast.emit('serverMsg');
 });
 
 http.listen(5000, () => console.log('Chat Listening on 5000'));

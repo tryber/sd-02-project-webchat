@@ -21,10 +21,10 @@ form button {
   width: 9%;
 }
 
-#messagens li {
+.messagens li {
   padding: 5px 10px;
 }
 
-#messagens li:nth-child(odd) {
+.messagens li:nth-child(odd) {
   background: rgb(238, 238, 238);
 }
