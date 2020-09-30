@@ -7,6 +7,7 @@ const messageSchema = new mongoose.Schema(
     userId: String,
     nickname: String,
     chatId: String,
+    chatTitle: String,
   },
   { versionKey: false },
 );

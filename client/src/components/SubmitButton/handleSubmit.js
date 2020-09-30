@@ -1,7 +1,7 @@
 import { request } from '../../service';
 
-async function handleSubmit({ body, event, history, setMessage, setUser, endpoint }) {
-  event.preventDefault();
+async function handleSubmit({ body, e, endpoint, history, setMessage, setUser }) {
+  e.preventDefault();
 
   const { data, error } = await request.postData({ body, endpoint });
 
@@ -9,13 +9,20 @@ async function handleSubmit({ body, event, history, setMessage, setUser, endpoin
     return setMessage({ value: error.message, type: 'ALERT' });
   }
 
-  const { token, ...user } = data;
+  localStorage.setItem('token', data.token);
 
-  localStorage.setItem('token', token);
+  const { error: errorUpdate } = await request.patchData({
+    endpoint: `/user/${data.user._id}`,
+    body: { isOnline: true },
+  });
 
-  setUser(user);
+  if (errorUpdate) {
+    return setMessage({ value: errorUpdate.message, type: 'ALERT' });
+  }
 
-  history.push('/home');
+  setUser(data.user);
+
+  history.push('/chat/bolichat');
 }
 
 export default handleSubmit;

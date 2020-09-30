@@ -1,28 +1,22 @@
-.boxField {
+.FormGroup {
   align-content: center;
   align-items: center;
-  display: flex;
-  flex-flow: column wrap;
   background-color: #463f3a;
   border-radius: 30px 30px;
-  justify-content: center;
+  display: flex;
+  flex-flow: column wrap;
   height: 30%;
+  justify-content: center;
   width: 80%;
 }
 
-.boxField input {
-  text-align: center;
+.FormGroup input {
   height: 40%;
+  text-align: center;
   width: 80%;
 }
 
-.boxField p {
+.FormGroup p {
   font-size: 20%;
   text-align: center;
-}
-
-@media screen and (max-width: 500px) {
-  /* .boxField {
-    height: 15%;
-  } */
 }

@@ -18,8 +18,17 @@ function create({ Message, messageModel, event }) {
     });
 
     const data = await message.create();
-    console.log(data);
-    event.emit('notification', { user: req.user.nickname, content: data.content });
+
+    event.on('connection', (socket) => {
+      event.emit('joinRoom', { room: chatId, users: data.users });
+    });
+
+    event.to(data.chatId).emit('message', {
+      user: req.user.nickname,
+      content: data.content,
+      chatTitle: data.chatTitle,
+      chatId: data.chatId,
+    });
 
     res.status(201).json({ message: data });
   };

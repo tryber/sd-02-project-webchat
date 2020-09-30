@@ -36,8 +36,8 @@ app.use('/chat', chatRouter({ Chat, chatModel, middlewares, event }));
 
 app.use('/message', messageRouter({ Message, messageModel, middlewares, event }));
 
-app.use('/user', userRouter({ User, userModel, middlewares }));
+app.use('/user', userRouter({ User, userModel, middlewares, event }));
 
-app.use(middlewares.error);
+app.use(middlewares.error({ event }));
 
 module.exports = { app, io: event };

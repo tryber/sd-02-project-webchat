@@ -92,9 +92,13 @@ async function remove({ id, Model }) {
 async function update({ data, id, Model }) {
   const userModel = new Model({ id, ...data });
 
-  const userExists = await userModel.find();
+  const userExistsId = await userModel.find();
 
-  if (!userExists) return { data: null, error: 'notFound' };
+  if (!userExistsId) return { data: null, error: 'notFound' };
+
+  const userExistsNickname = await userModel.findBy('nickname');
+
+  if (userExistsNickname.length !== 0) return { data: null, error: 'existsNickname' };
 
   const user = await userModel.update();
 

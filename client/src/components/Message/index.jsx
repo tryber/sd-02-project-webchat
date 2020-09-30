@@ -1,5 +1,7 @@
 import React, { useEffect, useContext } from 'react';
+
 import { Context } from '../../context';
+
 import './message.css';
 
 const types = {
@@ -8,18 +10,18 @@ const types = {
   NEUTRAL: 'white',
 };
 
-const createTimeout = ({ infinity, setMessage }) => {
+function createTimeout({ infinity, setMessage }) {
   if (!infinity) {
     setTimeout(() => {
       setMessage({ value: '', type: '' });
     }, 2500);
   }
-};
+}
 
-const Message = ({ infinity }) => {
+function Message({ infinity }) {
   const {
-    setMessage,
     message: { value, type },
+    setMessage,
   } = useContext(Context);
 
   useEffect(() => {
@@ -28,18 +30,25 @@ const Message = ({ infinity }) => {
 
   return (
     <div
-      className="message_comp"
-      data-testid="messageBox"
-      style={{ display: value ? 'flex' : 'none' }}
+      className="Message"
+      style={{
+        display: value ? 'flex' : 'none',
+        boxShadow: `0 0 1em ${types[type]}`,
+      }}
     >
-      <button type="button" onClick={() => setMessage({ value: '', type: '' })}>
+      <button data-testid="MessageButton" onClick={() => setMessage({ value: '', type: '' })}>
         <span className="material-icons">close</span>
       </button>
-      <strong data-testid="message-text" style={{ color: `${types[type]}` }}>
+      <strong
+        data-testid="MessageText"
+        style={{
+          color: `${types[type]}`,
+        }}
+      >
         {value}
       </strong>
     </div>
   );
-};
+}
 
 export default Message;

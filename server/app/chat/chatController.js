@@ -17,21 +17,31 @@ function create({ Chat, chatModel, event }) {
 
     const data = await chat.create();
 
-    event.to(data._id).emit({ user: req.user.id, title: data.title });
+    event.to(data._id).emit('chat', { user: req.user.id, title: data.title });
 
     res.status(201).json({ chat: data });
   };
 }
 
-function listBy({ Chat, chatModel }) {
+function find({ Chat, chatModel }) {
   return async (req, res) => {
-    const { key, value } = req.params;
+    const chat = new Chat({ chatModel, id: req.params.id });
 
-    const chat = new Chat({ chatModel, [key]: value });
-
-    const { data, error } = await chat.listBy(key);
+    const { data, error } = await chat.find();
 
     if (error) return handleError[error]();
+
+    res.status(200).json({ chat: data });
+  };
+}
+
+function listBy({ Chat, chatModel }) {
+  return async (req, res) => {
+    const { key, value, isPrivate } = req.query;
+
+    const chat = new Chat({ chatModel, key, value, isPrivate: JSON.parse(isPrivate) });
+
+    const data = await chat.listBy();
 
     res.status(200).json({ chats: data });
   };
@@ -53,6 +63,7 @@ function update({ Chat, chatModel }) {
 
 module.exports = {
   create,
+  find,
   listBy,
   remove,
   update,

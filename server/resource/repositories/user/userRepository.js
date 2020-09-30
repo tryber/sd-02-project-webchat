@@ -10,7 +10,7 @@ class UserRepository {
 
   async addFriend() {
     return this.Users.findOneAndUpdate(
-      { _id: this.data.id },
+      { id: this.data.id },
       { $push: { friends: this.data.friend } },
       {
         new: true,

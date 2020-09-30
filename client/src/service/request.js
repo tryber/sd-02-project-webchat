@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const headers = () => ({ Authorization: localStorage.getItem('token') });
-
 const BASE_URL = 'http://localhost:3001';
 
-const handleError = ({ error = {} }) => {
+function handleError({ error = {} }) {
+  console.error(error);
+
   if (error.response) {
     return { error: { ...error.response.data.error, status: error.message } };
   }
@@ -14,40 +14,44 @@ const handleError = ({ error = {} }) => {
     };
   }
   return { error: { status: error.message } };
-};
+}
 
-const postData = async ({ body, endpoint }) =>
-  axios
-    .post(`${BASE_URL}${endpoint}`, body, { headers: headers() })
-    .catch((error) => handleError({ error }));
+function headers() {
+  return { Authorization: localStorage.getItem('token') };
+}
 
-const getData = async ({ endpoint }) => {
-  console.log(endpoint, headers());
+async function getData({ endpoint }) {
   return axios
     .get(`${BASE_URL}${endpoint}`, { headers: headers() })
     .catch((error) => handleError({ error }));
-};
+}
 
-const patchData = async (endpoint, params) =>
-  axios
-    .patch(endpoint, { ...params }, { headers: headers() })
+async function patchData({ body, endpoint }) {
+  return axios
+    .patch(`${BASE_URL}${endpoint}`, body, { headers: headers() })
     .catch((error) => handleError({ error }));
+}
 
-const validToken = async (endpoint) =>
-  axios.get(endpoint, {
-    headers: headers(),
-  });
-
-const postSale = async (endpoint, body) =>
-  axios
-    .post(endpoint, { ...body }, { headers: headers() })
+async function patchImage({ form, endpoint }) {
+  return axios
+    .patch(`${BASE_URL}${endpoint}`, form, { headers: headers() })
     .catch((error) => handleError({ error }));
+}
 
-const getUser = async (endpoint) =>
-  axios.get(endpoint, {
-    headers: headers(),
-  });
+async function postData({ body, endpoint }) {
+  return axios
+    .post(`${BASE_URL}${endpoint}`, body, { headers: headers() })
+    .catch((error) => handleError({ error }));
+}
 
-const request = { getData, patchData, postData, validToken, getUser, postSale };
+async function validToken({ endpoint }) {
+  return axios
+    .get(`${BASE_URL}${endpoint}`, {
+      headers: headers(),
+    })
+    .catch((error) => handleError({ error }));
+}
+
+const request = { getData, patchData, patchImage, postData, validToken };
 
 export default request;

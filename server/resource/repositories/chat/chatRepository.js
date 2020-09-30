@@ -17,7 +17,17 @@ class ChatRepository {
   }
 
   async listBy(field) {
-    return this.Chats.find({ [field]: this.data[field] }).sort({ createdAt: 'asc' });
+    if (field === 'users') {
+      return this.Chats.find({
+        [field]: { $all: this.data[field] },
+        isPrivate: this.data.isPrivate,
+      }).sort({
+        createdAt: 'asc',
+      });
+    }
+    return this.Chats.find({ [field]: this.data[field], isPrivate: this.data.isPrivate }).sort({
+      createdAt: 'asc',
+    });
   }
 
   async remove() {

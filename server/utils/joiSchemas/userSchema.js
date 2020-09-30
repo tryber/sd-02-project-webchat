@@ -35,6 +35,11 @@ const friend = Joi.string().messages({
   'string.empty': 'friend is not allowed to be empty',
 });
 
+const isOnline = Joi.boolean().messages({
+  'string.base': 'isOnline must be a type of boolean',
+  'string.empty': 'isOnline is not allowed to be empty',
+});
+
 const password = Joi.string().min(6).required().messages({
   'any.required': 'password is required',
   'string.base': 'password must be a type of string',
@@ -45,6 +50,7 @@ const password = Joi.string().min(6).required().messages({
 const loginSchema = Joi.object({
   email,
   password,
+  isOnline,
 }).unknown(false);
 
 const registerSchema = Joi.object({
@@ -52,11 +58,13 @@ const registerSchema = Joi.object({
   image,
   nickname,
   password,
+  isOnline,
 }).unknown(false);
 
 const updateSchema = Joi.object({
   friend,
   nickname: nicknameUpdate,
+  isOnline,
   image,
 }).unknown(false);
 

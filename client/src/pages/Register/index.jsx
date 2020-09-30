@@ -1,7 +1,11 @@
 import React, { useState, useContext } from 'react';
+
 import Form from 'react-bootstrap/Form';
-import { Context } from '../../context';
+
 import { FormGroup, Message, SubmitButton } from '../../components';
+
+import { Context } from '../../context';
+
 import './register.css';
 
 const Register = () => {
@@ -13,6 +17,12 @@ const Register = () => {
 
   const [password, setPassword] = useState({ value: null, error: null });
 
+  const body = {
+    email: email.value,
+    nickname: nickname.value,
+    password: password.value,
+  };
+
   const isDisabled =
     !email.value ||
     email.error ||
@@ -21,14 +31,8 @@ const Register = () => {
     password.error ||
     !password.value;
 
-  const body = {
-    email: email.value,
-    nickname: nickname.value,
-    password: password.value,
-  };
-
   return (
-    <section className="boxRegister">
+    <section className="Register">
       <header>
         <h1>Register</h1>
       </header>
@@ -37,24 +41,27 @@ const Register = () => {
 
       <Form>
         <FormGroup callback={setEmail} field="email" state={email} testId="email-register-input" />
+
         <FormGroup
           callback={setNickname}
           field="nickname"
           state={nickname}
-          testId="nickname-register-input"
+          testId="NicknameRegisterInput"
         />
+
         <FormGroup
           callback={setPassword}
           field="password"
           state={password}
-          testId="password-register-input"
+          testId="PasswordRegisterInput"
         />
+
         <SubmitButton
           body={body}
+          endpoint="/user"
           isDisabled={isDisabled}
           label="Create User"
-          testId="registerButton"
-          endpoint="/user"
+          testId="RegisterButton"
         />
       </Form>
     </section>

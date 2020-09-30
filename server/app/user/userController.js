@@ -86,14 +86,24 @@ function remove({ User, userModel }) {
   return service.remove({ Domain: User, model: userModel, modelkey: 'userModel' });
 }
 
-function update({ User, userModel }) {
-  return service.update({
-    Domain: User,
-    model: userModel,
-    domainKey: 'user',
-    modelkey: 'userModel',
-    handleError,
-  });
+function update({ User, userModel, event }) {
+  return async (req, res) => {
+    const user = new User({ userModel, ...req.body, id: req.params.id });
+
+    const { data, error } = await user.update();
+
+    if (error) return handleError[error]();
+
+    event.emit('update');
+
+    res.status(200).json({ user: data });
+  };
+}
+
+function validateToken(req, res) {
+  const { password, ...user } = req.user.toObject();
+
+  return res.status(200).json(user);
 }
 
 module.exports = {
@@ -104,4 +114,5 @@ module.exports = {
   login,
   remove,
   update,
+  validateToken,
 };

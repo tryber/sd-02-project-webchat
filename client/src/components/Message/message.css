@@ -1,6 +1,6 @@
-.message_comp {
+.Message {
   align-items: center;
-  background-color: #242423;
+  background-color: #463f3a;
   border-radius: 10px;
   box-sizing: border-box;
   display: flex;
@@ -9,12 +9,11 @@
   left: 3vw;
   padding: 0 1%;
   position: absolute;
-  top: 12%;
-  width: 90vw;
-  z-index: 2;
+  top: 15%;
+  width: 60vw;
 }
 
-.message_comp > button {
+.Message > button {
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -22,13 +21,13 @@
   padding: 0;
 }
 
-.message_comp > button > .material-icons {
-  color: white;
+.Message > button > .material-icons {
+  color: #f4f3ee;
   font-size: 70%;
   height: 1em;
 }
 
-.message_comp > strong {
+.Message > strong {
   font-size: 30%;
   padding: 2%;
 }

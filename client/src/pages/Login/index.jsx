@@ -2,57 +2,60 @@ import React, { useState, useContext } from 'react';
 
 import { useHistory } from 'react-router-dom';
 
-import { Context } from '../../context';
+import Button from 'react-bootstrap/Button';
 
 import Form from 'react-bootstrap/Form';
 
-import Button from 'react-bootstrap/Button';
-
 import { FormGroup, Message, SubmitButton } from '../../components';
+
+import { Context } from '../../context';
 
 import './login.css';
 
 function Login() {
+  const { message } = useContext(Context);
+
   const history = useHistory();
 
   const [email, setEmail] = useState({ value: null, error: null });
 
   const [password, setPassword] = useState({ value: null, error: null });
 
-  const { message } = useContext(Context);
+  const body = { email: email.value, password: password.value };
 
   const isDisabled = !email.value || !password.value || email.error || password.error;
 
-  const body = { email: email.value, password: password.value };
-
   return (
-    <section className="boxLogin">
+    <section className="Login">
       <header>
         <h1>Welcome to Bolichat!</h1>
       </header>
 
-      {message.value && <Message />}
+      {message.value && <Message infinity />}
 
       <Form>
-        <FormGroup callback={setEmail} field="email" state={email} testId="email-input" />
+        <FormGroup callback={setEmail} field="email" state={email} testId="EmailLoginInput" />
+
         <FormGroup
           callback={setPassword}
           field="password"
           state={password}
-          testId="password-login-input"
+          testId="PasswordLoginInput"
         />
+
         <SubmitButton
           body={body}
+          endpoint="/user/login"
           isDisabled={isDisabled}
           label="Login"
-          testId="loginButton"
-          endpoint="/user/login"
+          testId="LoginButton"
         />
       </Form>
+
       <Button
-        className="buttonRouter"
-        variant="outline-danger"
+        className="RegisterLoginButton"
         onClick={() => history.push('/register')}
+        variant="outline-success"
       >
         Register
       </Button>

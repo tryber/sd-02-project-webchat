@@ -1,8 +1,8 @@
 const chatService = require('./chatService');
 
 class Message {
-  constructor({ ChatModel, id, ...data }) {
-    this.ChatModel = ChatModel;
+  constructor({ chatModel, id, ...data }) {
+    this.ChatModel = chatModel;
     this.data = data;
     this.id = id;
   }
@@ -15,8 +15,8 @@ class Message {
     return chatService.find({ id: this.id, Model: this.ChatModel });
   }
 
-  async listBy(field) {
-    return chatService.listBy({ field, Model: this.ChatModel });
+  async listBy() {
+    return chatService.listBy({ data: this.data, Model: this.ChatModel });
   }
 
   async remove() {

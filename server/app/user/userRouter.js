@@ -22,6 +22,8 @@ function userRouter({ middlewares, ...dependencies }) {
     .route('/login')
     .post(middlewares.validate(loginSchema), rescue(userController.login(dependencies)));
 
+  router.route('/token').get(middlewares.auth, rescue(userController.validateToken));
+
   router
     .route('/:id/image')
     .patch(

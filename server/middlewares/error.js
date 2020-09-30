@@ -15,12 +15,20 @@ function errorBoom(err, res) {
   return response.json({ error: { message, details: null } });
 }
 
-function errorMiddleware(err, _req, res, _next) {
-  if (err.isBoom) {
-    return errorBoom(err, res);
-  }
+function errorMiddleware({ event }) {
+  // event.on('connection', (socket) => {
+  //   socket.leave('bolichat');
 
-  return res.status(500).json({ error: { message: err.message, details: null } });
+  //   socket.disconnect(true);
+  // });
+
+  return (err, _req, res, _next) => {
+    if (err.isBoom) {
+      return errorBoom(err, res);
+    }
+
+    return res.status(500).json({ error: { message: err.message, details: null } });
+  };
 }
 
 module.exports = errorMiddleware;

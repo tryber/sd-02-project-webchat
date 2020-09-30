@@ -14,14 +14,16 @@ async function find({ id, Model }) {
   return { data: chat, error: null };
 }
 
-async function listBy({ field, Model }) {
-  const chatModel = new Model();
+async function listBy({ data, Model }) {
+  let value;
 
-  const chat = chatModel.listBy(field);
+  if (data.key === 'users') {
+    value = data.value.split(',');
+  }
 
-  if (chat.length === 0) return { data: null, error: 'notFound' };
+  const chatModel = new Model({ [data.key]: value || data.value, isPrivate: data.isPrivate });
 
-  return { data: chat, error: null };
+  return chatModel.listBy(data.key);
 }
 
 async function remove({ id, Model }) {
