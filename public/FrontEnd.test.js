@@ -1,16 +1,18 @@
 const Func = require('./script');
 
-beforeAll(() => jest.restoreAllMocks());
+afterEach(() => jest.clearAllMocks());
 
 describe('Testing FrontEnd Functions', () => {
   describe('Testing setUserName', () => {
     test('Creating a name lipe', () => {
       const randomMocked = jest.fn();
+      const lsMock = jest.fn();
       const objResul = { user: 'lipe', newEmit: true };
       const socketMocked = ({ emit: jest.fn().mockImplementation((_, cb) => cb) });
       const newNameMocked = jest.fn().mockImplementation(() => 'lipe');
+      const setSpy = jest.spyOn(Func, 'setUserName');
 
-      const result = Func.setUserName(socketMocked, newNameMocked, randomMocked);
+      const result = Func.setUserName(socketMocked, newNameMocked, randomMocked, lsMock);
 
       expect(result).toEqual(undefined);
       expect(socketMocked.emit).toBeCalled();
@@ -18,17 +20,21 @@ describe('Testing FrontEnd Functions', () => {
       expect(newNameMocked).toBeCalled();
       expect(newNameMocked).toBeCalledTimes(1);
       expect(randomMocked).toBeCalledTimes(0);
+      expect(lsMock).toBeCalled();
+      expect(lsMock).toBeCalledTimes(3);
       expect(socketMocked.emit.mock.results[0].value).toStrictEqual(objResul);
+      expect(setSpy.mock.calls[0].length).toEqual(4);
     });
 
     test('Creating a random user when don\'t text a userName', () => {
+      const lsMock = jest.fn();
       const randomMocked = jest.fn().mockReturnValue(200);
       const resultMocked = { user: 'User200', newEmit: true };
       const newNameMocked = jest.fn().mockReturnValue(false);
       const socketMocked = ({ emit: jest.fn().mockImplementation((_, cb) => cb) });
       const setUserSpy = jest.spyOn(Func, 'setUserName');
 
-      const result = Func.setUserName(socketMocked, newNameMocked, randomMocked);
+      const result = Func.setUserName(socketMocked, newNameMocked, randomMocked, lsMock);
 
       expect(setUserSpy).toBeCalled();
       expect(setUserSpy).toBeCalledTimes(1);
@@ -37,6 +43,8 @@ describe('Testing FrontEnd Functions', () => {
       expect(newNameMocked).toBeCalledTimes(1);
       expect(randomMocked).toBeCalled();
       expect(randomMocked).toBeCalledTimes(1);
+      expect(lsMock).toBeCalled();
+      expect(lsMock).toBeCalledTimes(3);
       expect(socketMocked.emit.mock.results[0].value).toStrictEqual(resultMocked);
 
       setUserSpy.mockRestore();
