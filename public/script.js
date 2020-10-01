@@ -257,4 +257,6 @@ module.exports = {
   randomNumber256,
   createLiNewUser,
   submitForm,
+  getLocalStorage,
+  setLocalStorage,
 };

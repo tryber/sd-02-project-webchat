@@ -1,7 +1,5 @@
 const Func = require('./script');
 
-afterEach(() => jest.clearAllMocks());
-
 describe('Testing FrontEnd Functions', () => {
   describe('Testing setUserName', () => {
     test('Creating a name lipe', () => {
@@ -24,6 +22,8 @@ describe('Testing FrontEnd Functions', () => {
       expect(lsMock).toBeCalledTimes(3);
       expect(socketMocked.emit.mock.results[0].value).toStrictEqual(objResul);
       expect(setSpy.mock.calls[0].length).toEqual(4);
+
+      setSpy.mockRestore();
     });
 
     test('Creating a random user when don\'t text a userName', () => {
@@ -32,12 +32,12 @@ describe('Testing FrontEnd Functions', () => {
       const resultMocked = { user: 'User200', newEmit: true };
       const newNameMocked = jest.fn().mockReturnValue(false);
       const socketMocked = ({ emit: jest.fn().mockImplementation((_, cb) => cb) });
-      const setUserSpy = jest.spyOn(Func, 'setUserName');
+      const setSpy = jest.spyOn(Func, 'setUserName');
 
       const result = Func.setUserName(socketMocked, newNameMocked, randomMocked, lsMock);
 
-      expect(setUserSpy).toBeCalled();
-      expect(setUserSpy).toBeCalledTimes(1);
+      expect(setSpy).toBeCalled();
+      expect(setSpy).toBeCalledTimes(1);
       expect(result).toEqual(undefined);
       expect(newNameMocked).toBeCalled();
       expect(newNameMocked).toBeCalledTimes(1);
@@ -47,78 +47,64 @@ describe('Testing FrontEnd Functions', () => {
       expect(lsMock).toBeCalledTimes(3);
       expect(socketMocked.emit.mock.results[0].value).toStrictEqual(resultMocked);
 
-      setUserSpy.mockRestore();
+      setSpy.mockRestore();
     });
   });
 
-  describe('Testing loggedUser event', () => {
-    // test('Testing if socket return undefined with socketUser = Geral', () => {
-    //   const ulSpy = jest.spyOn(Func, 'ulMsg').mockImplementation(() => ({
-    //     document: {
-    //       getElementById: jest.fn().mockImplementation(() => ({
-    //         append: jest.fn(),
-    //       })),
-    //     },
-    //   }));
-    //   // const ulMsg = document.getElementById('message');
+  describe('Testing newLoggin', () => {
+    test('Testing creation of newLiUs with socketUser === Geral ', () => {
+      const socketMock = ({ on: jest.fn().mockImplementation((_, b) => {
+        b((__, ifCase) => ifCase);
+      }) });
+      const ulUsMock = { append: jest.fn() };
+      const divMock = { scrollTop: 0, scrollHeight: 10 };
+      const newLiUsMock = jest.fn();
+      const getLsMock = jest.fn().mockReturnValue('Geral');
+      const setLsMock = jest.fn();
 
-    //   // const createLiNewUser = jest.fn();
-    //   // const ulMocked = {
+      const newSpy = jest.spyOn(Func, 'newLoggin');
+      const result = Func.newLoggin(
+        socketMock, ulUsMock, divMock, newLiUsMock, getLsMock, setLsMock,
+      );
+      expect(result).toEqual(undefined);
+      expect(socketMock.on).toBeCalled();
+      expect(socketMock.on).toBeCalledTimes(1);
+      expect(getLsMock).toBeCalled();
+      expect(getLsMock).toBeCalledTimes(1);
+      expect(ulUsMock.append).toBeCalled();
+      expect(ulUsMock.append).toBeCalledTimes(1);
+      expect(divMock.scrollTop).toEqual(divMock.scrollHeight);
+      expect(divMock.scrollTop).toEqual(10);
+      expect(setLsMock).toBeCalledTimes(0);
+      expect(newSpy.mock.calls[0].length).toEqual(6);
 
-    //   //   append: jest.fn().mockImplementation(() => createLiNewUser()),
-    //   // };
-    //   const mock = {
-    //     socketUser: 'Geral',
-    //     ulMsg: {
-    //       append: jest.fn().mockImplementation(() => jest.fn()),
-    //     },
-    //   };
-    //   const msgMocked = 'Usuário lipe acabou de se conectar';
-    //   const socketMocked = ({ on: jest.fn().mockImplementation((_, cb) => {
-    //     cb(mock);
-    //     return mock;
-    //   }) });
-    //   const newSpy = jest.spyOn(Func, 'newLoggin').mockImplementation((a) => {
-    //     console.log(a);
-    //   });
-    //   Func.newLoggin(socketMocked.on.mock);
-    //   console.log(ulSpy);
-    //   expect(newSpy).toBeCalled();
-    //   // expect(divMsgs.scrollTop).toEqual(divMsgs.scrollHeight);
-    //   // expect(divMsgs.scrollTop).toEqual(10);
-    //   // expect(createLiNewUser).toBeCalled();
-    //   // expect(createLiNewUser).toBeCalledTimes(1);
-    //   // expect(ulMsg.append).toBeCalled();
-    //   // expect(ulMsg.append).toBeCalledTimes(1);
-    //   // expect(socketMocked.on).toBeCalled();
-    //   // expect(socketMocked.on).toBeCalledTimes(1);
+      newSpy.mockRestore();
+    });
 
-    //   ulSpy.mockRestore();
-    // });
+    test('Testing undefined of socket.on with socketUser !== Geral ', () => {
+      const socketMock = ({ on: jest.fn().mockImplementation((_, b) => b()) });
+      const ulUsMock = { append: jest.fn() };
+      const divMock = { scrollTop: 0, scrollHeight: 10 };
+      const newLiUsMock = jest.fn();
+      const getLsMock = jest.fn().mockReturnValue('lala');
+      const setLsMock = jest.fn();
 
-    // test('Testing if socket doen\'t enter on branch with socketUser !== \'Geral\'', () => {
-    //   const createLiNewUser = jest.fn();
-    //   const ulMsg = {
-    //     append: jest.fn(),
-    //   };
-    //   const divMsgs = {
-    //     scrollTop: 0,
-    //     scrollHeight: 10,
-    //   };
-    //   const socketMocked = ({ on: jest.fn().mockImplementation((event, callback) => {
-    //     if (event === 'loggedUser') {
-    //       return callback();
-    //     }
-    //   }) });
+      const newSpy = jest.spyOn(Func, 'newLoggin');
+      const result = Func.newLoggin(
+        socketMock, ulUsMock, divMock, newLiUsMock, getLsMock, setLsMock,
+      );
+      expect(result).toEqual(undefined);
+      expect(socketMock.on).toBeCalled();
+      expect(socketMock.on).toBeCalledTimes(1);
+      expect(getLsMock).toBeCalled();
+      expect(getLsMock).toBeCalledTimes(1);
+      expect(ulUsMock.append).toBeCalledTimes(0);
+      expect(divMock.scrollTop).toEqual(0);
+      expect(setLsMock).toBeCalledTimes(0);
+      expect(newSpy.mock.calls[0].length).toEqual(6);
 
-    //   const result = func.newLoggin(socketMocked, 'Lipe', ulMsg, divMsgs, createLiNewUser);
-
-    //   expect(result).toEqual(undefined);
-    //   expect(createLiNewUser).not.toBeCalled();
-    //   expect(createLiNewUser).toBeCalledTimes(0);
-    //   expect(divMsgs.scrollTop).toEqual(0);
-    //   expect(ulMsg.append).toBeCalledTimes(0);
-    // });
+      newSpy.mockRestore();
+    });
   });
 
   // describe('Testing disconnectUser', () => {
