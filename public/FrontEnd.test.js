@@ -397,6 +397,46 @@ describe('Testing FrontEnd Functions', () => {
         receiveMsgPvtSpy.mockRestore();
       },
     );
+
+    test('Testing case if any is true', () => {
+      const historyArray = {
+        modelAnswer: { user: 'john', message: 'eae dog', date: 1601617374867 },
+        meSocket: 'lRJt-E_v0ebgxDOOAAAB',
+      };
+      const socketMocked = ({
+        on: jest.fn().mockImplementation((_, users) => {
+          users(historyArray);
+          return historyArray;
+        }),
+      });
+      const uMsgMock = { append: jest.fn() };
+      const divMsgMock = { scrollTop: 0, scrollHeight: 10 };
+      const privMsgMock = jest.fn();
+      const getLsMock = jest.fn()
+        .mockReturnValueOnce('false')
+        .mockReturnValueOnce('nKpl8dEsTlqXMSHwAAAg')
+        .mockReturnValueOnce('lRJt-E_v0ebgxDOOAAAB');
+
+      const receiveMsgPvtSpy = jest.spyOn(Func, 'receiveMessagePrivate');
+
+      const result = Func.receiveMessagePrivate(
+        socketMocked, uMsgMock, divMsgMock, privMsgMock, getLsMock,
+      );
+
+      expect(result).toEqual(undefined);
+      expect(receiveMsgPvtSpy).toBeCalled();
+      expect(getLsMock).toBeCalled();
+      expect(getLsMock).toBeCalledTimes(3);
+      expect(getLsMock).toHaveBeenNthCalledWith(1, 'clicked');
+      expect(getLsMock).toHaveBeenNthCalledWith(2, 'socketIdPrivate');
+      expect(getLsMock).toHaveBeenNthCalledWith(3, 'meSocketId');
+      expect(uMsgMock.append).toBeCalledTimes(0);
+      expect(privMsgMock).toBeCalledTimes(0);
+      expect(divMsgMock.scrollTop).toEqual(0);
+      expect(receiveMsgPvtSpy.mock.calls[0].length).toEqual(5);
+
+      receiveMsgPvtSpy.mockRestore();
+    });
   });
 
   describe('Testing historyPrivateMessage', () => {
@@ -495,6 +535,46 @@ describe('Testing FrontEnd Functions', () => {
         histPvtSpy.mockRestore();
       },
     );
+
+    test('Testing case if any is true', () => {
+      const historyArray = {
+        modelAnswer: { user: 'john', message: 'eae dog', date: 1601617374867 },
+        meSocket: 'lRJt-E_v0ebgxDOOAAAB',
+      };
+      const socketMocked = ({
+        on: jest.fn().mockImplementation((_, users) => {
+          users(historyArray);
+          return historyArray;
+        }),
+      });
+      const uMsgMock = { append: jest.fn() };
+      const divMsgMock = { scrollTop: 0, scrollHeight: 10 };
+      const privMsgMock = jest.fn();
+      const getLsMock = jest.fn()
+        .mockReturnValueOnce('false')
+        .mockReturnValueOnce('nKpl8dEsTlqXMSHwAAAg')
+        .mockReturnValueOnce('lRJt-E_v0ebgxDOOAAAB');
+
+      const histPvtSpy = jest.spyOn(Func, 'historyPrivateMessage');
+
+      const result = Func.historyPrivateMessage(
+        socketMocked, uMsgMock, divMsgMock, privMsgMock, getLsMock,
+      );
+
+      expect(result).toEqual(undefined);
+      expect(histPvtSpy).toBeCalled();
+      expect(getLsMock).toBeCalled();
+      expect(getLsMock).toBeCalledTimes(3);
+      expect(getLsMock).toHaveBeenNthCalledWith(1, 'clicked');
+      expect(getLsMock).toHaveBeenNthCalledWith(2, 'socketIdPrivate');
+      expect(getLsMock).toHaveBeenNthCalledWith(3, 'meSocketId');
+      expect(uMsgMock.append).toBeCalledTimes(0);
+      expect(privMsgMock).toBeCalledTimes(0);
+      expect(divMsgMock.scrollTop).toEqual(0);
+      expect(histPvtSpy.mock.calls[0].length).toEqual(5);
+
+      histPvtSpy.mockRestore();
+    });
   });
 
   describe('Testing receiveMessageAll', () => {
@@ -531,6 +611,39 @@ describe('Testing FrontEnd Functions', () => {
       expect(liMsgMock).toHaveBeenNthCalledWith(
         1, { user: 'john', message: 'eae dog', date: 1601617374867 },
       );
+      expect(receiveAllSpy.mock.calls[0].length).toEqual(5);
+
+      receiveAllSpy.mockRestore();
+    });
+
+    test('When socketUser !== Geral, not create Li with message', () => {
+      const messageObj = {
+        modelAnswer: { user: 'john', message: 'eae dog', date: 1601617374867 },
+      };
+      const socketMocked = ({
+        on: jest.fn().mockImplementation((_, users) => {
+          users(messageObj);
+          return messageObj;
+        }),
+      });
+      const uMsgMock = { append: jest.fn() };
+      const divMsgMock = { scrollTop: 0, scrollHeight: 10 };
+      const liMsgMock = jest.fn();
+      const getLsMock = jest.fn().mockReturnValue('lipe');
+
+      const receiveAllSpy = jest.spyOn(Func, 'receiveMessageAll');
+
+      const result = Func.receiveMessageAll(
+        socketMocked, uMsgMock, divMsgMock, liMsgMock, getLsMock,
+      );
+
+      expect(result).toEqual(undefined);
+      expect(receiveAllSpy).toBeCalled();
+      expect(getLsMock).toBeCalled();
+      expect(getLsMock).toBeCalledTimes(1);
+      expect(uMsgMock.append).toBeCalledTimes(0);
+      expect(liMsgMock).toBeCalledTimes(0);
+      expect(divMsgMock.scrollTop).toEqual(0);
       expect(receiveAllSpy.mock.calls[0].length).toEqual(5);
 
       receiveAllSpy.mockRestore();
@@ -815,48 +928,60 @@ describe('Testing FrontEnd Functions', () => {
 
       submitSpy.mockRestore();
     });
+
+    test('Testing when not enter in any case', () => {
+      const event = {
+        preventDefault: jest.fn(),
+      };
+      const input = {
+        value: '',
+      };
+      const socketMocked = ({ emit: jest.fn().mockImplementation((_, cb) => cb) });
+
+      const getLsMock = jest.fn()
+        .mockReturnValueOnce('lipe')
+        .mockReturnValueOnce('Geral')
+        .mockReturnValueOnce('nKpl8dEsTlqXMSHwAAAg')
+        .mockReturnValueOnce('true');
+
+      const submitSpy = jest.spyOn(Func, 'submitForm');
+
+      const result = Func.submitForm(event, input, socketMocked, getLsMock);
+
+      expect(result).toEqual(undefined);
+      expect(input.value).toEqual('');
+      expect(submitSpy).toBeCalled();
+      expect(submitSpy.mock.calls[0].length).toEqual(4);
+      expect(getLsMock).toBeCalled();
+      expect(getLsMock).toBeCalledTimes(4);
+      expect(getLsMock).toHaveBeenNthCalledWith(1, 'userName');
+      expect(getLsMock).toHaveBeenNthCalledWith(2, 'socketUser');
+      expect(getLsMock).toHaveBeenNthCalledWith(3, 'socketIdPrivate');
+      expect(getLsMock).toHaveBeenNthCalledWith(4, 'clicked');
+      expect(socketMocked.emit).toBeCalledTimes(0);
+      expect(socketMocked.emit.mock.calls[0]).toEqual(undefined);
+      expect(input.value).toEqual('');
+
+      submitSpy.mockRestore();
+    });
   });
 
   describe('Testing loadAll', () => {
-    beforeEach(() => {
-      jest.spyOn(window, 'prompt').mockReturnValue('lipe');
-    });
-    test('Testing if socketIo return socket.io', () => {
-      const windowIoMock = {
-        io: jest.fn().mockImplementation(() => ({
-          emit: jest.fn(),
-          on: jest.fn(),
-        })),
-      };
+    test('Testing if window.onload run all functions', () => {
+      const onloadSpy = jest.spyOn(window, 'onload')
+        .mockImplementation(() => ({
+          io: jest.fn(() => ({
+            emit: jest.fn(),
+            on: jest.fn(),
+          })),
+        }));
 
-      const randNum = jest.fn();
-      const getLs = jest.fn();
-      const setLs = jest.fn();
-      const liNewUs = jest.fn();
-      const uMsg = { append: jest.fn(), innerText: '' };
-      const divMsg = { scrollTop: 0, scrollHeight: 10 };
-      const liMsg = jest.fn();
-      const privMsg = jest.fn();
-      const uUsers = { append: jest.fn(), innerText: '' };
+      window.onload();
 
-      const promptSpy = jest.spyOn(window, 'onload');
-      // .mockImplementation(jest.fn(() => windowIoMock));
+      expect(onloadSpy).toBeCalled();
+      expect(onloadSpy).toBeCalledTimes(1);
 
-      window.onload(
-        windowIoMock,
-        randNum,
-        getLs,
-        setLs,
-        liNewUs,
-        uMsg,
-        divMsg,
-        liMsg,
-        privMsg,
-        uUsers,
-      );
-
-      expect(promptSpy).toBeCalled();
-      expect(promptSpy).toBeCalledTimes(1);
+      onloadSpy.mockRestore();
     });
   });
 });

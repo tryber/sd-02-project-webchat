@@ -172,7 +172,6 @@ function receiveHistory(socket, uMsg, divMsg, liMsg, getLs) {
 // setUserName Test Ok
 
 function setUserName(socket, newName, randNum, setLs) {
-  alert('entrei?');
   let userName = newName('Qual seu nome?');
   if (!userName) {
     userName = `User${randNum()}`;
@@ -238,7 +237,10 @@ function onlineUsers(socket, ulUs, newliUs, getLs, setLs) {
 }
 
 function submitForm(
-  event, inp = inputValue, socket = window.io('http://localhost:3000/'), getLs = getLocalStorage,
+  event,
+  inp = inputValue,
+  socket = sockeToButton,
+  getLs = getLocalStorage,
 ) {
   event.preventDefault();
   const lengthMsg = inp.value;
@@ -260,45 +262,22 @@ function submitForm(
   }
 }
 
-window.onload = async (
-  win = window,
-  randNum = randomNumber256,
-  getLs = getLocalStorage,
-  setLs = setLocalStorage,
-  liNewUs = createLiNewUser,
-  uMsg = ulMsg,
-  divMsg = divMsgs,
-  liMsg = createLiMsg,
-  privMsg = createPrivateMsg,
-  uUsers = ulUsers,
-) => {
-  // const socketIo = win.io('http://localhost:3000/');
-  await setUserName(win.io('http://localhost:3000/'), prompt, randNum, setLs);
-  alert('entrei');
-  onlineUsers(
-    win.io('http://localhost:3000/'), uUsers, liNewUs, getLs, setLs,
-  );
-  newLoggin(
-    win.io(
-      'http://localhost:3000/',
-    ), uMsg, divMsg, liNewUs, getLs, setLs,
-  );
-  receiveMessageAll(
-    win.io('http://localhost:3000/'), uMsg, divMsg, liMsg, getLs,
-  );
+window.onload = () => {
+  const socketIo = window.io('http://localhost:3000/');
+  sockeToButton = socketIo;
+  setUserName(socketIo, prompt, randomNumber256, setLocalStorage);
+  onlineUsers(socketIo, ulUsers, createLiNewUser, getLocalStorage, setLocalStorage);
+  newLoggin(socketIo, ulMsg, divMsgs, createLiNewUser, getLocalStorage, setLocalStorage);
+  receiveMessageAll(socketIo, ulMsg, divMsgs, createLiMsg, getLocalStorage);
   receiveMessagePrivate(
-    win.io('http://localhost:3000/'), uMsg, divMsg, privMsg, getLs,
+    socketIo, ulMsg, divMsgs, createPrivateMsg, getLocalStorage,
   );
-  receiveHistory(win.io('http://localhost:3000/'), uMsg, divMsg, liMsg, getLs);
+  receiveHistory(socketIo, ulMsg, divMsgs, createLiMsg, getLocalStorage);
   historyPrivateMessage(
-    win.io('http://localhost:3000/'), uMsg, divMsg, privMsg, getLs,
+    socketIo, ulMsg, divMsgs, createPrivateMsg, getLocalStorage,
   );
-  disconnectList(win.io('http://localhost:3000/'), uUsers, liNewUs);
-  disconnectUser(
-    win.io(
-      'http://localhost:3000/',
-    ), uMsg, divMsg, liNewUs, getLs, setLs,
-  );
+  disconnectList(socketIo, ulUsers, createLiNewUser);
+  disconnectUser(socketIo, ulMsg, divMsgs, createLiNewUser, getLocalStorage, setLocalStorage);
 };
 
 module.exports = {
