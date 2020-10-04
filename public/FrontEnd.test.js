@@ -1,6 +1,8 @@
 const Func = require('./script');
 
 describe('Testing FrontEnd Functions', () => {
+  afterAll(() => jest.clearAllMocks());
+
   describe('Testing setUserName', () => {
     test('Creating a name lipe', () => {
       const randomMocked = jest.fn();
@@ -185,10 +187,12 @@ describe('Testing FrontEnd Functions', () => {
         append: jest.fn(),
       };
       const liNewUs = jest.fn();
+      const getLs = jest.fn();
+      const setLs = jest.fn();
 
       const discoListSpy = jest.spyOn(Func, 'disconnectList');
 
-      const result = Func.disconnectList(socketMocked, uUsersMocked, liNewUs);
+      const result = Func.disconnectList(socketMocked, uUsersMocked, liNewUs, getLs, setLs);
 
       expect(discoListSpy).toBeCalled();
       expect(result).toEqual(undefined);
@@ -200,15 +204,15 @@ describe('Testing FrontEnd Functions', () => {
       expect(liNewUs).toBeCalled();
       expect(liNewUs).toBeCalledTimes(3);
       expect(liNewUs).toHaveBeenNthCalledWith(
-        1, 'Geral', 'onlineUser', 'onlineSpan', null, socketMocked,
+        1, 'Geral', 'onlineUser', 'onlineSpan', null, socketMocked, getLs, setLs,
       );
       expect(liNewUs).toHaveBeenNthCalledWith(
-        2, 'lipe', 'onlineUser', 'onlineSpan', null, socketMocked,
+        2, 'lipe', 'onlineUser', 'onlineSpan', null, socketMocked, getLs, setLs,
       );
       expect(liNewUs).toHaveBeenNthCalledWith(
-        3, 'john', 'onlineUser', 'onlineSpan', null, socketMocked,
+        3, 'john', 'onlineUser', 'onlineSpan', null, socketMocked, getLs, setLs,
       );
-      expect(discoListSpy.mock.calls[0].length).toEqual(3);
+      expect(discoListSpy.mock.calls[0].length).toEqual(5);
 
       discoListSpy.mockRestore();
     });
@@ -802,6 +806,28 @@ describe('Testing FrontEnd Functions', () => {
       expect(setBgSpy.mock.calls[0].length).toEqual(5);
       expect(setBgSpy.mock.calls[0][1].emit.mock.calls[0][0]).toEqual('loginUser', emitObj);
       expect(uMsgMock.innerText).toEqual('Falando com: Geral');
+
+      setBgSpy.mockRestore();
+    });
+
+    test('Test case to default param for uMsg', () => {
+      const event = {
+        target: {
+          innerText: 'lipe',
+          getAttribute: jest.fn().mockReturnValue('nKpl8dEsTlqXMSHwAAAg'),
+        },
+      };
+      const socketMocked = ({ emit: jest.fn().mockImplementation((_, cb) => cb) });
+      const getLsMock = jest.fn()
+        .mockReturnValueOnce('lipe')
+        .mockReturnValueOnce('Geral');
+      const setLsMock = jest.fn();
+
+      const setBgSpy = jest.spyOn(Func, 'setBgColor')
+        .mockImplementation(() => ({ ulMsg: { innerText: 'lala' } }));
+
+      Func.setBgColor(event, socketMocked, getLsMock, setLsMock, null);
+      expect(setBgSpy).toBeCalled();
     });
   });
 
@@ -835,7 +861,6 @@ describe('Testing FrontEnd Functions', () => {
       const getLsMock = jest.fn();
       const setLsMock = jest.fn();
       const expected = '<div value="0.5660375682017729" class="onlineUser"><span value="0.5660375682017729" class="onlineSpan">Geral</span></div>';
-
       const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.5660375682017729);
       const createNewUsSpy = jest.spyOn(Func, 'createLiNewUser');
 
@@ -850,10 +875,38 @@ describe('Testing FrontEnd Functions', () => {
       randomSpy.mockRestore();
       createNewUsSpy.mockRestore();
     });
+
+    test('Testing if div receive onclick function', () => {
+      const newUser = 'Geral';
+      const divClass = 'onlineUser';
+      const spanClass = 'onlineSpan';
+      const socketIdUser = 'lRJt-E_v0ebgxDOOAAAB';
+      const socketMocked = jest.fn();
+      const getLsMock = jest.fn();
+      const setLsMock = jest.fn();
+
+      const createNewUsSpy = jest.spyOn(Func, 'createLiNewUser');
+      // .mockImplementation(() => (
+      //   { divTagNewUser: {
+      //     onclick: jest.fn(() => Func.setBgColor(1, 2, 3, 4)),
+      //   } }));
+
+      const result = Func.createLiNewUser(
+        newUser, divClass, spanClass, socketIdUser, socketMocked, getLsMock, setLsMock,
+      );
+      console.log(result.innerHTML);
+      expect(result.innerHTML.onclick).toEqual(undefined);
+      expect(createNewUsSpy).toBeCalled();
+    });
   });
 
   describe('Testing submitForm', () => {
     test('Testing case to emit event \'message\'', () => {
+      localStorage.setItem('userName', 'lipe');
+      localStorage.setItem('socketUser', 'Geral');
+      localStorage.setItem('socketIdPrivate', 'lRJt-E_v0ebgxDOOAAAB');
+      localStorage.setItem('clicked', 'false');
+
       const event = {
         preventDefault: jest.fn(),
       };
@@ -863,35 +916,41 @@ describe('Testing FrontEnd Functions', () => {
       const emitObj = { user: 'lipe', message: 'salve dogs' };
       const socketMocked = ({ emit: jest.fn().mockImplementation((_, cb) => cb) });
 
-      const getLsMock = jest.fn()
-        .mockReturnValueOnce('lipe')
-        .mockReturnValueOnce('Geral')
-        .mockReturnValueOnce('lRJt-E_v0ebgxDOOAAAB')
-        .mockReturnValueOnce('false');
+      // const getLsMock = jest.spyOn(Func, 'getLocalStorage')
+      //   .mockReturnValueOnce('lipe')
+      //   .mockReturnValueOnce('Geral')
+      //   .mockReturnValueOnce('lRJt-E_v0ebgxDOOAAAB')
+      //   .mockReturnValueOnce('false');
 
       const submitSpy = jest.spyOn(Func, 'submitForm');
 
-      const result = Func.submitForm(event, input, socketMocked, getLsMock);
+      const result = Func.submitForm(event, socketMocked, input);
 
       expect(result).toEqual(undefined);
       expect(input.value).toEqual('');
       expect(submitSpy).toBeCalled();
-      expect(submitSpy.mock.calls[0].length).toEqual(4);
-      expect(getLsMock).toBeCalled();
-      expect(getLsMock).toBeCalledTimes(4);
-      expect(getLsMock).toHaveBeenNthCalledWith(1, 'userName');
-      expect(getLsMock).toHaveBeenNthCalledWith(2, 'socketUser');
-      expect(getLsMock).toHaveBeenNthCalledWith(3, 'socketIdPrivate');
-      expect(getLsMock).toHaveBeenNthCalledWith(4, 'clicked');
+      expect(submitSpy.mock.calls[0].length).toEqual(3);
+      // expect(getLsMock).toBeCalled();
+      // expect(getLsMock).toBeCalledTimes(4);
+      // expect(getLsMock).toHaveBeenNthCalledWith(1, 'userName');
+      // expect(getLsMock).toHaveBeenNthCalledWith(2, 'socketUser');
+      // expect(getLsMock).toHaveBeenNthCalledWith(3, 'socketIdPrivate');
+      // expect(getLsMock).toHaveBeenNthCalledWith(4, 'clicked');
       expect(socketMocked.emit).toBeCalled();
       expect(socketMocked.emit).toBeCalledTimes(1);
       expect(socketMocked.emit.mock.calls[0]).toEqual(['message', emitObj]);
       expect(input.value).toEqual('');
 
+      localStorage.clear();
       submitSpy.mockRestore();
     });
 
     test('Testing case to emit event \'messagePrivate\'', () => {
+      localStorage.setItem('userName', 'lipe');
+      localStorage.setItem('socketUser', 'john');
+      localStorage.setItem('socketIdPrivate', 'nKpl8dEsTlqXMSHwAAAg');
+      localStorage.setItem('clicked', 'true');
+
       const event = {
         preventDefault: jest.fn(),
       };
@@ -901,31 +960,26 @@ describe('Testing FrontEnd Functions', () => {
       const emitObj = { user: 'lipe', message: 'salve catiorro', forId: 'nKpl8dEsTlqXMSHwAAAg' };
       const socketMocked = ({ emit: jest.fn().mockImplementation((_, cb) => cb) });
 
-      const getLsMock = jest.fn()
-        .mockReturnValueOnce('lipe')
-        .mockReturnValueOnce('john')
-        .mockReturnValueOnce('nKpl8dEsTlqXMSHwAAAg')
-        .mockReturnValueOnce('true');
+      // const getLsMock = jest.spyOn(Func, 'getLocalStorage')
+      //   .mockImplementationOnce(() => 'lipe')
+      //   .mockImplementationOnce(() => 'john')
+      //   .mockImplementationOnce(() => 'nKpl8dEsTlqXMSHwAAAg')
+      //   .mockImplementationOnce(() => 'true');
 
       const submitSpy = jest.spyOn(Func, 'submitForm');
 
-      const result = Func.submitForm(event, input, socketMocked, getLsMock);
+      const result = Func.submitForm(event, socketMocked, input);
 
       expect(result).toEqual(undefined);
       expect(input.value).toEqual('');
       expect(submitSpy).toBeCalled();
-      expect(submitSpy.mock.calls[0].length).toEqual(4);
-      expect(getLsMock).toBeCalled();
-      expect(getLsMock).toBeCalledTimes(4);
-      expect(getLsMock).toHaveBeenNthCalledWith(1, 'userName');
-      expect(getLsMock).toHaveBeenNthCalledWith(2, 'socketUser');
-      expect(getLsMock).toHaveBeenNthCalledWith(3, 'socketIdPrivate');
-      expect(getLsMock).toHaveBeenNthCalledWith(4, 'clicked');
+      expect(submitSpy.mock.calls[0].length).toEqual(3);
       expect(socketMocked.emit).toBeCalled();
       expect(socketMocked.emit).toBeCalledTimes(1);
       expect(socketMocked.emit.mock.calls[0]).toEqual(['messagePrivate', emitObj]);
       expect(input.value).toEqual('');
 
+      localStorage.clear();
       submitSpy.mockRestore();
     });
 
@@ -938,45 +992,69 @@ describe('Testing FrontEnd Functions', () => {
       };
       const socketMocked = ({ emit: jest.fn().mockImplementation((_, cb) => cb) });
 
-      const getLsMock = jest.fn()
-        .mockReturnValueOnce('lipe')
-        .mockReturnValueOnce('Geral')
-        .mockReturnValueOnce('nKpl8dEsTlqXMSHwAAAg')
-        .mockReturnValueOnce('true');
-
       const submitSpy = jest.spyOn(Func, 'submitForm');
 
-      const result = Func.submitForm(event, input, socketMocked, getLsMock);
+      const result = Func.submitForm(event, socketMocked, input);
 
       expect(result).toEqual(undefined);
       expect(input.value).toEqual('');
       expect(submitSpy).toBeCalled();
-      expect(submitSpy.mock.calls[0].length).toEqual(4);
-      expect(getLsMock).toBeCalled();
-      expect(getLsMock).toBeCalledTimes(4);
-      expect(getLsMock).toHaveBeenNthCalledWith(1, 'userName');
-      expect(getLsMock).toHaveBeenNthCalledWith(2, 'socketUser');
-      expect(getLsMock).toHaveBeenNthCalledWith(3, 'socketIdPrivate');
-      expect(getLsMock).toHaveBeenNthCalledWith(4, 'clicked');
+      expect(submitSpy.mock.calls[0].length).toEqual(3);
       expect(socketMocked.emit).toBeCalledTimes(0);
       expect(socketMocked.emit.mock.calls[0]).toEqual(undefined);
       expect(input.value).toEqual('');
 
       submitSpy.mockRestore();
     });
+
+    test('Testing case without default params', () => {
+      const event = {
+        preventDefault: jest.fn(),
+      };
+
+      const submitSpy = jest.spyOn(Func, 'submitForm')
+        .mockImplementationOnce(() => ({ getLocal: jest.fn() }))
+        .mockImplementationOnce(() => ({ inputValue: { value: '' } }));
+
+      Func.submitForm(event);
+
+      expect(submitSpy).toBeCalled();
+    });
   });
 
   describe('Testing loadAll', () => {
+    beforeEach(() => {
+      jest.spyOn(window, 'prompt').mockReturnValue('lipe');
+    });
+    afterEach(() => jest.clearAllMocks());
     test('Testing if window.onload run all functions', () => {
-      const onloadSpy = jest.spyOn(window, 'onload')
-        .mockImplementation(() => ({
-          io: jest.fn(() => ({
-            emit: jest.fn(),
-            on: jest.fn(),
-          })),
-        }));
-
-      window.onload();
+      const onloadSpy = jest.spyOn(window, 'onload');
+      const socketMocked = ({
+        on: jest.fn().mockImplementation((_, b) => b),
+        emit: jest.fn().mockImplementation((_, b) => b),
+      });
+      const random = jest.fn();
+      const getLs = jest.fn();
+      const setLs = jest.fn();
+      const uUsers = { innerText: '', append: jest.fn() };
+      const uMsg = { innerText: '', append: jest.fn() };
+      const divMsg = { scrollTop: 0, scrollHeight: 10 };
+      const liNewUs = jest.fn();
+      const liMsg = jest.fn();
+      const privMsg = jest.fn();
+      window.onload(
+        null,
+        socketMocked,
+        random,
+        getLs,
+        setLs,
+        uUsers,
+        uMsg,
+        divMsg,
+        liNewUs,
+        liMsg,
+        privMsg,
+      );
 
       expect(onloadSpy).toBeCalled();
       expect(onloadSpy).toBeCalledTimes(1);

@@ -67,7 +67,8 @@ function getLocalStorage(name) {
 
 // setBgColor Test Ok
 
-function setBgColor({ target }, socket, getLs, setLs, uMsg = ulMsg) {
+function setBgColor({ target }, socket, getLs, setLs, usMsg) {
+  const uMsg = ulMsg || usMsg;
   setLs('socketUser', target.innerText);
   setLs('socketIdPrivate', target.getAttribute('value'));
   const userName = getLs('userName');
@@ -78,7 +79,7 @@ function setBgColor({ target }, socket, getLs, setLs, uMsg = ulMsg) {
       forUser: socketUser,
     });
     setLs('clicked', true);
-  } else if (socketUser === 'Geral') {
+  } else {
     socket.emit('loginUser', {
       user: userName,
       newEmit: false,
@@ -95,12 +96,12 @@ function createLiNewUser(newUser, divClass, spanClass, socketIdUser, socket, get
   const divTagNewUser = document.createElement('div');
   const spanNew1 = document.createElement('span');
   const socketNum = Math.random();
-  divTagNewUser.onclick = (e) => setBgColor(e, socket, getLs, setLs);
+  divTagNewUser.onclick = function toBg(e) { setBgColor(e, socket, getLs, setLs); };
   liUser.append(divTagNewUser);
   if (newUser !== 'Geral') {
     divTagNewUser.setAttribute('value', socketIdUser);
     spanNew1.setAttribute('value', socketIdUser);
-  } else if (newUser === 'Geral') {
+  } else {
     divTagNewUser.setAttribute('value', socketNum);
     spanNew1.setAttribute('value', socketNum);
   }
@@ -208,12 +209,12 @@ function disconnectUser(socket, uMsg, divMsg, liNewUs, getLs, setLs) {
 
 // disconnectList Test Ok
 
-function disconnectList(socket, uUsers, liNewUs) {
+function disconnectList(socket, uUsers, liNewUs, getLs, setLs) {
   socket.on('disconnectList', (users) => {
     uUsers.innerText = '';
-    uUsers.append(liNewUs('Geral', 'onlineUser', 'onlineSpan', null, socket));
+    uUsers.append(liNewUs('Geral', 'onlineUser', 'onlineSpan', null, socket, getLs, setLs));
     users.forEach(({ user }) => {
-      uUsers.append(liNewUs(user, 'onlineUser', 'onlineSpan', null, socket));
+      uUsers.append(liNewUs(user, 'onlineUser', 'onlineSpan', null, socket, getLs, setLs));
     });
   });
 }
@@ -236,18 +237,15 @@ function onlineUsers(socket, ulUs, newliUs, getLs, setLs) {
   });
 }
 
-function submitForm(
-  event,
-  inp = inputValue,
-  socket = sockeToButton,
-  getLs = getLocalStorage,
-) {
+function submitForm(event, socketIo, inpT) {
+  const socket = sockeToButton || socketIo;
+  const inp = inputValue || inpT;
   event.preventDefault();
   const lengthMsg = inp.value;
-  const userName = getLs('userName');
-  const socketUser = getLs('socketUser');
-  const socketIdPrivate = getLs('socketIdPrivate');
-  const clicked = JSON.parse(getLs('clicked'));
+  const userName = getLocalStorage('userName');
+  const socketUser = getLocalStorage('socketUser');
+  const socketIdPrivate = getLocalStorage('socketIdPrivate');
+  const clicked = JSON.parse(getLocalStorage('clicked'));
   if (lengthMsg.length > 0 && !clicked) {
     socket.emit('message', { user: userName, message: lengthMsg });
     inp.value = '';
@@ -262,22 +260,30 @@ function submitForm(
   }
 }
 
-window.onload = () => {
-  const socketIo = window.io('http://localhost:3000/');
+window.onload = (
+  _,
+  win,
+  random = randomNumber256,
+  getLs = getLocalStorage,
+  setLs = setLocalStorage,
+  uUsers = ulUsers,
+  uMsg = ulMsg,
+  divMsg = divMsgs,
+  liNewUs = createLiNewUser,
+  liMsg = createLiMsg,
+  privMsg = createPrivateMsg,
+) => {
+  const socketIo = win || window.io('http://localhost:3000/');
   sockeToButton = socketIo;
-  setUserName(socketIo, prompt, randomNumber256, setLocalStorage);
-  onlineUsers(socketIo, ulUsers, createLiNewUser, getLocalStorage, setLocalStorage);
-  newLoggin(socketIo, ulMsg, divMsgs, createLiNewUser, getLocalStorage, setLocalStorage);
-  receiveMessageAll(socketIo, ulMsg, divMsgs, createLiMsg, getLocalStorage);
-  receiveMessagePrivate(
-    socketIo, ulMsg, divMsgs, createPrivateMsg, getLocalStorage,
-  );
-  receiveHistory(socketIo, ulMsg, divMsgs, createLiMsg, getLocalStorage);
-  historyPrivateMessage(
-    socketIo, ulMsg, divMsgs, createPrivateMsg, getLocalStorage,
-  );
-  disconnectList(socketIo, ulUsers, createLiNewUser);
-  disconnectUser(socketIo, ulMsg, divMsgs, createLiNewUser, getLocalStorage, setLocalStorage);
+  setUserName(socketIo, prompt, random, setLs);
+  onlineUsers(socketIo, uUsers, liNewUs, getLs, setLs);
+  newLoggin(socketIo, uMsg, divMsg, liNewUs, getLs, setLs);
+  receiveMessageAll(socketIo, uMsg, divMsg, liMsg, getLs);
+  receiveMessagePrivate(socketIo, uMsg, divMsg, privMsg, getLs);
+  receiveHistory(socketIo, uMsg, divMsg, liMsg, getLs);
+  historyPrivateMessage(socketIo, uMsg, divMsg, privMsg, getLs);
+  disconnectList(socketIo, uUsers, liNewUs, getLs, setLs);
+  disconnectUser(socketIo, uMsg, divMsg, liNewUs, getLs, setLs);
 };
 
 module.exports = {

@@ -67,6 +67,8 @@ io.on('connection', (socket) => {
     } else {
       await updatePrivateHistory({ user, message, date, userFor });
     }
+    console.log('forId parametro socket', forId);
+    console.log('meu socket', meSocket);
     const [{ messages }] = await savedPrivateMessages(user, userFor);
     io.to(forId).emit('messagePrivate', { modelAnswer: messages, meSocket });
     io.to(meSocket).emit('messagePrivate', { modelAnswer: messages, meSocket });
