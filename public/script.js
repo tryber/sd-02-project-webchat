@@ -91,12 +91,22 @@ function setBgColor({ target }, socket, getLs, setLs, usMsg) {
 
 // createLiNewUser Test Ok
 
-function createLiNewUser(newUser, divClass, spanClass, socketIdUser, socket, getLs, setLs) {
+function createLiNewUser(
+  newUser,
+  divClass,
+  spanClass,
+  socketIdUser,
+  socket,
+  getLs,
+  setLs,
+  uMsg,
+) {
   const liUser = document.createElement('li');
   const divTagNewUser = document.createElement('div');
   const spanNew1 = document.createElement('span');
   const socketNum = Math.random();
-  divTagNewUser.onclick = function toBg(e) { setBgColor(e, socket, getLs, setLs); };
+  liUser.onclick = (e) => setBgColor(e, socket, getLs, setLs, uMsg);
+  // divTagNewUser.setAttribute('id', 'testClick');
   liUser.append(divTagNewUser);
   if (newUser !== 'Geral') {
     divTagNewUser.setAttribute('value', socketIdUser);
