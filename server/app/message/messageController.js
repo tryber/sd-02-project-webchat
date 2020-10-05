@@ -17,14 +17,13 @@ function create({ Message, messageModel, event }) {
 
     const data = await message.create();
 
-    if (!data.chat[0].isPrivate) {
-      event.emit('message', {
-        user: req.user.nickname,
-        content: data.content,
-        chatId: data.chatId,
-        chatTitle: data.chat[0].title,
-      });
-    }
+    console.log(data);
+    event.emit('message', {
+      user: req.user.nickname,
+      content: data.content,
+      chatId: data.chatId,
+      chatTitle: data.chat.title,
+    });
 
     res.status(201).json(data);
   };

@@ -62,7 +62,7 @@ function renderMessages({ messages }) {
   );
 }
 
-function renderHeader({ chat }) {
+function renderHeader({ chat, id, user }) {
   return (
     <header>
       {chat.image ? (
@@ -100,21 +100,27 @@ function Chat({
         return setMessage({ value: error.message, type: 'ALERT' });
       }
 
-      const index = data[0].users.indexOf(user._id) === 0 ? 1 : 0;
+      if (data[0].users) {
+        const index = data[0].users.indexOf(user._id) === 0 ? 1 : 0;
 
-      return request
-        .getData({ endpoint: `/user/${data[0].users[index]}` })
-        .then(({ data: user, error }) => {
-          if (error) {
-            return setMessage({ value: error.message, type: 'ALERT' });
-          }
+        return request
+          .getData({ endpoint: `/user/${data[0].users[index]}` })
+          .then(({ data: user, error }) => {
+            if (error) {
+              return setMessage({ value: error.message, type: 'ALERT' });
+            }
 
-          setChat({
-            title: user.nickname,
-            image: user.image,
-            nickaname: user.nickname,
+            setChat({
+              title: user.nickname,
+              image: user.image,
+              nickaname: user.nickname,
+            });
           });
-        });
+      }
+
+      setChat({
+        title: data[0].title,
+      });
     });
   }, []);
 
@@ -183,7 +189,7 @@ function Chat({
 
       {chat && (
         <section className="BoxChat">
-          {renderHeader({ chat })}
+          {renderHeader({ chat, id, user })}
 
           {renderMessages({ messages })}
 

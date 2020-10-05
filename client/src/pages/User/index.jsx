@@ -14,7 +14,7 @@ import { handleClick, handleSubmit } from './handleClick';
 
 import './user.css';
 
-function renderUser({ body, history, setMessage, setNickname, nickname, image }) {
+function renderUser({ body, history, setMessage, setNickname, nickname, image, user, setImage }) {
   return (
     <section>
       <Form>
@@ -89,7 +89,7 @@ function User() {
 
       {message.value && <Message />}
 
-      {renderUser({ body, history, setMessage, setNickname, nickname, image })}
+      {renderUser({ body, history, setMessage, setNickname, nickname, image, user, setImage })}
     </section>
   );
 }

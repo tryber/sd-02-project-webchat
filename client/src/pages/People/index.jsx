@@ -14,7 +14,7 @@ import handleClick from './handleClick';
 
 import './people.css';
 
-function renderPeopleUsers({ users, user }) {
+function renderPeopleUsers({ users, user, setMessage, history }) {
   return (
     <section className="BoxUsers">
       {users
@@ -85,7 +85,7 @@ function renderButtons({ history }) {
   );
 }
 
-function callback({ msg, setUpdate }) {
+function callback({ msg, setUpdate, setMessage }) {
   setMessage({
     value: `${msg.user} said ${
       msg.content.length >= 10 ? `${msg.content.slice(0, 25)}...` : msg.content
@@ -94,6 +94,20 @@ function callback({ msg, setUpdate }) {
   });
 
   setUpdate((state) => !state);
+}
+
+function renderPeople({ message, history, user, users, setMessage }) {
+  return (
+    <section className="People">
+      {message.value && <Message />}
+
+      {renderButtons({ history })}
+
+      {user && renderPeopleUser({ user, history })}
+
+      {users && user && renderPeopleUsers({ users, user, setMessage, history })}
+    </section>
+  );
 }
 
 function People() {
@@ -126,7 +140,7 @@ function People() {
     });
 
     event.once('message', (msg) => {
-      callback({ msg, setUpdate });
+      callback({ msg, setUpdate, setMessage });
     });
   }, [update]);
 
@@ -136,13 +150,7 @@ function People() {
 
   return (
     <section className="People">
-      {message.value && <Message />}
-
-      {renderButtons({ history })}
-
-      {user && renderPeopleUser({ user, history })}
-
-      {users && user && renderPeopleUsers({ users, user })}
+      {renderPeople({ message, history, user, users, setMessage })}
     </section>
   );
 }
