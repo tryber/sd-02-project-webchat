@@ -4,7 +4,7 @@ class User {
   constructor({ userModel, _id, ...data }) {
     this.userModel = userModel;
     this.data = data;
-    this._id = _id;
+    this.id = _id;
   }
 
   async create() {
@@ -12,7 +12,7 @@ class User {
   }
 
   async find() {
-    return userService.find({ _id: this._id, Model: this.userModel });
+    return userService.find({ _id: this.id, Model: this.userModel });
   }
 
   async list() {
@@ -28,11 +28,11 @@ class User {
   }
 
   async remove() {
-    return userService.remove({ _id: this._id, Model: this.userModel });
+    return userService.remove({ _id: this.id, Model: this.userModel });
   }
 
   async update() {
-    return userService.update({ data: this.data, _id: this._id, Model: this.userModel });
+    return userService.update({ data: this.data, _id: this.id, Model: this.userModel });
   }
 }
 

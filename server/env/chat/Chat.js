@@ -4,7 +4,7 @@ class Message {
   constructor({ chatModel, _id, ...data }) {
     this.ChatModel = chatModel;
     this.data = data;
-    this._id = _id;
+    this.id = _id;
   }
 
   async create() {
@@ -12,7 +12,7 @@ class Message {
   }
 
   async find() {
-    return chatService.find({ _id: this._id, Model: this.ChatModel });
+    return chatService.find({ _id: this.id, Model: this.ChatModel });
   }
 
   async listByUserId() {
