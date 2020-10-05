@@ -13,15 +13,16 @@
   width: 60vw;
 }
 
-.Message > button {
+.Message > .MessageButton {
   background-color: transparent;
   border: none;
   cursor: pointer;
   margin: 0 1%;
+  width: 10%;
   padding: 0;
 }
 
-.Message > button > .material-icons {
+.Message > .MessageButton > .material-icons {
   color: #f4f3ee;
   font-size: 70%;
   height: 1em;

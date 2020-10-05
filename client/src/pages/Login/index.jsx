@@ -31,7 +31,7 @@ function Login() {
         <h1>Welcome to Bolichat!</h1>
       </header>
 
-      {message.value && <Message infinity />}
+      {message.value && <Message />}
 
       <Form>
         <FormGroup callback={setEmail} field="email" state={email} testId="EmailLoginInput" />
@@ -54,6 +54,7 @@ function Login() {
 
       <Button
         className="RegisterLoginButton"
+        data-testid="RegisterLoginButton"
         onClick={() => history.push('/register')}
         variant="outline-success"
       >

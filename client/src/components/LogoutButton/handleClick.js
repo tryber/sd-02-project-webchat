@@ -14,7 +14,7 @@ async function handleClick({ setMessage, event, user, history }) {
     event.broadcast.emit('logout');
   });
 
-  history.push('./');
+  history.push('/');
 
   localStorage.removeItem('token');
 }

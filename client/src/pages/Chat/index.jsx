@@ -34,72 +34,79 @@ function Chat({
   const [update, setUpdate] = useState(true);
 
   useEffect(() => {
-    if (id === 'bolichat' && user) {
-      return setChat({ title: 'Bolichat', image: user.image, nickname: user.nickname });
-    }
-
-    request.getData({ endpoint: `/chat/${id}` }).then(({ data, error }) => {
-      console.log(error);
+    request.getData({ endpoint: `/chat/${id}` }).then(async ({ data, error }) => {
       if (error) {
         return setMessage({ value: error.message, type: 'ALERT' });
       }
-      console.log('Chat', data.chat);
 
-      if (data.chat[0].isPrivate && user) {
-        const index = data.chat[0].users.indexOf(user._id) === 0 ? 1 : 0;
+      if (data[0].isPrivate && user) {
+        const index = data[0].users.indexOf(user._id) === 0 ? 1 : 0;
 
         return request
-          .getData({ endpoint: `/user/${data.chat[0].users[index]}` })
-          .then(({ data, error }) => {
+          .getData({ endpoint: `/user/${data[0].users[index]}` })
+          .then(({ data: user, error }) => {
             if (error) {
               return setMessage({ value: error.message, type: 'ALERT' });
             }
 
             setChat({
-              title: data.user.nickname,
-              image: data.user.image,
-              nickaname: data.user.nickname,
+              title: user.nickname,
+              image: user.image,
+              nickaname: user.nickname,
             });
           });
       }
 
-      setChat({ title: chat.title, image: chat.image, nickname: chat.title });
+      setChat(data[0]);
     });
   }, []);
 
   useEffect(() => {
-    request.getData({ endpoint: `/message?key=chatId&value=${id}` }).then(({ data, error }) => {
-      if (error) {
-        return setMessage({ value: error.message, type: 'ALERT' });
+    request
+      .getData({ endpoint: `/message?key=chatId&value=${id}` })
+      .then(async ({ data, error }) => {
+        if (error) {
+          return setMessage({ value: error.message, type: 'ALERT' });
+        }
+
+        const messagesList = await Promise.all(
+          data.map(async (each) => {
+            const { userId, ...chat } = each;
+
+            const { data } = await request.getData({ endpoint: `/user/${userId}` });
+
+            return { ...chat, user: data };
+          }),
+        );
+
+        setMessages(messagesList);
+      });
+
+    event.once('message', (msg) => {
+      console.log('msg', msg);
+      if (msg.chatId !== id && msg.chatTitle !== id && user !== user.nickname) {
+        setMessage({
+          value: `${msg.user}: ${
+            msg.content.length >= 10 ? msg.content.slice(0, 10) : msg.content
+          }... (${msg.chatTitle})`,
+          type: 'SUCCESS',
+        });
       }
 
-      setMessages(data.messages);
+      setUpdate((state) => !state);
+    });
+
+    event.on('chat', (msg) => {
+      if (msg.chatId !== id) {
+        setMessage({
+          value: `${msg.user} creat ${msg.title}`,
+          type: 'SUCCESS',
+        });
+      }
+
+      setUpdate((state) => !state);
     });
   }, [update]);
-
-  event.on('message', (msg) => {
-    if (msg.chatId !== id) {
-      setMessage({
-        value: `${msg.user}: ${
-          msg.content.length >= 10 ? msg.content.slice(0, 10) : msg.content
-        }... (${msg.chatTitle})`,
-        type: 'SUCCESS',
-      });
-    }
-
-    setUpdate((state) => !state);
-  });
-
-  event.on('chat', (msg) => {
-    if (msg.chatId !== id) {
-      setMessage({
-        value: `${msg.user} creat ${msg.title}`,
-        type: 'SUCCESS',
-      });
-    }
-
-    setUpdate((state) => !state);
-  });
 
   return (
     <section className="Chat">
@@ -127,16 +134,22 @@ function Chat({
       {chat && (
         <section className="BoxChat">
           <header>
-            {chat.image ? <img src={chat.image} /> : <p>{chat.nickname}</p>}
+            {chat.image ? (
+              <img src={chat.image} />
+            ) : id === 'bolichat' ? (
+              <img src={user.image} />
+            ) : (
+              <p>{chat.nickname || user.nickname}</p>
+            )}
             <h1>{chat.title}</h1>
           </header>
 
           <section className="BoxMessage">
-            {messages.map(({ content, nickname, createdAt, _id, image }) => {
+            {messages.map(({ content, user, createdAt, _id }) => {
               return (
                 <div className="UserMessage" key={_id}>
                   <div className="MessageContent">
-                    {image ? <img src={image} /> : <strong>{nickname} :</strong>}
+                    <strong>{user.nickname} :</strong>
                     <p>{content}</p>
                   </div>
                   <div className="MessageDate">
@@ -161,9 +174,7 @@ function Chat({
             <Button
               className="material-icons"
               data-testid="MessageButton"
-              onClick={async (e) =>
-                await handleClick({ e, content, id, title: chat.title, setMessage, setUpdate })
-              }
+              onClick={async (e) => await handleClick({ e, content, id, setMessage, setUpdate })}
               type="submit"
               variant="outline-success"
             >

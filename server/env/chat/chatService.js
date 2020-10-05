@@ -7,6 +7,8 @@ async function create({ data, Model }) {
 }
 
 async function find({ _id, Model }) {
+  if (_id === 'bolichat') return { data: [{ title: 'bolichat', isPrivate: false }], error: null };
+
   const chatModel = new Model({ _id });
 
   const chat = await chatModel.find();

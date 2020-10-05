@@ -27,7 +27,7 @@ function FormGroup({ callback, defaultValue, field, state, testId }) {
       />
       <Form.Control.Feedback
         as="p"
-        data-testid={`${testId}-feedback`}
+        data-testid={`${testId}Feedback`}
         style={{ display: !state.error ? 'none' : 'block' }}
         type="invalid"
       >

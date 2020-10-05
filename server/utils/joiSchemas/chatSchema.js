@@ -10,7 +10,7 @@ const userId = Joi.string().messages({
   'string.empty': 'title is not allowed to be empty',
 });
 
-const users = Joi.array().required().items(Joi.string()).min(2).messages({
+const users = Joi.array().required().items(Joi.string()).min(1).messages({
   'array.base': 'users must be a type of array',
   'array.min': 'users must contain at least two users',
   'array.empty': 'users is not allowed to be empty',

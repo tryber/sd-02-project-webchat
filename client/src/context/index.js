@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -7,7 +7,7 @@ const Context = createContext();
 const Provider = ({ children, event }) => {
   const [message, setMessage] = useState({ value: null, type: null });
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
 
   const context = {
     event,

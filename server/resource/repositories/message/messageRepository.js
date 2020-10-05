@@ -14,9 +14,13 @@ class MessageRepository {
 
     const { chatId, ...message } = Chat.toObject();
 
-    const chat = await this.Models.Chats.find({ _id: chatId });
+    if (chatId !== 'bolichat') {
+      const chat = await this.Models.Chats.find({ _id: chatId });
 
-    return { ...message, chat };
+      return { ...message, chat };
+    }
+
+    return { chat: { title: 'bolichat' }, ...message };
   }
 
   async listBy(field) {

@@ -20,7 +20,7 @@ function PrivateRoute({ component: Component, ...rest }) {
 
         return setMessage({ value: error.message, type: 'ALERT' });
       }
-
+      console.log('Private Router user', data);
       setUser(data);
 
       setIsAuthorized(true);

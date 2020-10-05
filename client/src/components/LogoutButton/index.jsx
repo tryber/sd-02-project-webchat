@@ -16,7 +16,8 @@ function LogoutButton() {
 
   return (
     <Button
-      className="logoutButton"
+      className="LogoutButton"
+      data-testid="LogoutButton"
       onClick={async () => {
         await handleClick({ setMessage, event, user, history });
       }}

@@ -9,18 +9,22 @@ async function handleSubmit({ body, e, endpoint, history, setMessage, setUser })
     return setMessage({ value: error.message, type: 'ALERT' });
   }
 
-  localStorage.setItem('token', data.token);
+  const { token, ...user } = data;
+
+  localStorage.setItem('token', token);
 
   const { error: errorUpdate } = await request.patchData({
-    endpoint: `/user/${data.user._id}`,
+    endpoint: `/user/${data._id}`,
     body: { isOnline: true },
   });
 
   if (errorUpdate) {
-    return setMessage({ value: errorUpdate.message, type: 'ALERT' });
+    setMessage({ value: errorUpdate.message, type: 'ALERT' });
+
+    return history.push('/');
   }
 
-  setUser(data.user);
+  setUser(user);
 
   history.push('/chat/bolichat');
 }

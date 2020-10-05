@@ -30,7 +30,7 @@ function People() {
           return setMessage({ value: error.message, type: 'ALERT' });
         }
 
-        setUser(data.user);
+        setUser(data);
       });
   }, []);
 
@@ -40,7 +40,29 @@ function People() {
         return setMessage({ value: error.message, type: 'ALERT' });
       }
 
-      setUsers(data.users);
+      setUsers(data);
+    });
+
+    event.once('message', (msg) => {
+      console.log('msg', msg);
+
+      setMessage({
+        value: `${msg.user} said ${
+          msg.content.length >= 10 ? `${msg.content.slice(0, 25)}...` : msg.content
+        } on ${msg.chatTitle}`,
+        type: 'SUCCESS',
+      });
+
+      setUpdate((state) => !state);
+    });
+
+    event.on('chat', (msg) => {
+      setMessage({
+        value: `${msg.user} creat ${msg.title}`,
+        type: 'SUCCESS',
+      });
+
+      setUpdate((state) => !state);
     });
   }, [update]);
 
@@ -65,6 +87,7 @@ function People() {
         >
           Direct
         </Button>
+
         <LogoutButton />
       </section>
 

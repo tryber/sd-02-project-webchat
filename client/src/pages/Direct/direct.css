@@ -1,0 +1,9 @@
+.Direct {
+  align-items: center;
+  display: flex;
+  flex-flow: column wrap;
+  height: 100%;
+  justify-content: space-around;
+  padding: 1% 0.5%;
+  width: 80%;
+}

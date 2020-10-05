@@ -31,12 +31,17 @@ function Message({ infinity }) {
   return (
     <div
       className="Message"
+      data-testid="MessageBox"
       style={{
         display: value ? 'flex' : 'none',
         boxShadow: `0 0 1em ${types[type]}`,
       }}
     >
-      <button data-testid="MessageButton" onClick={() => setMessage({ value: '', type: '' })}>
+      <button
+        className="MessageButton"
+        data-testid="MessageButton"
+        onClick={() => setMessage({ value: '', type: '' })}
+      >
         <span className="material-icons">close</span>
       </button>
       <strong

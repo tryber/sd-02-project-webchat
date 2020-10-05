@@ -37,10 +37,10 @@ const Register = () => {
         <h1>Register</h1>
       </header>
 
-      {message.value && <Message />}
+      {message.value && <Message infinity />}
 
       <Form>
-        <FormGroup callback={setEmail} field="email" state={email} testId="email-register-input" />
+        <FormGroup callback={setEmail} field="email" state={email} testId="EmailRegisterInput" />
 
         <FormGroup
           callback={setNickname}
