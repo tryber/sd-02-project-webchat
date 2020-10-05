@@ -10,7 +10,7 @@ function create({ Message, messageModel, event }) {
   return async (req, res) => {
     const message = new Message({
       ...req.body,
-      userId: req.user._id,
+      userId: req.user.id,
       nickname: req.user.nickname,
       messageModel,
     });

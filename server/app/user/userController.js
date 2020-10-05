@@ -38,6 +38,7 @@ function find({ User, userModel }) {
     model: userModel,
     modelkey: 'userModel',
     handleError,
+    field: '_id',
   });
 }
 

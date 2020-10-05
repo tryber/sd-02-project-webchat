@@ -85,6 +85,17 @@ function renderButtons({ history }) {
   );
 }
 
+function callback({ msg, setUpdate }) {
+  setMessage({
+    value: `${msg.user} said ${
+      msg.content.length >= 10 ? `${msg.content.slice(0, 25)}...` : msg.content
+    } on ${msg.chatTitle}`,
+    type: 'SUCCESS',
+  });
+
+  setUpdate((state) => !state);
+}
+
 function People() {
   const { event, message, setMessage, setUser, user } = useContext(Context);
 
@@ -115,25 +126,7 @@ function People() {
     });
 
     event.once('message', (msg) => {
-      console.log('msg', msg);
-
-      setMessage({
-        value: `${msg.user} said ${
-          msg.content.length >= 10 ? `${msg.content.slice(0, 25)}...` : msg.content
-        } on ${msg.chatTitle}`,
-        type: 'SUCCESS',
-      });
-
-      setUpdate((state) => !state);
-    });
-
-    event.on('chat', (msg) => {
-      setMessage({
-        value: `${msg.user} creat ${msg.title}`,
-        type: 'SUCCESS',
-      });
-
-      setUpdate((state) => !state);
+      callback({ msg, setUpdate });
     });
   }, [update]);
 

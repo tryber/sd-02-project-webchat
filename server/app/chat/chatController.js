@@ -31,19 +31,18 @@ function find({ Chat, chatModel }) {
     model: chatModel,
     modelkey: 'chatModel',
     handleError,
+    field: '_id',
   });
 }
 
 function listByUserId({ Chat, chatModel }) {
-  return async (req, res) => {
-    const chat = new Chat({ chatModel, userId: req.params.id });
-
-    const { data, error } = await chat.listByUserId();
-
-    if (error) return handleError[error]();
-
-    res.status(200).json(data);
-  };
+  return service.find({
+    Domain: Chat,
+    model: chatModel,
+    modelkey: 'chatModel',
+    handleError,
+    field: 'userId',
+  });
 }
 
 function listByUsers({ Chat, chatModel }) {

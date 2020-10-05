@@ -20,9 +20,9 @@ function update({ Domain, model, domainKey, modelkey, handleError }) {
   };
 }
 
-function find({ Domain, model, modelkey, handleError }) {
+function find({ Domain, model, modelkey, handleError, field }) {
   return async (req, res) => {
-    const domain = new Domain({ [modelkey]: model, id: req.params.id });
+    const domain = new Domain({ [modelkey]: model, [field]: req.params.id });
 
     const { data, error } = await domain.find();
 
