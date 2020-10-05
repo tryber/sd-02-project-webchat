@@ -16,6 +16,31 @@ import { request } from '../../service';
 
 import './chat.css';
 
+function renderChat({ setContent, content, id, setMessage, setUpdate }) {
+  return (
+    <Form id="ChatForm">
+      <Form.Control
+        data-testid="MessageInput"
+        onChange={(e) => {
+          setContent(e.target.value);
+        }}
+        placeholder="type a message =)"
+        required="required"
+        type="text"
+      />
+      <Button
+        className="material-icons"
+        data-testid="MessageButton"
+        onClick={async (e) => await handleClick({ e, content, id, setMessage, setUpdate })}
+        type="submit"
+        variant="outline-success"
+      >
+        near_me
+      </Button>
+    </Form>
+  );
+}
+
 function Chat({
   match: {
     params: { id },
@@ -39,25 +64,21 @@ function Chat({
         return setMessage({ value: error.message, type: 'ALERT' });
       }
 
-      if (data[0].isPrivate && user) {
-        const index = data[0].users.indexOf(user._id) === 0 ? 1 : 0;
+      const index = data[0].users.indexOf(user._id) === 0 ? 1 : 0;
 
-        return request
-          .getData({ endpoint: `/user/${data[0].users[index]}` })
-          .then(({ data: user, error }) => {
-            if (error) {
-              return setMessage({ value: error.message, type: 'ALERT' });
-            }
+      return request
+        .getData({ endpoint: `/user/${data[0].users[index]}` })
+        .then(({ data: user, error }) => {
+          if (error) {
+            return setMessage({ value: error.message, type: 'ALERT' });
+          }
 
-            setChat({
-              title: user.nickname,
-              image: user.image,
-              nickaname: user.nickname,
-            });
+          setChat({
+            title: user.nickname,
+            image: user.image,
+            nickaname: user.nickname,
           });
-      }
-
-      setChat(data[0]);
+        });
     });
   }, []);
 
@@ -161,26 +182,7 @@ function Chat({
             })}
           </section>
 
-          <Form id="ChatForm">
-            <Form.Control
-              data-testid="MessageInput"
-              onChange={(e) => {
-                setContent(e.target.value);
-              }}
-              placeholder="type a message =)"
-              required="required"
-              type="text"
-            />
-            <Button
-              className="material-icons"
-              data-testid="MessageButton"
-              onClick={async (e) => await handleClick({ e, content, id, setMessage, setUpdate })}
-              type="submit"
-              variant="outline-success"
-            >
-              near_me
-            </Button>
-          </Form>
+          {renderChat({ setContent, content, id, setMessage, setUpdate })}
         </section>
       )}
     </section>

@@ -12,6 +12,29 @@ import { Context } from '../../context';
 
 import './login.css';
 
+function renderLogin({ setEmail, email, setPassword, password, body, isDisabled }) {
+  return (
+    <Form>
+      <FormGroup callback={setEmail} field="email" state={email} testId="EmailLoginInput" />
+
+      <FormGroup
+        callback={setPassword}
+        field="password"
+        state={password}
+        testId="PasswordLoginInput"
+      />
+
+      <SubmitButton
+        body={body}
+        endpoint="/user/login"
+        isDisabled={isDisabled}
+        label="Login"
+        testId="LoginButton"
+      />
+    </Form>
+  );
+}
+
 function Login() {
   const { message } = useContext(Context);
 
@@ -33,24 +56,7 @@ function Login() {
 
       {message.value && <Message />}
 
-      <Form>
-        <FormGroup callback={setEmail} field="email" state={email} testId="EmailLoginInput" />
-
-        <FormGroup
-          callback={setPassword}
-          field="password"
-          state={password}
-          testId="PasswordLoginInput"
-        />
-
-        <SubmitButton
-          body={body}
-          endpoint="/user/login"
-          isDisabled={isDisabled}
-          label="Login"
-          testId="LoginButton"
-        />
-      </Form>
+      {renderLogin({ setEmail, email, setPassword, password, body, isDisabled })}
 
       <Button
         className="RegisterLoginButton"

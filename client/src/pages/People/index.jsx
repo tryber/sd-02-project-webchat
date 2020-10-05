@@ -14,6 +14,40 @@ import handleClick from './handleClick';
 
 import './people.css';
 
+function renderPeople({ users, user }) {
+  return (
+    <section className="BoxUsers">
+      {users
+        .sort((userA, userB) => ((userA.isOnline === userB.isOnline ? 0 : userA.isOnline) ? -1 : 1))
+        .map(
+          (each) =>
+            each._id !== user._id && (
+              <button
+                key={each._id}
+                type="submit"
+                className={each.isOnline ? 'online' : 'offline'}
+                onClick={async (e) =>
+                  await handleClick({
+                    e,
+                    friend: each._id,
+                    user: user._id,
+                    setMessage,
+                    history,
+                  })
+                }
+              >
+                {each.image ? (
+                  <img alt={each.nickname} src={`${each.image}`} />
+                ) : (
+                  <p>@{each.nickname}</p>
+                )}
+              </button>
+            ),
+        )}
+    </section>
+  );
+}
+
 function People() {
   const { event, message, setMessage, setUser, user } = useContext(Context);
 
@@ -93,6 +127,8 @@ function People() {
 
       {message.value && <Message />}
 
+      {users && user && renderPeople({ users, user })}
+
       {user && (
         <section className="AboutMe">
           {user.image && <img src={user.image} />}
@@ -109,40 +145,6 @@ function People() {
           >
             edit
           </Button>
-        </section>
-      )}
-
-      {user && users && (
-        <section className="BoxUsers">
-          {users
-            .sort((userA, userB) =>
-              (userA.isOnline === userB.isOnline ? 0 : userA.isOnline) ? -1 : 1,
-            )
-            .map(
-              (each) =>
-                each._id !== user._id && (
-                  <button
-                    key={each._id}
-                    type="submit"
-                    className={each.isOnline ? 'online' : 'offline'}
-                    onClick={async (e) =>
-                      await handleClick({
-                        e,
-                        friend: each._id,
-                        user: user._id,
-                        setMessage,
-                        history,
-                      })
-                    }
-                  >
-                    {each.image ? (
-                      <img alt={each.nickname} src={`${each.image}`} />
-                    ) : (
-                      <p>@{each.nickname}</p>
-                    )}
-                  </button>
-                ),
-            )}
         </section>
       )}
     </section>
