@@ -120,16 +120,11 @@ function People() {
   const [users, setUsers] = useState(null);
 
   useEffect(() => {
-    user &&
-      request.getData({ endpoint: `/user/${user._id}` }).then(({ data }) => {
-        setUser(data);
-      });
+    user && request.getData({ endpoint: `/user/${user._id}` }).then(({ data }) => setUser(data));
   }, []);
 
   useEffect(() => {
-    request.getData({ endpoint: '/user' }).then(({ data }) => {
-      setUsers(data);
-    });
+    request.getData({ endpoint: '/user' }).then(({ data }) => setUsers(data));
 
     event.once('message', (msg) => callback({ msg, setUpdate, setMessage }));
   }, [update]);
