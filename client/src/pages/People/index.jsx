@@ -121,21 +121,13 @@ function People() {
 
   useEffect(() => {
     user &&
-      request.getData({ endpoint: `/user/${user._id}` }).then(({ data, error }) => {
-        if (error) {
-          return setMessage({ value: error.message, type: 'ALERT' });
-        }
-
+      request.getData({ endpoint: `/user/${user._id}` }).then(({ data }) => {
         setUser(data);
       });
   }, []);
 
   useEffect(() => {
-    request.getData({ endpoint: '/user' }).then(({ data, error }) => {
-      if (error) {
-        return setMessage({ value: error.message, type: 'ALERT' });
-      }
-
+    request.getData({ endpoint: '/user' }).then(({ data }) => {
       setUsers(data);
     });
 
