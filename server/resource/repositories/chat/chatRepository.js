@@ -4,7 +4,7 @@ class ChatRepository {
 
     this.Chats = models.Chats;
     this.Data = Data;
-    this._id = _id;
+    this.id = _id;
   }
 
   async create() {
@@ -12,7 +12,7 @@ class ChatRepository {
   }
 
   async find() {
-    return this.Chats.find({ _id: this._id });
+    return this.Chats.find({ _id: this.id });
   }
 
   async listByUserId() {

@@ -15,13 +15,7 @@ function errorBoom(err, res) {
   return response.json({ error: { message, details: null } });
 }
 
-function errorMiddleware({ event }) {
-  // event.on('connection', (socket) => {
-  //   socket.leave('bolichat');
-
-  //   socket.disconnect(true);
-  // });
-
+function errorMiddleware() {
   return (err, _req, res, _next) => {
     if (err.isBoom) {
       return errorBoom(err, res);

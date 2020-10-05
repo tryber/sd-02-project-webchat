@@ -4,7 +4,7 @@ class UserRepository {
 
     this.Users = models.Users;
     this.Data = Data;
-    this._id = _id;
+    this.id = _id;
   }
 
   async create() {
@@ -12,7 +12,7 @@ class UserRepository {
   }
 
   async find() {
-    return this.Users.find({ _id: this._id });
+    return this.Users.find({ _id: this.id });
   }
 
   async findBy(field) {
@@ -24,11 +24,11 @@ class UserRepository {
   }
 
   async remove() {
-    return this.Users.deleteOne({ _id: this._id });
+    return this.Users.deleteOne({ _id: this.id });
   }
 
   async update() {
-    return this.Users.findOneAndUpdate({ _id: this._id }, this.Data, {
+    return this.Users.findOneAndUpdate({ _id: this.id }, this.Data, {
       new: true,
     });
   }

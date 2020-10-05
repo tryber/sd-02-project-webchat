@@ -6,7 +6,7 @@ class MessageRepository {
     this.Models = Models;
     this.Messages = Messages;
     this.Data = Data;
-    this._id = _id;
+    this.id = _id;
   }
 
   async create() {
