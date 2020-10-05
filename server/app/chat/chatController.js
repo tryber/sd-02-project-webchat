@@ -1,5 +1,7 @@
 const Boom = require('@hapi/boom');
 
+const service = require('../serviceController');
+
 const handleError = {
   notFound: () => {
     throw Boom.badRequest('Chat não encontrado');
@@ -24,15 +26,12 @@ function create({ Chat, chatModel, event }) {
 }
 
 function find({ Chat, chatModel }) {
-  return async (req, res) => {
-    const chat = new Chat({ chatModel, _id: req.params.id });
-
-    const { data, error } = await chat.find();
-
-    if (error) return handleError[error]();
-
-    res.status(200).json(data);
-  };
+  return service.find({
+    Domain: Chat,
+    model: chatModel,
+    modelkey: 'chatModel',
+    handleError,
+  });
 }
 
 function listByUserId({ Chat, chatModel }) {

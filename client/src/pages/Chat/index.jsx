@@ -41,6 +41,42 @@ function renderChat({ setContent, content, id, setMessage, setUpdate }) {
   );
 }
 
+function renderMessages({ messages }) {
+  return (
+    <section className="BoxMessage">
+      {messages.map(({ content, user, createdAt, _id }) => {
+        return (
+          <div className="UserMessage" key={_id}>
+            <div className="MessageContent">
+              <strong>{user.nickname} :</strong>
+              <p>{content}</p>
+            </div>
+            <div className="MessageDate">
+              <em>{createdAt.slice(0, 10)}</em>
+              <em>{createdAt.slice(11, 19)}</em>
+            </div>
+          </div>
+        );
+      })}
+    </section>
+  );
+}
+
+function renderHeader({ chat }) {
+  return (
+    <header>
+      {chat.image ? (
+        <img src={chat.image} />
+      ) : id === 'bolichat' ? (
+        <img src={user.image} />
+      ) : (
+        <p>{chat.nickname || user.nickname}</p>
+      )}
+      <h1>{chat.title}</h1>
+    </header>
+  );
+}
+
 function Chat({
   match: {
     params: { id },
@@ -147,33 +183,9 @@ function Chat({
 
       {chat && (
         <section className="BoxChat">
-          <header>
-            {chat.image ? (
-              <img src={chat.image} />
-            ) : id === 'bolichat' ? (
-              <img src={user.image} />
-            ) : (
-              <p>{chat.nickname || user.nickname}</p>
-            )}
-            <h1>{chat.title}</h1>
-          </header>
+          {renderHeader({ chat })}
 
-          <section className="BoxMessage">
-            {messages.map(({ content, user, createdAt, _id }) => {
-              return (
-                <div className="UserMessage" key={_id}>
-                  <div className="MessageContent">
-                    <strong>{user.nickname} :</strong>
-                    <p>{content}</p>
-                  </div>
-                  <div className="MessageDate">
-                    <em>{createdAt.slice(0, 10)}</em>
-                    <em>{createdAt.slice(11, 19)}</em>
-                  </div>
-                </div>
-              );
-            })}
-          </section>
+          {renderMessages({ messages })}
 
           {renderChat({ setContent, content, id, setMessage, setUpdate })}
         </section>

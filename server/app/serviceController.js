@@ -20,7 +20,20 @@ function update({ Domain, model, domainKey, modelkey, handleError }) {
   };
 }
 
+function find({ Domain, model, modelkey, handleError }) {
+  return async (req, res) => {
+    const domain = new Domain({ [modelkey]: model, id: req.params.id });
+
+    const { data, error } = await domain.find();
+
+    if (error) return handleError[error]();
+
+    res.status(200).json(data);
+  };
+}
+
 module.exports = {
+  find,
   remove,
   update,
 };

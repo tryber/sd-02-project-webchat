@@ -69,6 +69,22 @@ function renderPeopleUser({ user, history }) {
   );
 }
 
+function renderButtons({ history }) {
+  return (
+    <section className="BoxButtons">
+      <Button
+        className="BolichatPeopleButton"
+        onClick={() => history.push('/chat/bolichat')}
+        variant="outline-warning"
+      >
+        Bolichat
+      </Button>
+
+      <LogoutButton />
+    </section>
+  );
+}
+
 function People() {
   const { event, message, setMessage, setUser, user } = useContext(Context);
 
@@ -127,19 +143,9 @@ function People() {
 
   return (
     <section className="People">
-      <section className="BoxButtons">
-        <Button
-          className="BolichatPeopleButton"
-          onClick={() => history.push('/chat/bolichat')}
-          variant="outline-warning"
-        >
-          Bolichat
-        </Button>
-
-        <LogoutButton />
-      </section>
-
       {message.value && <Message />}
+
+      {renderButtons({ history })}
 
       {user && renderPeopleUser({ user, history })}
 

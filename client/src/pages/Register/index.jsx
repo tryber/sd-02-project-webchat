@@ -17,33 +17,41 @@ function renderRegister({
   password,
   body,
   isDisabled,
+  message,
 }) {
   return (
-    <Form>
-      <FormGroup callback={setEmail} field="email" state={email} testId="EmailRegisterInput" />
+    <section className="Register">
+      <header>
+        <h1>Register</h1>
+      </header>
 
-      <FormGroup
-        callback={setNickname}
-        field="nickname"
-        state={nickname}
-        testId="NicknameRegisterInput"
-      />
+      {message.value && <Message infinity />}
+      <Form>
+        <FormGroup callback={setEmail} field="email" state={email} testId="EmailRegisterInput" />
 
-      <FormGroup
-        callback={setPassword}
-        field="password"
-        state={password}
-        testId="PasswordRegisterInput"
-      />
+        <FormGroup
+          callback={setNickname}
+          field="nickname"
+          state={nickname}
+          testId="NicknameRegisterInput"
+        />
 
-      <SubmitButton
-        body={body}
-        endpoint="/user"
-        isDisabled={isDisabled}
-        label="Create User"
-        testId="RegisterButton"
-      />
-    </Form>
+        <FormGroup
+          callback={setPassword}
+          field="password"
+          state={password}
+          testId="PasswordRegisterInput"
+        />
+
+        <SubmitButton
+          body={body}
+          endpoint="/user"
+          isDisabled={isDisabled}
+          label="Create User"
+          testId="RegisterButton"
+        />
+      </Form>
+    </section>
   );
 }
 
@@ -62,34 +70,13 @@ const Register = () => {
     password: password.value,
   };
 
-  const isDisabled =
-    !email.value ||
-    email.error ||
-    nickname.error ||
-    !nickname.value ||
-    password.error ||
-    !password.value;
+  const isDisabled = !email.value || email.error || nickname.error ||
+    !nickname.value || password.error || !password.value;
 
-  return (
-    <section className="Register">
-      <header>
-        <h1>Register</h1>
-      </header>
-
-      {message.value && <Message infinity />}
-
-      {renderRegister({
-        setEmail,
-        email,
-        setNickname,
-        nickname,
-        setPassword,
-        password,
-        body,
-        isDisabled,
-      })}
-    </section>
-  );
+  return renderRegister({
+    setEmail, email, setNickname, nickname, setPassword,
+    password, body, isDisabled, message,
+  });
 };
 
 export default Register;
