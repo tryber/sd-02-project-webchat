@@ -131,12 +131,10 @@ function People() {
       setUsers(data);
     });
 
-    event.once('message', (msg) => {
-      callback({ msg, setUpdate, setMessage });
-    });
+    event.once('message', (msg) => callback({ msg, setUpdate, setMessage }));
   }, [update]);
 
-  event.on('update', () => {
+  event.once('update', () => {
     setUpdate((state) => !state);
   });
 
