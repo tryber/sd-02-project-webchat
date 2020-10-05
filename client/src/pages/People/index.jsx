@@ -14,7 +14,7 @@ import handleClick from './handleClick';
 
 import './people.css';
 
-function renderPeople({ users, user }) {
+function renderPeopleUsers({ users, user }) {
   return (
     <section className="BoxUsers">
       {users
@@ -44,6 +44,27 @@ function renderPeople({ users, user }) {
               </button>
             ),
         )}
+    </section>
+  );
+}
+
+function renderPeopleUser({ user, history }) {
+  return (
+    <section className="AboutMe">
+      {user.image && <img src={user.image} />}
+
+      <div>
+        <p>{user.nickname}</p>
+        <p>{user.email}</p>
+      </div>
+
+      <Button
+        onClick={() => history.push('/user')}
+        className="material-icons"
+        variant="outline-success"
+      >
+        edit
+      </Button>
     </section>
   );
 }
@@ -114,39 +135,15 @@ function People() {
         >
           Bolichat
         </Button>
-        <Button
-          data-testid="DirectPeopleButton"
-          onClick={() => history.push('/direct')}
-          variant="outline-success"
-        >
-          Direct
-        </Button>
 
         <LogoutButton />
       </section>
 
       {message.value && <Message />}
 
-      {users && user && renderPeople({ users, user })}
+      {user && renderPeopleUser({ user, history })}
 
-      {user && (
-        <section className="AboutMe">
-          {user.image && <img src={user.image} />}
-
-          <div>
-            <p>{user.nickname}</p>
-            <p>{user.email}</p>
-          </div>
-
-          <Button
-            onClick={() => history.push('/user')}
-            className="material-icons"
-            variant="outline-success"
-          >
-            edit
-          </Button>
-        </section>
-      )}
+      {users && user && renderPeopleUsers({ users, user })}
     </section>
   );
 }

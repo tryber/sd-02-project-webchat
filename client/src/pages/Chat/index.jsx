@@ -141,13 +141,6 @@ function Chat({
         >
           People
         </Button>
-        <Button
-          data-testid="DirectChatButton"
-          onClick={() => history.push('/direct')}
-          variant="outline-success"
-        >
-          Direct
-        </Button>
 
         <LogoutButton />
       </section>

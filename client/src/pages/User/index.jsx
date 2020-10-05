@@ -14,6 +14,58 @@ import { handleClick, handleSubmit } from './handleClick';
 
 import './user.css';
 
+function renderUser({ body, history, setMessage, setNickname, nickname, image }) {
+  return (
+    <section>
+      <Form>
+        <FormGroup
+          callback={setNickname}
+          field="nickname"
+          state={nickname}
+          testId="nickname-update-input"
+        />
+        <Button
+          type="submit"
+          value="submit"
+          variant="outline-info"
+          onClick={async (event) =>
+            await handleClick({ event, body, history, endpoint: `/user/${user._id}`, setMessage })
+          }
+        >
+          Update Nickname
+        </Button>
+      </Form>
+
+      <Form method="patch" encType="multipart/form-data" className="image-form">
+        <input
+          id="image"
+          type="file"
+          name="image"
+          accept=".jpg, .jpeg, .png"
+          onChange={(e) => setImage(e.target.files[0])}
+        />
+
+        <Button
+          type="submit"
+          value="submit"
+          variant="outline-info"
+          onClick={(event) =>
+            handleSubmit({
+              event,
+              image,
+              setMessage,
+              history,
+              endpoint: `/user/${user._id}/image`,
+            })
+          }
+        >
+          Update Image
+        </Button>
+      </Form>
+    </section>
+  );
+}
+
 function User() {
   const { message, setMessage, user, setUser } = useContext(Context);
 
@@ -24,8 +76,6 @@ function User() {
   const [image, setImage] = useState(null);
 
   const body = { nickname: nickname.value };
-
-  const isDisabled = !nickname.value || nickname.error;
 
   return (
     <section className="boxUser">
@@ -39,53 +89,7 @@ function User() {
 
       {message.value && <Message />}
 
-      <section>
-        <Form>
-          <FormGroup
-            callback={setNickname}
-            field="nickname"
-            state={nickname}
-            testId="nickname-update-input"
-          />
-          <Button
-            type="submit"
-            value="submit"
-            variant="outline-info"
-            onClick={async (event) =>
-              await handleClick({ event, body, history, endpoint: `/user/${user._id}`, setMessage })
-            }
-          >
-            Update Nickname
-          </Button>
-        </Form>
-
-        <Form method="patch" encType="multipart/form-data" className="image-form">
-          <input
-            id="image"
-            type="file"
-            name="image"
-            accept=".jpg, .jpeg, .png"
-            onChange={(e) => setImage(e.target.files[0])}
-          />
-
-          <Button
-            type="submit"
-            value="submit"
-            variant="outline-info"
-            onClick={(event) =>
-              handleSubmit({
-                event,
-                image,
-                setMessage,
-                history,
-                endpoint: `/user/${user._id}/image`,
-              })
-            }
-          >
-            Update Image
-          </Button>
-        </Form>
-      </section>
+      {renderUser({ body, history, setMessage, setNickname, nickname, image })}
     </section>
   );
 }

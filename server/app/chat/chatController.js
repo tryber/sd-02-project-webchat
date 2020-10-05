@@ -15,8 +15,9 @@ function create({ Chat, chatModel, event }) {
 
     const data = await chat.create();
 
-    !data.isPrivate &&
+    if (!data.isPrivate) {
       event.emit('chat', { title: data.title, user: req.user.id, users: data.users });
+    }
 
     res.status(201).json(data);
   };
