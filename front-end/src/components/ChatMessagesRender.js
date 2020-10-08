@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes, { array } from 'prop-types';
 
 const timestampToDate = (timestamp = Date.now()) => (new Date(timestamp)).toLocaleString('pt-br');
 
@@ -18,3 +19,7 @@ const ChatMessagesRender = ({ chatMessages }) => (
 );
 
 export default ChatMessagesRender;
+
+ChatMessagesRender.propTypes = {
+  chatMessages: PropTypes.instanceOf(Array).isRequired,
+};

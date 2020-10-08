@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ChatMessagesRender from '../components/ChatMessagesRender';
 import socket from '../services/socket';
+import PropTypes from 'prop-types';
 import './ChatPage.css';
 
 const emitPrivateMessage = (message, sender, reciever) => (
@@ -43,3 +44,8 @@ const PrivateChat = ({ sender, reciever }) => {
 };
 
 export default PrivateChat;
+
+PrivateChat.propTypes = {
+  sender: PropTypes.string.isRequired,
+  reciever: PropTypes.string.isRequired,
+};

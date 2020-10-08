@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import socket from '../services/socket';
 
@@ -36,3 +37,7 @@ const ChatRender = ({ sender }) => {
 };
 
 export default ChatRender;
+
+ChatRender.propTypes = {
+  sender: PropTypes.string.isRequired,
+};

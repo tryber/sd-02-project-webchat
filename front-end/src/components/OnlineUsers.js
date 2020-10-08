@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import socket from '../services/socket';
 
 const OnlineUsers = ({ sender, setRec, setPvt, pvt }) => {
@@ -31,3 +32,10 @@ const OnlineUsers = ({ sender, setRec, setPvt, pvt }) => {
 };
 
 export default OnlineUsers;
+
+OnlineUsers.propTypes = {
+  sender: PropTypes.string.isRequired,
+  pvt: PropTypes.string.isRequired,
+  setRec: PropTypes.func.isRequired,
+  setPvt: PropTypes.func.isRequired,
+};
