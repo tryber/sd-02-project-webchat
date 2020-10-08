@@ -22,13 +22,15 @@ const ChatRender = ({ sender }) => {
   return (
     <div>
       <input
+        data-testid="chat-render-input"
         id="mensagemInput"
         value={inputValue}
         onChange={({ target: { value } }) => setInputValue(value)}
       />
       <button
+        data-testid="chat-render-button"
         type="button"
-        onClick={() => setInputValue('') || submitForm(inputValue, sender, socket)}
+        onClick={() => setInputValue('') || submitForm(inputValue, sender)}
       >
         Send
     </button>

@@ -35,7 +35,7 @@ export default OnlineUsers;
 
 OnlineUsers.propTypes = {
   sender: PropTypes.string.isRequired,
-  pvt: PropTypes.string.isRequired,
+  pvt: PropTypes.bool.isRequired,
   setRec: PropTypes.func.isRequired,
   setPvt: PropTypes.func.isRequired,
 };
