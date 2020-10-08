@@ -96,14 +96,15 @@ const onlineChat = (
 ) => (
   <div>
     <ul>
+      <li><h3>Usuários Online: </h3></li>
       {Object.keys(onlineUsers).map((nickname) => (nickname === myNick) || (
         <li key={Math.random()}>
-          {nickname}
+          {`${nickname} - `}
           <button
             type="button"
             onClick={() => setPvtChatIsOn(!pvtChatIsOn) || setReciever(nickname)}
           >
-            {(pvtChatIsOn) ? 'Voltar pro chat' : 'Criar sala privada'}
+            {(pvtChatIsOn) ? 'Voltar pro chat geral' : 'Enviar mensagem privada'}
           </button>
         </li>
       ))}
