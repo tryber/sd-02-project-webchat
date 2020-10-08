@@ -24,4 +24,4 @@ yarn-error.log*
 
 .env
 
-/backend/coverage
+/back-end/coverage

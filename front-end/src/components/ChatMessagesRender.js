@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes, { array } from 'prop-types';
+import PropTypes from 'prop-types';
 
 const timestampToDate = (timestamp = Date.now()) => (new Date(timestamp)).toLocaleString('pt-br');
 

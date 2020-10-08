@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import ChatMessagesRender from '../components/ChatMessagesRender';
 import socket from '../services/socket';
-import PropTypes from 'prop-types';
 import './ChatPage.css';
 
 const emitPrivateMessage = (message, sender, reciever) => (
