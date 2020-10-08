@@ -15,7 +15,7 @@ const submitForm = async (message, nickname) => {
   socket.emit('mensagem', { message, nickname });
 };
 
-const ChatRender = ({ sender, socket }) => {
+const ChatRender = ({ sender }) => {
   const [inputValue, setInputValue] = useState('');
 
   return (

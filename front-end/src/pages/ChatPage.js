@@ -58,13 +58,13 @@ const ChatPage = () => {
 
   useEffect(() => {
     const fetchMessages = async () => setChatMessages(await getAllMessages());
-    fetchMessages()
+    fetchMessages();
   }, []);
 
   useEffect(() => {
     socket.on('serverMsg', ({ message, nickname }) => {
       setChatMessages((state) => [...state, { message, timestamp: Date.now(), sender: nickname }]);
-    })
+    });
   }, []);
 
   if (!canRedirect) return getNickname(setSender, sender, setCanRedirect);

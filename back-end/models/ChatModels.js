@@ -8,7 +8,6 @@ const saveNickname = async (sender) => {
     await db.collection('users').insertOne({ sender });
     return true;
   } catch (err) {
-    console.log(err);
     return false;
   }
 };
@@ -21,7 +20,6 @@ const savePrivateMessage = async (sender, reciever, message) => {
       .insertOne({ sender, reciever, message, timestamp: Date.now() });
     return true;
   } catch (err) {
-    console.log(err);
     return false;
   }
 };
@@ -44,7 +42,6 @@ const getAllPvtMessages = async (sender, reciever) => {
       .toArray();
     return allPvtMessages;
   } catch (err) {
-    console.log(err);
     return false;
   }
 };
@@ -57,7 +54,6 @@ const saveAllMessages = async (message, sender) => {
       .insertOne({ sender, message, timestamp: Date.now() });
     return true;
   } catch (err) {
-    console.log(err);
     return false;
   }
 };
@@ -68,7 +64,6 @@ const getAllMessages = async () => {
     const allMessages = await db.collection('messages').find().toArray();
     return allMessages;
   } catch (err) {
-    console.log(err);
     return false;
   }
 };
