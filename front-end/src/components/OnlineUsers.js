@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import socket from '../services/socket';
 
-const OnlineUsers = ({ sender, socket, setRec, setPvt, pvt }) => {
+const OnlineUsers = ({ sender, setRec, setPvt, pvt }) => {
   const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const OnlineUsers = ({ sender, socket, setRec, setPvt, pvt }) => {
         ))}
       </ul>
     </div>
-  )
+  );
 };
 
 export default OnlineUsers;

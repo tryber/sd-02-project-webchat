@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import socket from '../services/socket';
 
-const submitForm = async (message, nickname, socket) => {
+const submitForm = async (message, nickname) => {
   await axios({
     baseURL: 'http://localhost:3001/messages',
     method: 'post',

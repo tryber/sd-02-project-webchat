@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import socketIOClient from 'socket.io-client';
 import ChatMessagesRender from '../components/ChatMessagesRender';
+import socket from '../services/socket';
 import './ChatPage.css';
-
-const ENDPOINT = 'http://localhost:5000/';
-const socket = socketIOClient(ENDPOINT);
 
 const emitPrivateMessage = (message, sender, reciever) => (
   socket.emit('privatemessage', { message, sender, reciever })
@@ -22,7 +19,7 @@ const PrivateChat = ({ sender, reciever }) => {
   }, []);
 
   useEffect(() => {
-    socket.on('allMessages', ({ allMessages }) => {
+    socket.on(`${sender}${reciever}`, ({ allMessages }) => {
       setPvtMessage(allMessages);
     });
   }, []);

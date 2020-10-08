@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
       .join('');
     console.log(pvtRoom);
     socket.join(pvtRoom);
-    io.emit('allMessages', { allMessages });
+    io.emit(`${sender}${reciever}`, { allMessages });
   });
 });
 

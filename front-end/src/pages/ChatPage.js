@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import socketIOClient from 'socket.io-client';
 import axios from 'axios';
 import ChatMessagesRender from '../components/ChatMessagesRender';
 import PrivateChat from './PrivateChat';
 import './ChatPage.css';
 import OnlineUsers from '../components/OnlineUsers';
 import ChatRender from '../components/ChatRender';
-
-const ENDPOINT = 'http://localhost:5000/';
-const socket = socketIOClient(ENDPOINT);
+import socket from '../services/socket';
 
 const getAllMessages = async () => {
   const resp = await axios({
@@ -61,23 +58,25 @@ const ChatPage = () => {
 
   useEffect(() => {
     const fetchMessages = async () => setChatMessages(await getAllMessages());
-    fetchMessages()}, []);
+    fetchMessages()
+  }, []);
 
   useEffect(() => {
     socket.on('serverMsg', ({ message, nickname }) => {
       setChatMessages((state) => [...state, { message, timestamp: Date.now(), sender: nickname }]);
-    })}, []);
+    })
+  }, []);
 
   if (!canRedirect) return getNickname(setSender, sender, setCanRedirect);
 
   return (
     <div>
       <OnlineUsers
-        sender={sender} socket={socket} setPvt={setPvtChat} pvt={pvtChat} setRec={setReciever}
+        sender={sender} setPvt={setPvtChat} pvt={pvtChat} setRec={setReciever}
       />
       {(!pvtChat) || <PrivateChat sender={sender} reciever={reciever} />}
       {(pvtChat) || <ChatMessagesRender chatMessages={chatMessages} />}
-      {(pvtChat) || <ChatRender sender={sender} socket={socket} />}
+      {(pvtChat) || <ChatRender sender={sender} />}
     </div>
   );
 };
