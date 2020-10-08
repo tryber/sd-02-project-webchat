@@ -18,11 +18,7 @@ const savePrivateMessage = async (sender, reciever, message) => {
     const db = await connection();
     await db
       .collection('privateMessages')
-      .insertOne(
-        {
-          sender, reciever, message, timestamp: Date.now(),
-        },
-      );
+      .insertOne({ sender, reciever, message, timestamp: Date.now() });
     return true;
   } catch (err) {
     console.log(err);
@@ -35,18 +31,16 @@ const getAllPvtMessages = async (sender, reciever) => {
     const db = await connection();
     const allPvtMessages = await db
       .collection('privateMessages')
-      .find(
-        {
-          $and: [
-            {
-              sender: { $in: [sender, reciever] },
-            },
-            {
-              reciever: { $in: [sender, reciever] },
-            },
-          ],
-        },
-      )
+      .find({
+        $and: [
+          {
+            sender: { $in: [sender, reciever] },
+          },
+          {
+            reciever: { $in: [sender, reciever] },
+          },
+        ],
+      })
       .toArray();
     return allPvtMessages;
   } catch (err) {

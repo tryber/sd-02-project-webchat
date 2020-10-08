@@ -81,7 +81,11 @@ const allMessagesRender = (chatMessages) => (
 
 const chatRender = (inputValue, setInputValue, nickname) => (
   <div>
-    <input id="mensagemInput" value={inputValue} onChange={({ target: { value } }) => setInputValue(value)} />
+    <input
+      id="mensagemInput"
+      value={inputValue}
+      onChange={({ target: { value } }) => setInputValue(value)}
+    />
     <button
       type="button"
       onClick={() => setInputValue('') || submitForm(inputValue, nickname)}
@@ -94,23 +98,23 @@ const chatRender = (inputValue, setInputValue, nickname) => (
 const onlineChat = (
   onlineUsers, setPvtChatIsOn, pvtChatIsOn, setReciever, myNick,
 ) => (
-  <div>
-    <ul>
-      <li><h3>Usuários Online: </h3></li>
-      {Object.keys(onlineUsers).map((nickname) => (nickname === myNick) || (
-        <li key={Math.random()}>
-          {`${nickname} - `}
-          <button
-            type="button"
-            onClick={() => setPvtChatIsOn(!pvtChatIsOn) || setReciever(nickname)}
-          >
-            {(pvtChatIsOn) ? 'Voltar pro chat geral' : 'Enviar mensagem privada'}
-          </button>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+    <div>
+      <ul>
+        <li><h3>Usuários Online: </h3></li>
+        {Object.keys(onlineUsers).map((nickname) => (nickname === myNick) || (
+          <li key={Math.random()}>
+            {`${nickname} - `}
+            <button
+              type="button"
+              onClick={() => setPvtChatIsOn(!pvtChatIsOn) || setReciever(nickname)}
+            >
+              {(pvtChatIsOn) ? 'Voltar pro chat geral' : 'Enviar mensagem privada'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 
 const ChatPage = () => {
   const [inputValue, setInputValue] = useState('');

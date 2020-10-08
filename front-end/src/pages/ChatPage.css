@@ -1,4 +1,4 @@
-from {
+form {
   background: black;
   bottom: 0;
   padding: 3px;
@@ -6,7 +6,7 @@ from {
   width: 100%;
 }
 
-from input {
+form input {
   border: 0;
   margin-right: 0.5%;
   padding: 10px;
@@ -25,6 +25,6 @@ form button {
   padding: 5px 10px;
 }
 
-.messagens li:nth-child(odd) {
+.messagens li:nth-child( odd ) {
   background: rgb(238, 238, 238);
 }
