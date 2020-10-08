@@ -24,7 +24,6 @@ const PrivateChat = ({ sender, reciever }) => {
 
   useEffect(() => {
     socket.on('allMessages', ({ allMessages }) => {
-      console.log(allMessages);
       setPvtMessage(allMessages);
     });
   }, []);
