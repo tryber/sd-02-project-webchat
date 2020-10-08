@@ -5,6 +5,7 @@ import ChatMessagesRender from '../components/ChatMessagesRender';
 import PrivateChat from './PrivateChat';
 import './ChatPage.css';
 import OnlineUsers from '../components/OnlineUsers';
+import ChatRender from '../components/ChatRender';
 
 const ENDPOINT = 'http://localhost:5000/';
 const socket = socketIOClient(ENDPOINT);
@@ -19,19 +20,6 @@ const getAllMessages = async () => {
     },
   });
   return resp.data.allMessages;
-};
-
-const submitForm = async (message, nickname) => {
-  await axios({
-    baseURL: 'http://localhost:3001/messages',
-    method: 'post',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    data: { message, nickname },
-  });
-  socket.emit('mensagem', { message, nickname });
 };
 
 const sendNickname = async (nickname) => {
@@ -64,24 +52,7 @@ const getNickname = (setSender, nickname, setCanRedirect) => (
   </div>
 );
 
-const chatRender = (inputValue, setInputValue, nickname) => (
-  <div>
-    <input
-      id="mensagemInput"
-      value={inputValue}
-      onChange={({ target: { value } }) => setInputValue(value)}
-    />
-    <button
-      type="button"
-      onClick={() => setInputValue('') || submitForm(inputValue, nickname)}
-    >
-      Send
-    </button>
-  </div>
-);
-
 const ChatPage = () => {
-  const [inputValue, setInputValue] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
   const [sender, setSender] = useState('');
   const [canRedirect, setCanRedirect] = useState(false);
@@ -89,28 +60,24 @@ const ChatPage = () => {
   const [pvtChat, setPvtChat] = useState(false);
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      setChatMessages(await getAllMessages());
-    };
-    fetchMessages();
-  }, []);
+    const fetchMessages = async () => setChatMessages(await getAllMessages());
+    fetchMessages()}, []);
 
   useEffect(() => {
     socket.on('serverMsg', ({ message, nickname }) => {
-      setChatMessages((state) => [
-        ...state, { message, timestamp: Date.now(), sender: nickname },
-      ]);
-    });
-  }, []);
+      setChatMessages((state) => [...state, { message, timestamp: Date.now(), sender: nickname }]);
+    })}, []);
 
   if (!canRedirect) return getNickname(setSender, sender, setCanRedirect);
 
   return (
     <div>
-      <OnlineUsers sender={sender} socket={socket} setPvt={setPvtChat} pvt={pvtChat} setRec={setReciever} />
+      <OnlineUsers
+        sender={sender} socket={socket} setPvt={setPvtChat} pvt={pvtChat} setRec={setReciever}
+      />
       {(!pvtChat) || <PrivateChat sender={sender} reciever={reciever} />}
       {(pvtChat) || <ChatMessagesRender chatMessages={chatMessages} />}
-      {(pvtChat) || chatRender(inputValue, setInputValue, sender)}
+      {(pvtChat) || <ChatRender sender={sender} socket={socket} />}
     </div>
   );
 };

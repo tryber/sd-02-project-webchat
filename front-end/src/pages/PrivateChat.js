@@ -17,8 +17,7 @@ const PrivateChat = ({ sender, reciever }) => {
   useEffect(() => {
     socket.on('privatechat',
       ({ message, sender: pvtSender }) => setPvtMessage((state) => [
-        ...state, { message, timestamp: Date.now(), sender: pvtSender },
-      ]));
+        ...state, { message, timestamp: Date.now(), sender: pvtSender }]));
     socket.emit('joinRoom', { sender, reciever });
   }, []);
 
