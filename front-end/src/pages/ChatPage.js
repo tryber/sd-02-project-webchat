@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
 import axios from 'axios';
+import PrivateChat from './PrivateChat';
 import './ChatPage.css';
 
 const ENDPOINT = 'http://localhost:5000/';
@@ -47,7 +48,7 @@ const sendNickname = async (nickname) => {
   } catch (err) {
     console.log(err);
   }
-  socket.emit('login', { nickname });
+  socket.emit('login', { nickname, id: socket.id });
 };
 
 const getNickname = (setNickname, nickname, setCanRedirect) => (
@@ -78,13 +79,32 @@ const allMessagesRender = (chatMessages) => (
   </div>
 );
 
-const onlineChat = (onlineUsers) => (
+const chatRender = (inputValue, setInputValue, nickname) => (
+  <div>
+    <input id="mensagemInput" value={inputValue} onChange={({ target: { value } }) => setInputValue(value)} />
+    <button
+      type="button"
+      onClick={() => setInputValue('') || submitForm(inputValue, nickname)}
+    >
+      Send
+    </button>
+  </div>
+);
+
+const onlineChat = (
+  onlineUsers, setPvtChatIsOn, pvtChatIsOn, setReciever, myNick,
+) => (
   <div>
     <ul>
-      {onlineUsers.map(({ nickname }) => (
-        <li>
+      {Object.keys(onlineUsers).map((nickname) => (nickname === myNick) || (
+        <li key={Math.random()}>
           {nickname}
-          <button type="button" onClick={() => console.log(nickname)}>Criar uma sala privada</button>
+          <button
+            type="button"
+            onClick={() => setPvtChatIsOn(!pvtChatIsOn) || setReciever(nickname)}
+          >
+            {(pvtChatIsOn) ? 'Voltar pro chat' : 'Criar sala privada'}
+          </button>
         </li>
       ))}
     </ul>
@@ -97,6 +117,8 @@ const ChatPage = () => {
   const [nickname, setNickname] = useState('');
   const [canRedirect, setCanRedirect] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [pvtChatIsOn, setPvtChatIsOn] = useState(false);
+  const [reciever, setReciever] = useState('');
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -114,21 +136,15 @@ const ChatPage = () => {
     socket.on('online', (userNick) => setOnlineUsers(userNick));
   }, []);
 
-  console.log(onlineUsers);
-
   if (!canRedirect) return getNickname(setNickname, nickname, setCanRedirect);
 
   return (
     <div>
-      {(onlineUsers.length === 0) || onlineChat(onlineUsers)}
-      {allMessagesRender(chatMessages, nickname)}
-      <input id="mensagemInput" value={inputValue} onChange={({ target: { value } }) => setInputValue(value)} />
-      <button
-        type="button"
-        onClick={() => setInputValue('') || submitForm(inputValue, nickname)}
-      >
-        Send
-      </button>
+      {(onlineUsers.length === 0)
+        || onlineChat(onlineUsers, setPvtChatIsOn, pvtChatIsOn, setReciever, nickname)}
+      {(!pvtChatIsOn) || <PrivateChat sender={nickname} reciever={reciever} />}
+      {(pvtChatIsOn) || allMessagesRender(chatMessages, nickname)}
+      {(pvtChatIsOn) || chatRender(inputValue, setInputValue, nickname)}
     </div>
   );
 };

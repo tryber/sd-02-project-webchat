@@ -3,6 +3,7 @@ const http = require('http').createServer(express());
 const bodyParser = require('body-parser');
 const io = require('socket.io')(http);
 const cors = require('cors');
+const { savePrivateMessage, getAllPvtMessages } = require('./models/ChatModels');
 
 const {
   saveNickname, insertMessages, getAllChats,
@@ -21,23 +22,41 @@ app.get('/messages', getAllChats);
 
 app.listen(3001, () => console.log('Listening on 3001'));
 
-const onlineArray = [];
+const onlineArray = {};
 
 io.on('connection', (socket) => {
+  console.log(socket.id);
   socket.on('login', ({ nickname }) => {
-    onlineArray.push({ chatId: socket.id, nickname });
+    onlineArray[nickname] = socket.id;
+    console.log('login', onlineArray);
     io.emit('online', onlineArray);
   });
   socket.on('disconnect', () => {
-    onlineArray.splice(onlineArray.findIndex(({ chatId }) => chatId === socket.id), 1);
-    console.log(onlineArray);
+    const removeIndex = Object.values(onlineArray).findIndex((socketId) => socketId === socket.id);
+    delete onlineArray[Object.keys(onlineArray)[removeIndex]];
+    console.log('disconnect', onlineArray);
     io.emit('online', onlineArray);
   });
   socket.on('mensagem', ({ message, nickname }) => {
     io.emit('serverMsg', { message, nickname });
   });
-  socket.on('privatechatroom', () => {
-    socket.join(socket.id);
+  socket.on('privatemessage', async ({ message, sender, reciever }) => {
+    const pvtRoom = (onlineArray[sender] + onlineArray[reciever])
+      .split('')
+      .sort()
+      .join('');
+    await savePrivateMessage(sender, reciever, message);
+    io.to(pvtRoom).emit('privatechat', { message, sender });
+  });
+  socket.on('joinRoom', async ({ sender, reciever }) => {
+    const allMessages = await getAllPvtMessages(sender, reciever);
+    const pvtRoom = (onlineArray[sender] + onlineArray[reciever])
+      .split('')
+      .sort()
+      .join('');
+    console.log(pvtRoom);
+    socket.join(pvtRoom);
+    io.emit('allMessages', { allMessages });
   });
 });
 

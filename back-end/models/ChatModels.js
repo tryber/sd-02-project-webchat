@@ -13,13 +13,42 @@ const saveNickname = async (nickname) => {
   }
 };
 
-const savePrivateMessage = async (nickname, messageAndTimestamp) => {
+const savePrivateMessage = async (sender, reciever, message) => {
   try {
     const db = await connection();
     await db
-      .collection('users')
-      .updateOne({ nickname }, { $push: { messages: messageAndTimestamp } });
+      .collection('privateMessages')
+      .insertOne(
+        {
+          sender, reciever, message, timestamp: Date.now(),
+        },
+      );
     return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
+const getAllPvtMessages = async (sender, reciever) => {
+  try {
+    const db = await connection();
+    const allPvtMessages = await db
+      .collection('privateMessages')
+      .find(
+        {
+          $and: [
+            {
+              sender: { $in: [sender, reciever] },
+            },
+            {
+              reciever: { $in: [sender, reciever] },
+            },
+          ],
+        },
+      )
+      .toArray();
+    return allPvtMessages;
   } catch (err) {
     console.log(err);
     return false;
@@ -54,4 +83,6 @@ module.exports = {
   saveNickname,
   saveAllMessages,
   getAllMessages,
+  savePrivateMessage,
+  getAllPvtMessages,
 };
