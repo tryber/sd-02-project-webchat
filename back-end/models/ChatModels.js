@@ -1,11 +1,11 @@
 const connection = require('./connections');
 
-const saveNickname = async (nickname) => {
+const saveNickname = async (sender) => {
   try {
     const db = await connection();
-    const existUser = await db.collection('users').findOne({ nickname });
+    const existUser = await db.collection('users').findOne({ sender });
     if (existUser) return false;
-    await db.collection('users').insertOne({ nickname, messages: [] });
+    await db.collection('users').insertOne({ sender });
     return true;
   } catch (err) {
     console.log(err);
@@ -49,12 +49,12 @@ const getAllPvtMessages = async (sender, reciever) => {
   }
 };
 
-const saveAllMessages = async (message, nickname) => {
+const saveAllMessages = async (message, sender) => {
   try {
     const db = await connection();
     await db
       .collection('messages')
-      .insertOne({ nickname, message, timestamp: Date.now() });
+      .insertOne({ sender, message, timestamp: Date.now() });
     return true;
   } catch (err) {
     console.log(err);

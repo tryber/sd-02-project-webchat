@@ -1,29 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
+import ChatMessagesRender from '../components/ChatMessagesRender';
 import './ChatPage.css';
 
 const ENDPOINT = 'http://localhost:5000/';
 const socket = socketIOClient(ENDPOINT);
 
-const timestampToDate = (timestamp = Date.now()) => (new Date(timestamp)).toLocaleString('pt-br');
-
 const emitPrivateMessage = (message, sender, reciever) => (
   socket.emit('privatemessage', { message, sender, reciever })
-);
-
-const allMessagesRender = (chatMessages) => (
-  <div>
-    {(chatMessages.length === 0)
-      || (
-        <ul className="messagens">
-          {chatMessages.map(({ message, timestamp, sender }) => (
-            <li key={Math.random()}>
-              {`${timestampToDate(timestamp)} - ${sender} - ${message}`}
-            </li>
-          ))}
-        </ul>
-      )}
-  </div>
 );
 
 const PrivateChat = ({ sender, reciever }) => {
@@ -47,7 +31,7 @@ const PrivateChat = ({ sender, reciever }) => {
 
   return (
     <div>
-      {allMessagesRender(pvtMessage)}
+      <ChatMessagesRender chatMessages={pvtMessage} />
       <input
         id="mensagemInput"
         value={inputValue}
