@@ -16,33 +16,29 @@ const getAllMessages = async () => {
       'Content-Type': 'application/json',
     },
   });
-  console.log(resp);
   return resp.data.allMessages;
 };
 
 const sendNickname = async (nickname) => {
-  try {
-    await axios({
-      baseURL: 'http://localhost:3001/users',
-      method: 'post',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      data: { nickname },
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  await axios({
+    baseURL: 'http://localhost:3001/users',
+    method: 'post',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    data: { nickname },
+  });
   socket.emit('login', { nickname, id: socket.id });
 };
 
 const getNickname = (setSender, nickname, setCanRedirect) => (
   <div>
     <input
+      data-testid="input-chat-page"
       type="text"
       placeholder="Digite seu nickname"
-      onChange={(e) => setSender(e.target.value)}
+      onChange={({ target: { value } }) => setSender(value)}
     />
     <button type="button" onClick={() => setCanRedirect(true) || sendNickname(nickname)}>
       Send
