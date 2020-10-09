@@ -29,6 +29,7 @@ const PrivateChat = ({ sender, reciever }) => {
     <div>
       <ChatMessagesRender chatMessages={pvtMessage} />
       <input
+        data-testid = "input-private-chat"
         id="mensagemInput"
         value={inputValue}
         onChange={({ target: { value } }) => setInputValue(value)}

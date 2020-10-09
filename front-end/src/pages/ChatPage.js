@@ -16,6 +16,7 @@ const getAllMessages = async () => {
       'Content-Type': 'application/json',
     },
   });
+  console.log(resp);
   return resp.data.allMessages;
 };
 

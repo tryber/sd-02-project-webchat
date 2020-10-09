@@ -8,8 +8,11 @@ const ChatMessagesRender = ({ chatMessages }) => (
     {(chatMessages.length === 0)
       || (
         <ul className="messagens">
-          {chatMessages.map(({ message, timestamp, sender }) => (
-            <li key={Math.random()}>
+          {chatMessages.map(({ message, timestamp, sender }, index) => (
+            <li
+              data-testid={`chat-message-${index}`}
+              key={Math.random()}
+            >
               {`${timestampToDate(timestamp)} - ${sender} - ${message}`}
             </li>
           ))}

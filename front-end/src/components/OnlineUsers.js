@@ -14,11 +14,12 @@ const OnlineUsers = ({ sender, setRec, setPvt, pvt }) => {
   return (
     <div>
       <ul>
-        <li><h3>Usuários Online: </h3></li>
+        <li><h3 data-testid="online-user">Usuários Online: </h3></li>
         {Object.keys(onlineUsers).map((nickname) => (nickname === sender) || (
-          <li key={Math.random()}>
+          <li data-testid={`li-${nickname}`} key={Math.random()}>
             {`${nickname} - `}
             <button
+              data-testid="private-chat-button"
               type="button"
               onClick={() => setPvt(!pvt) || setRec(nickname)}
             >
