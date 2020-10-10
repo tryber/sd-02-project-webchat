@@ -4,7 +4,7 @@ const saveNickname = async (sender) => {
   try {
     const db = await connection();
     const existUser = await db.collection('users').findOne({ sender });
-    if (existUser) return false;
+    if (existUser) return true;
     await db.collection('users').insertOne({ sender });
     return true;
   } catch (err) {

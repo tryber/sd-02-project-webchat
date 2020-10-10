@@ -25,16 +25,13 @@ app.listen(3001, () => console.log('Listening on 3001'));
 const onlineArray = {};
 
 io.on('connection', (socket) => {
-  console.log(socket.id);
   socket.on('login', ({ nickname }) => {
     onlineArray[nickname] = socket.id;
-    console.log('login', onlineArray);
     io.emit('online', onlineArray);
   });
   socket.on('disconnect', () => {
     const removeIndex = Object.values(onlineArray).findIndex((socketId) => socketId === socket.id);
     delete onlineArray[Object.keys(onlineArray)[removeIndex]];
-    console.log('disconnect', onlineArray);
     io.emit('online', onlineArray);
   });
   socket.on('mensagem', ({ message, nickname }) => {
@@ -54,7 +51,6 @@ io.on('connection', (socket) => {
       .split('')
       .sort()
       .join('');
-    console.log(pvtRoom);
     socket.join(pvtRoom);
     io.emit(`${sender}${reciever}`, { allMessages });
   });

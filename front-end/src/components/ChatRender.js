@@ -22,6 +22,7 @@ const ChatRender = ({ sender }) => {
   return (
     <div>
       <input
+        placeholder="digite sua mensagem"
         data-testid="chat-render-input"
         id="mensagemInput"
         value={inputValue}
