@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src=“http://localhost:4555/socket.io/socket.io.js”></script>
-  <script src="socketIoExp.js"></script>
+  <script src="http://localhost:4555/socket.io/socket.io.js%22%3E"></script>
+  <script defer src="socketIoExp.js"></script>
   <title>Socket Project Chat</title>
 </head>
 
@@ -15,19 +15,13 @@
   </div>
   <div>
     <table>
-      <tbody class="chatMessages">
-        <tr>
-          <td>Opa</td>
-        </tr>
-        <tr>
-          <td>Diga lá</td>
-        </tr>
+      <tbody id="chatMessages">
       </tbody>
     </table>
   </div>
   <div>
     <input id="sendMessages">
-    <button class="submitValue" type="button">Send</button>
+    <button id="submitValue" type="button">Send</button>
   </div>
 </body>
 
