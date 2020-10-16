@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const SOCKET = process.env.SOCKET;
-const PORT = process.env.PORT;
+const BACKPORT = process.env.BACKPORT;
 
 app.use(cors({ allowedHeaders: '*' }));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,8 +37,8 @@ io.on('connection', (socket) => {
 });
 
 
-app.listen(PORT);
-console.log(`Listen on ${PORT}`)
+app.listen(BACKPORT);
+console.log(`Listen on ${BACKPORT}`)
 
 socketServer.listen(SOCKET);
 console.log(`Socket on ${SOCKET}`);
