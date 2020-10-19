@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import io from 'socket.io-client';
 import { useHistory } from 'react-router-dom';
 import WebChatContext from '../Context';
 
@@ -14,6 +15,7 @@ const NickName = () => {
       : setIsNicknameEmpty(true)
   );
 
+  const socket = io('http://localhost:4555');
 
   return (
     <div>
