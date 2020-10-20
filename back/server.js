@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const messagesController = require('./controllers/messagesController');
 
 const app = express();
 
@@ -17,6 +18,8 @@ app.use(cors({ allowedHeaders: '*' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use('/messages', messagesController.router);
+
 io.on('connection', (socket) => {
 
   console.log(`${socket.id} conectado`);
@@ -30,7 +33,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('desconectado.')
+    console.log(`${socket.id} desconectado.`)
   });
 });
 

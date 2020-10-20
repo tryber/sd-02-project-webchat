@@ -1,27 +1,31 @@
 import React, { useContext, useState } from 'react';
-import io from 'socket.io-client';
 import { useHistory } from 'react-router-dom';
+import getLatestMessages from '../Services/requestMessages';
 import WebChatContext from '../Context';
 
 const NickName = () => {
-  const { nickname, setNickname } = useContext(WebChatContext);
+  const { nickname, setNickname, setChatMessages } = useContext(WebChatContext);
   const [isNicknameEmpty, setIsNicknameEmpty] = useState('');
 
   const history = useHistory();
 
-  const chatRedirect = () => (
-    nickname.length
-      ? history.push('/chat')
-      : setIsNicknameEmpty(true)
-  );
+  const chatRedirect = async () => {
+    if (nickname.length && !nickname.split('').includes(' ')) {
+      const { data: { messages } } = await getLatestMessages();
 
-  const socket = io('http://localhost:4555');
+      setChatMessages(messages);
+      return history.push('/chat');
+    }
+
+    return setIsNicknameEmpty(true)
+  }
 
   return (
     <div>
       <div>
         <p>Digite seu NickName</p>
-        <input type="text"
+        <input
+          type="text"
           onChange={({ target }) => setNickname(target.value)}
         />
         <button
@@ -30,7 +34,9 @@ const NickName = () => {
         >
           Entrar
         </button>
-        <span>{isNicknameEmpty && "Nickname não digitado"}</span>
+        <span>
+          {isNicknameEmpty && "Verifique seu nickname. Proibido espaçamentos."}
+        </span>
       </div>
     </div>
   );
