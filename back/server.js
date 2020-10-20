@@ -21,14 +21,11 @@ app.use(bodyParser.json());
 app.use('/messages', messagesController.router);
 
 io.on('connection', (socket) => {
-
   console.log(`${socket.id} conectado`);
 
   socket.on('message', async (message) => {
     await insertMessage(message);
-    io.emit('serverResponse', {
-      ...message,
-    });
+    io.emit('serverResponse', message);
   });
 
   socket.on('disconnect', () => {
@@ -38,7 +35,7 @@ io.on('connection', (socket) => {
 
 
 app.listen(BACKPORT);
-console.log(`Listen on ${BACKPORT}`)
+console.log(`Listen on ${BACKPORT}`);
 
 socketServer.listen(SOCKET);
 console.log(`Socket on ${SOCKET}`);

@@ -24,19 +24,11 @@ const NickName = () => {
     <div>
       <div>
         <p>Digite seu NickName</p>
-        <input
-          type="text"
-          onChange={({ target }) => setNickname(target.value)}
-        />
-        <button
-          type="button"
-          onClick={() => chatRedirect()}
-        >
+        <input type="text" onChange={({ target }) => setNickname(target.value)} />
+        <button type="button" onClick={() => chatRedirect()}>
           Entrar
         </button>
-        <span>
-          {isNicknameEmpty && "Verifique seu nickname. Proibido espaçamentos."}
-        </span>
+        <span>{isNicknameEmpty && "Verifique seu nickname. Proibido espaçamentos."}</span>
       </div>
     </div>
   );

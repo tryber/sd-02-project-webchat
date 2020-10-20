@@ -9,7 +9,7 @@ const getAllMessages = async () =>
 const insertMessage = async (message) =>
   dbConnection()
     .then((db) => db
-      .insertOne(message))
+      .insertOne(message));
 
 module.exports = {
   getAllMessages,
