@@ -3,13 +3,17 @@ import { useHistory } from 'react-router-dom';
 import WebChatContext from '../Context';
 
 const ChatContainer = () => {
-  const { nickname, chatMessages } = useContext(WebChatContext);
+  const { nickname, chatMessages, setChatMessages, socket } = useContext(WebChatContext);
   const history = useHistory();
 
   useEffect(() => {
     if (!nickname) return history.push('/');
 
   }, [nickname, history]);
+
+  socket.on('serverResponse', (data) => {
+    setChatMessages([...chatMessages, data])
+  });
 
   return (
     <div>

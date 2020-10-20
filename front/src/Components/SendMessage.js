@@ -1,8 +1,5 @@
 import React, { useContext, useState } from 'react';
-import io from 'socket.io-client';
 import WebChatContext from '../Context';
-
-const socket = io('http://localhost:4555');
 
 const structureMessage = (nick, message) => ({
   nick,
@@ -11,10 +8,10 @@ const structureMessage = (nick, message) => ({
 });
 
 const SendMessage = () => {
-  const { nickName } = useContext(WebChatContext);
+  const { nickname, socket } = useContext(WebChatContext);
   const [userMessage, setUserMessage] = useState('');
 
-  const sendMessageSocket = () => socket.emit('message', structureMessage(nickName, userMessage));
+  const sendMessageSocket = () => socket.emit('message', structureMessage(nickname, userMessage));
 
   return (
     <div>

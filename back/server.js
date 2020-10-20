@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const path = require('path');
 const messagesController = require('./controllers/messagesController');
+const { insertMessage } = require('./models/messagesModel');
 
 const app = express();
 
@@ -24,11 +24,10 @@ io.on('connection', (socket) => {
 
   console.log(`${socket.id} conectado`);
 
-  socket.on('message', (message) => {
-    console.log(message);
+  socket.on('message', async (message) => {
+    await insertMessage(message);
     io.emit('serverResponse', {
-      message,
-      clientId: socket.id,
+      ...message,
     });
   });
 

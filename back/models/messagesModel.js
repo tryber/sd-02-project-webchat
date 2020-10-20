@@ -6,6 +6,12 @@ const getAllMessages = async () =>
       .find()
       .toArray());
 
+const insertMessage = async (message) =>
+  dbConnection()
+    .then((db) => db
+      .insertOne(message))
+
 module.exports = {
   getAllMessages,
+  insertMessage,
 };

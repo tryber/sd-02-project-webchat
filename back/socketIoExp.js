@@ -3,6 +3,8 @@ window.onload = () => {
   loadMessages();
 }
 
+const socket = io('http://localhost:4555');
+
 const messageData = () => (
   document
     .getElementById('submitValue')
