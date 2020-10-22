@@ -3,18 +3,23 @@ import { getPrivateMessages } from '../Services/requestMessages';
 import WebChatContext from '../Context';
 
 const PrivateContainer = () => {
-  const { nickname, privateChat, setPrivateChat, privateUser, socket, nicknameToMessage } = useContext(WebChatContext);
+  const { privateChat, setPrivateChat, socket, nickname, nicknameToMessage } = useContext(WebChatContext);
 
   useEffect(() => {
-    const saveLastPrivateMessages = async () => {
-      const data = await getPrivateMessages(nickname, nicknameToMessage);
-    }
+    socket.emit('privateHistory', { sendUser: nickname, receiveUser: nicknameToMessage });
+    socket.on('startPrivate', (data) => {
+      console.log('entrei no startPrivate');
+      if (!data) return null;
+      setPrivateChat([...data.messages]);
+    });
   }, []);
 
   socket.on('receivePrivateMessage', (data) => {
-    setPrivateChat([...privateChat, data.messages]);
+    if (!data) return null;
+    setPrivateChat([...data.messages]);
   });
-  console.log(privateChat);
+
+
   return (
     <div>
       {privateChat.map(({ sendUser, message, time }) => (

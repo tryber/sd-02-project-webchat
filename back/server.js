@@ -26,7 +26,7 @@ app.use('/onlineUsers', usersController.router);
 io.on('connection', (socket) => {
   socket.on('nickSocketId', async ({ nickname }) => {
     socket.user = nickname;
-    console.log(socket.user, 'connected');
+    console.log(socket.user, 'conectado.');
     socket.broadcast.emit('serverResponse', {
       nick: nickname, time: Date(), message: 'Conectou-se',
     });
@@ -40,6 +40,12 @@ io.on('connection', (socket) => {
     io.emit('serverResponse', message);
   });
 
+  socket.on('privateHistory', async ({ sendUser, receiveUser }) => {
+    const messages = await findPrivateChat(sendUser, receiveUser);
+    if (!messages) return null;
+    io.to(socket.id).emit('startPrivate', messages);
+  });
+
   socket.on('privateMessage', async ({ sendUser, receiveUser, message }) => {
     const { nickname } = usersConnected.find(({ id }) => id === receiveUser);
     const searchChat = async () => findPrivateChat(sendUser, nickname);
@@ -49,7 +55,8 @@ io.on('connection', (socket) => {
     } else {
       await updateMessagePrivate({ sendUser, receiveUser: nickname, message });
     }
-    io.to(receiveUser).to(socket.id).emit('receivePrivateMessage', afterFirstSearch);
+    const updatedData = await searchChat();
+    io.to(receiveUser).to(socket.id).emit('receivePrivateMessage', updatedData);
   });
 
   socket.on('disconnect', async () => {
@@ -58,9 +65,9 @@ io.on('connection', (socket) => {
     usersConnected.splice(indexUser);
     await deleteUser(socket.id);
     socket.broadcast.emit('serverResponse', {
-      nick: nickname, time: Date(), message: 'Desconectou-se',
+      nick: socket.user, time: Date(), message: 'Desconectou-se',
     });
-    console.log(`${socket.id} desconectado.`);
+    console.log(`${socket.user} desconectado.`);
   });
 });
 
