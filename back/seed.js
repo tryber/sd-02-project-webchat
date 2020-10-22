@@ -4,6 +4,8 @@ use webchat;
 
 db.createCollection("messages");
 
+db.createCollection("onlineUsers");
+
 db.messages.insertMany([
   {"nick": "twain", "message":"Hi!", time: "Sun Oct 18 2020 22:31:32 GMT-0300 (-03)" },
   {"nick": "cezar", "message":"Hi!", time: "Sun Oct 18 2020 22:32:32 GMT-0300 (-03)" },

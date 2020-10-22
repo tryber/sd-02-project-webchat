@@ -4,7 +4,7 @@ import getLatestMessages from '../Services/requestMessages';
 import WebChatContext from '../Context';
 
 const NickName = () => {
-  const { nickname, setNickname, setChatMessages } = useContext(WebChatContext);
+  const { nickname, setNickname, setChatMessages, socket } = useContext(WebChatContext);
   const [isNicknameEmpty, setIsNicknameEmpty] = useState('');
 
   const history = useHistory();
@@ -12,7 +12,7 @@ const NickName = () => {
   const chatRedirect = async () => {
     if (nickname.length && !nickname.split('').includes(' ')) {
       const { data: { messages } } = await getLatestMessages();
-
+      socket.emit('nickSocketId', { nickname });
       setChatMessages(messages);
       return history.push('/chat');
     }
@@ -28,7 +28,7 @@ const NickName = () => {
         <button type="button" onClick={() => chatRedirect()}>
           Entrar
         </button>
-        <span>{isNicknameEmpty && "Verifique seu nickname. Proibido espaçamentos."}</span>
+        <span>{isNicknameEmpty && "Verifique seu nickname."}</span>
       </div>
     </div>
   );

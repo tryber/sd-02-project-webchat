@@ -18,7 +18,7 @@ const ChatContainer = () => {
   return (
     <div>
       {chatMessages.map(({ nick, message, time }) => (
-        <div key={`${nick} message at ${time}`}>
+        <div key={`${nick} says ${message} message at ${time}`}>
           <span>{`${time.split(' ')[0]} - ${time.split(' ')[4]} ${nick}: `}</span>
           <span>{message}</span>
         </div>

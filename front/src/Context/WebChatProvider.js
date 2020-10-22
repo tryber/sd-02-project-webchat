@@ -8,6 +8,7 @@ const socket = io('http://localhost:4555');
 const WebChatProvider = ({ children }) => {
   const [nickname, setNickname] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   const providerObj = {
     nickname,
@@ -15,6 +16,8 @@ const WebChatProvider = ({ children }) => {
     chatMessages,
     setChatMessages,
     socket,
+    onlineUsers,
+    setOnlineUsers,
   };
 
   return (

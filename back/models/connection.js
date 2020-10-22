@@ -11,8 +11,8 @@ const connection = () =>
     .then((mongodb) => mongodb.db('webchat'))
     .catch((err) => err);
 
-const dbConnection = () =>
+const dbConnection = (coll) =>
   connection()
-    .then((db) => db.collection('messages'));
+    .then((db) => db.collection(coll));
 
 module.exports = { dbConnection };
