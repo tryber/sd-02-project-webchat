@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
 
   socket.on('privateHistory', async ({ sendUser, receiveUser }) => {
     const messages = await findPrivateChat(sendUser, receiveUser);
-    if (!messages) return null;
+    if (!messages) return io.to(socket.id).emit('startPrivate', { messages: [] });
     io.to(socket.id).emit('startPrivate', messages);
   });
 
