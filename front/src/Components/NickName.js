@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import getLatestMessages from '../Services/requestMessages';
+import { getLatestMessages } from '../Services/requestMessages';
 import WebChatContext from '../Context';
 
 const NickName = () => {
@@ -18,7 +18,7 @@ const NickName = () => {
     }
 
     return setIsNicknameEmpty(true)
-  }
+  };
 
   return (
     <div>

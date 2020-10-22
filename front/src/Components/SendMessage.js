@@ -8,15 +8,22 @@ const structureMessage = (nick, message) => ({
 });
 
 const SendMessage = () => {
-  const { nickname, socket } = useContext(WebChatContext);
+  const { nickname, socket, isPrivate, toPrivateUser } = useContext(WebChatContext);
   const [userMessage, setUserMessage] = useState('');
 
-  const sendMessageSocket = () => socket.emit('message', structureMessage(nickname, userMessage));
+  const sendToSocket = () => socket.emit('message', structureMessage(nickname, userMessage));
+  const sendPrivateToSocket = () => socket.emit('privateMessage', {
+    sendUser: nickname,
+    receiveUser: toPrivateUser,
+    message: userMessage,
+  });
 
   return (
     <div>
       <input type="text" onChange={({ target }) => setUserMessage(target.value)} />
-      <button type="button" onClick={() => sendMessageSocket(userMessage)}>
+      <button type="button" onClick={() => isPrivate
+        ? sendPrivateToSocket()
+        : sendToSocket()}>
         Enviar
       </button>
     </div>

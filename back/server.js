@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const messagesController = require('./controllers/messagesController');
 const usersController = require('./controllers/usersController');
-const { insertMessage } = require('./models/messagesModel');
+const { insertMessage, createPrivateChat, findPrivateChat, updateMessagePrivate } = require('./models/messagesModel');
 const { newOnlineUser, deleteUser } = require('./models/usersModel');
 const socketServer = require('http').createServer();
 const io = require('socket.io')(socketServer);
@@ -12,6 +12,7 @@ const app = express();
 const usersConnected = [];
 
 const cors = require('cors');
+const { setMaxListeners } = require('process');
 
 const SOCKET = process.env.SOCKET;
 const BACKPORT = process.env.BACKPORT;
@@ -31,6 +32,7 @@ io.on('connection', (socket) => {
     });
     await newOnlineUser({ nickname, id: socket.id })
     usersConnected.push({ nickname, id: socket.id });
+    io.emit('userOnline', { nickname, id: socket.id });
   });
 
   socket.on('message', async (message) => {
@@ -38,10 +40,26 @@ io.on('connection', (socket) => {
     io.emit('serverResponse', message);
   });
 
+  socket.on('privateMessage', async ({ sendUser, receiveUser, message }) => {
+    const { nickname } = usersConnected.find(({ id }) => id === receiveUser);
+    const searchChat = async () => findPrivateChat(sendUser, nickname);
+    const firstSearch = await searchChat();
+    if (!firstSearch) {
+      await createPrivateChat({ sendUser, receiveUser: nickname, message });
+    } else {
+      await updateMessagePrivate({ sendUser, receiveUser: nickname, message });
+    }
+    io.to(receiveUser).to(socket.id).emit('receivePrivateMessage', afterFirstSearch);
+  });
+
   socket.on('disconnect', async () => {
+    io.emit('userOff', { nickname: socket.user, id: socket.id });
     const indexUser = usersConnected.indexOf({ nickname: socket.user, id: socket.id });
     usersConnected.splice(indexUser);
     await deleteUser(socket.id);
+    socket.broadcast.emit('serverResponse', {
+      nick: nickname, time: Date(), message: 'Desconectou-se',
+    });
     console.log(`${socket.id} desconectado.`);
   });
 });

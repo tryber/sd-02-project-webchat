@@ -9,6 +9,10 @@ const WebChatProvider = ({ children }) => {
   const [nickname, setNickname] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [privateChat, setPrivateChat] = useState([]);
+  const [toPrivateUser, setToPrivateUser] = useState('');
+  const [nicknameToMessage, setNicknameToMessage] = useState('');
+  const [isPrivate, setIsPrivate] = useState(false);
 
   const providerObj = {
     nickname,
@@ -18,6 +22,14 @@ const WebChatProvider = ({ children }) => {
     socket,
     onlineUsers,
     setOnlineUsers,
+    privateChat,
+    setPrivateChat,
+    toPrivateUser,
+    setToPrivateUser,
+    isPrivate,
+    setIsPrivate,
+    nicknameToMessage,
+    setNicknameToMessage,
   };
 
   return (

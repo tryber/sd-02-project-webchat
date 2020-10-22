@@ -2,8 +2,10 @@ import axios from 'axios';
 
 const url = 'http://localhost:3001/messages';
 
-const getLatestMessages = async () =>
+export const getLatestMessages = async () =>
   axios.get(url)
     .then((data) => data);
 
-export default getLatestMessages;
+export const getPrivateMessages = async (sendUser, receiveUser) =>
+  axios.get(`${url}/private/${sendUser};${receiveUser}`)
+    .then((data) => data);
