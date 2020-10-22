@@ -17,7 +17,7 @@ const NickName = () => {
       return history.push('/chat');
     }
 
-    return setIsNicknameEmpty(true)
+    return setIsNicknameEmpty(true);
   };
 
   return (

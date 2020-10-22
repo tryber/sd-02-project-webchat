@@ -12,7 +12,6 @@ const app = express();
 const usersConnected = [];
 
 const cors = require('cors');
-const { setMaxListeners } = require('process');
 
 const SOCKET = process.env.SOCKET;
 const BACKPORT = process.env.BACKPORT;
