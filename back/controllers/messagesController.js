@@ -14,6 +14,7 @@ router
 router.get('/private/:value', async (req, res) => {
   const [sendUser, receiveUser] = req.params.value.split(';');
   const history = await messagesModel.findPrivateChat(sendUser, receiveUser);
+  console.log(history);
 });
 
 module.exports = { router };
